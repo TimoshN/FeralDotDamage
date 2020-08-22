@@ -1,5 +1,4 @@
-local AddOn = ...
-local C = _G[AddOn]
+local AddOn, ns = ...
 local L = AleaUI_GUI.GetLocale("FeralDotDamage")
 
 local COOLDOWN_TAG 		= "COOLDOWN"
@@ -16,63 +15,63 @@ local perSpellMethids
 local cooldownsParent = CreateFrame("Frame", AddOn.."cooldownsParent", UIParent)
 cooldownsParent:SetScale(1)
 cooldownsParent:SetSize(1,1)
-cooldownsParent:SetPoint("TOP", C.movingFrame, "BOTTOM", 0, 0)
+cooldownsParent:SetPoint("TOP", ns.movingFrame, "BOTTOM", 0, 0)
 cooldownsParent:Hide()
 
-C.cooldownsParent = cooldownsParent
+ns.cooldownsParent = cooldownsParent
 
 -- 145152 
 
-C.berserk_spid = 106951
-C.berserk_name = GetSpellInfo(C.berserk_spid)
+ns.berserk_spid = 106951
+ns.berserk_name = GetSpellInfo(ns.berserk_spid)
 
-C.skullbuch_spid = 106839
-C.skillbuch_name = GetSpellInfo(C.skullbuch_spid)
+ns.skullbuch_spid = 106839
+ns.skillbuch_name = GetSpellInfo(ns.skullbuch_spid)
 
-C.dash_spid = 1850
-C.dash_name = GetSpellInfo(C.dash_spid)
+ns.dash_spid = 1850
+ns.dash_name = GetSpellInfo(ns.dash_spid)
 
-C.survival_spid = 61336
-C.survival_name = GetSpellInfo(C.survival_spid)
+ns.survival_spid = 61336
+ns.survival_name = GetSpellInfo(ns.survival_spid)
 
-C.predator_spid = 69369
-C.predator_name = GetSpellInfo(C.predator_spid)
+ns.predator_spid = 69369
+ns.predator_name = GetSpellInfo(ns.predator_spid)
 
-C.trollberserk_spid = 26297
-C.trollberserk_name = GetSpellInfo(C.trollberserk_spid)
+ns.trollberserk_spid = 26297
+ns.trollberserk_name = GetSpellInfo(ns.trollberserk_spid)
 
---C.silaprirodi_spid = 102703
---C.silaprirodi_name = GetSpellInfo(C.silaprirodi_spid)
+--ns.silaprirodi_spid = 102703
+--ns.silaprirodi_name = GetSpellInfo(ns.silaprirodi_spid)
 
---C.serdcedikoy_spid = 108292
---C.serdcedikoy_name = GetSpellInfo(C.serdcedikoy_spid)
+--ns.serdcedikoy_spid = 108292
+--ns.serdcedikoy_name = GetSpellInfo(ns.serdcedikoy_spid)
 
-C.prirodnaya_spid = 124974
-C.prirodnaya_name = GetSpellInfo(C.prirodnaya_spid)
+ns.prirodnaya_spid = 124974
+ns.prirodnaya_name = GetSpellInfo(ns.prirodnaya_spid)
 
-C.sremit_rivok_spid = 102401
-C.sremit_rivok_name = GetSpellInfo(C.sremit_rivok_spid)
+ns.sremit_rivok_spid = 102401
+ns.sremit_rivok_name = GetSpellInfo(ns.sremit_rivok_spid)
 
-C.astralskachek_spid = 102280
-C.astralskachek_name = GetSpellInfo(C.astralskachek_spid)
+ns.astralskachek_spid = 102280
+ns.astralskachek_name = GetSpellInfo(ns.astralskachek_spid)
 
-C.trevogniyrev_spid = 77764
-C.trevogniyrev_name = GetSpellInfo(C.trevogniyrev_spid)
+ns.trevogniyrev_spid = 77764
+ns.trevogniyrev_name = GetSpellInfo(ns.trevogniyrev_spid)
 
-C.eluneguid_spid = 202060
-C.eluneguid_name = GetSpellInfo(C.eluneguid_spid)
+ns.eluneguid_spid = 202060
+ns.eluneguid_name = GetSpellInfo(ns.eluneguid_spid)
 
-C.ashamane_spid = 210722
-C.ashamane_name = GetSpellInfo(C.ashamane_spid) 
+ns.ashamane_spid = 210722
+ns.ashamane_name = GetSpellInfo(ns.ashamane_spid) 
 
-C.feralFrenzy_spid = 274837
-C.feralFrenzy_name = GetSpellInfo(C.feralFrenzy_spid) 
+ns.feralFrenzy_spid = 274837
+ns.feralFrenzy_name = GetSpellInfo(ns.feralFrenzy_spid) 
 
-C.ydarkogtiami_spid = 202028
-C.ydarkogtiami_name = GetSpellInfo(C.ydarkogtiami_spid)
+ns.ydarkogtiami_spid = 202028
+ns.ydarkogtiami_name = GetSpellInfo(ns.ydarkogtiami_spid)
 
-C.maim_spid = 22570
-C.maim_name = GetSpellInfo(C.maim_spid)
+ns.maim_spid = 22570
+ns.maim_name = GetSpellInfo(ns.maim_spid)
 
 local maimLegProcID = 236757
 
@@ -139,8 +138,8 @@ end
 
 perSpellMethids = {
 	["Predator"] = function(parent, timer)
-		if C.db.profile.cooldowns.specificSpell[C.predator_spid].predatorIconRed and timer < 2 then
-			local c = C.db.profile.cooldowns.specificSpell[C.predator_spid].color
+		if ns.db.profile.cooldowns.specificSpell[ns.predator_spid].predatorIconRed and timer < 2 then
+			local c = ns.db.profile.cooldowns.specificSpell[ns.predator_spid].color
 			parent.icon:SetVertexColor(c[1], c[2], c[3], c[4])
 		else
 			parent.icon:SetVertexColor(1, 1, 1, 1)
@@ -183,10 +182,10 @@ perSpellMethids = {
 	['Art_Regen'] = function(parent, timer)
 	--	perSpellMethids['TF_ShowGlow'](parent)
 		
-		if C.db.profile.cooldowns.specificSpell[C.tigrinoe_spid].artRegen then	
+		if ns.db.profile.cooldowns.specificSpell[ns.tigrinoe_spid].artRegen then	
 			local name = AuraUtil.FindAuraByName((GetSpellInfo(210583)), 'player', "HELPFUL") -- UnitBuff('player', (GetSpellInfo(210583)))			
 			if name then
-				local c = C.db.profile.cooldowns.specificSpell[C.tigrinoe_spid].color
+				local c = ns.db.profile.cooldowns.specificSpell[ns.tigrinoe_spid].color
 				parent.icon:SetVertexColor(c[1], c[2], c[3], c[4])
 			else
 				parent.icon:SetVertexColor(1, 1, 1, 1)
@@ -194,14 +193,14 @@ perSpellMethids = {
 		end
 	end,
 	["CP_ShowGlow"] = function()
-		return C.db.profile.cooldowns.specificSpell[C.predator_spid].ShowGlow
+		return ns.db.profile.cooldowns.specificSpell[ns.predator_spid].ShowGlow
 	end,
 	["CP_ShowPandemia"] = function(parent, timer)
 	
-		if C.db.profile.cooldowns.specificSpell[C.dikiyrev_spid].CP_Pandemia then
+		if ns.db.profile.cooldowns.specificSpell[ns.dikiyrev_spid].CP_Pandemia then
 			
 			if timer < 12.5  then
-				if C.db.profile.cooldowns.specificSpell[C.dikiyrev_spid].CP_Pandemia_anim then			
+				if ns.db.profile.cooldowns.specificSpell[ns.dikiyrev_spid].CP_Pandemia_anim then			
 					if not parent.glow:GetScript("OnUpdate") then
 						parent.glow.elapsed = 0
 						parent.glow:SetAlpha(0)
@@ -249,33 +248,27 @@ perSpellMethids = {
 }
 
 local placeholder = {
-	[C.dikiyrev_glyph_spid] = C.dikiyrev_spid,
-	[279526] = C.berserk_spid,
+	[ns.dikiyrev_glyph_spid] = ns.dikiyrev_spid,
+	[279526] = ns.berserk_spid,
 }
 
 local spells_to_show = {
-	{ id = C.berserk_spid, 		cd = 180 ,	default = true,  tip = COOLDOWN_AURA_TAG, onShowGlow = 'AzeritBerserkTrait' },
-	{ id = C.tigrinoe_spid, 	cd = 30 ,	default = true,  tip = COOLDOWN_AURA_TAG, onTimeIcon = 'Art_Regen' },
---	{ id = C.pererogdenie_spid,	cd = 180 ,	default = true,  tip = COOLDOWN_AURA_TAG, talent = C.pererogdenie_spid },
-	{ id = C.skullbuch_spid, 	cd = 15	,	default = false, tip = COOLDOWN_AURA_TAG	},
-	{ id = C.dash_spid,			cd = 180,	default = false, tip = COOLDOWN_AURA_TAG	},
-	{ id = C.survival_spid,		cd = 120,	default = false, tip = COOLDOWN_AURA_TAG	},
-	{ id = C.predator_spid,		cd = 12,	default = true,  tip = AURA_TAG			 , onTimeIcon = "Predator" },
-	{ id = C.trollberserk_spid,	cd = 12,	default = true,  tip = COOLDOWN_AURA_TAG	},
-	{ id = C.krovaviekogti_spid,cd = 30,	default = true,  tip = AURA_TAG			 , talent = 155672 },
---	{ id = C.silaprirodi_spid,	cd = 20,	default = true,  tip = COOLDOWN_TAG 	 , talent = 102703 },
---	{ id = C.serdcedikoy_spid,	cd = 360,	default = true,  tip = COOLDOWN_AURA_TAG , talent = 108292 },
---	{ id = C.prirodnaya_spid,	cd = 90,	default = true,  tip = COOLDOWN_AURA_TAG , talent = 124974 },
-	{ id = C.sremit_rivok_spid,	cd = 15,	default = false, tip = COOLDOWN_TAG 	 , talent = 102401 },
-	--{ id = C.astralskachek_spid,cd = 30,	default = false, tip = COOLDOWN_TAG 	 , talent = 102280 },	
-	{ id = C.trevogniyrev_spid,	cd = 120,	default = false, tip = COOLDOWN_AURA_TAG},
-	{ id = C.clearcast_id,		cd = 15,	default = false, tip = AURA_TAG, },
-	{ id = C.dikiyrev_spid,		cd = 40,	default = false, tip = AURA_TAG, onTimeIcon = "CP_ShowPandemia", onShowGlow = "CP_ShowGlow", talent = 52610 },
-	--{ id = C.eluneguid_spid,    cd = 45,	default = true,	 tip = COOLDOWN_TAG,       talent = 202060 },
-	{ id = C.feralFrenzy_spid,	cd = 45,	default = true,  tip = COOLDOWN_TAG,	   talent = 274837 },
-	{ id = C.ydarkogtiami_spid, cd = 16, 	default = true,  tip = COOLDOWN_TAG,	   talent = C.ydarkogtiami_spid },
+	{ id = ns.berserk_spid, 		cd = 180 ,	default = true,  tip = COOLDOWN_AURA_TAG, onShowGlow = 'AzeritBerserkTrait' },
+	{ id = ns.tigrinoe_spid, 	cd = 30 ,	default = true,  tip = COOLDOWN_AURA_TAG, onTimeIcon = 'Art_Regen' },
+	{ id = ns.skullbuch_spid, 	cd = 15	,	default = false, tip = COOLDOWN_AURA_TAG	},
+	{ id = ns.dash_spid,			cd = 180,	default = false, tip = COOLDOWN_AURA_TAG	},
+	{ id = ns.survival_spid,		cd = 120,	default = false, tip = COOLDOWN_AURA_TAG	},
+	{ id = ns.predator_spid,		cd = 12,	default = true,  tip = AURA_TAG			 , onTimeIcon = "Predator" },
+	{ id = ns.trollberserk_spid,	cd = 12,	default = true,  tip = COOLDOWN_AURA_TAG	},
+	{ id = ns.krovaviekogti_spid,cd = 30,	default = true,  tip = AURA_TAG			 , talent = 155672 },
+	{ id = ns.sremit_rivok_spid,	cd = 15,	default = false, tip = COOLDOWN_TAG 	 , talent = 102401 },
+	{ id = ns.trevogniyrev_spid,	cd = 120,	default = false, tip = COOLDOWN_AURA_TAG},
+	{ id = ns.clearcast_id,		cd = 15,	default = false, tip = AURA_TAG, },
+	{ id = ns.dikiyrev_spid,		cd = 40,	default = false, tip = AURA_TAG, onTimeIcon = "CP_ShowPandemia", onShowGlow = "CP_ShowGlow", talent = 52610 },
+	{ id = ns.feralFrenzy_spid,	cd = 45,	default = true,  tip = COOLDOWN_TAG,	   talent = 274837 },
+	{ id = ns.ydarkogtiami_spid, cd = 16, 	default = true,  tip = COOLDOWN_TAG,	   talent = ns.ydarkogtiami_spid },
 	
-	{ id = C.maim_spid,			cd = 1,		default = true,  tip = COOLDOWN_TAG,  onUpdate = 'Maim_LegendaryProc', item = 144354	},
+	{ id = ns.maim_spid,			cd = 1,		default = true,  tip = COOLDOWN_TAG,  onUpdate = 'Maim_LegendaryProc', item = 144354	},
 }
 
 local id_to_spell = {}
@@ -288,116 +281,47 @@ local order_spell_to_id = {}
 
 local frames = {}
 local statusbars = {}
---[==[
-local unusedOverlayGlows = {}
-local numOverlayGlows = 0
 
-local function OverlayGlowAnimOutFinished(animGroup)
-  local overlay = animGroup:GetParent()
-  local frame = overlay:GetParent()
-  overlay:Hide()
-  tinsert(unusedOverlayGlows, overlay)
-  frame.overlay = nil
-end
-
---FeralDotDamage.OverlayGlowAnimOutFinished = OverlayGlowAnimOutFinished
-
-local function OverlayGlow_OnHide(self)
-  if self.animOut:IsPlaying() then
-    self.animOut:Stop()
-    OverlayGlowAnimOutFinished(self.animOut)
-  end
-end
-
-local function GetOverlayGlow()
-  local overlay = tremove(unusedOverlayGlows)
-  if not overlay then
-   numOverlayGlows = numOverlayGlows + 1
-    overlay = CreateFrame("Frame", "FDDGlowOverlay"..numOverlayGlows, UIParent, "FeralDotDamageSpellActivationAlert")
-    overlay.animOut:SetScript("OnFinished", OverlayGlowAnimOutFinished)
-    overlay:SetScript("OnHide", OverlayGlow_OnHide)
-  end
-  return overlay
-end
-
-local glow_spacing = 0.4
-
-local function ShowOverlayGlow(frame)
-  if frame.overlay then
-    if frame.overlay.animOut:IsPlaying() then
-      frame.overlay.animOut:Stop()
-      frame.overlay.animIn:Play()
-    end
-  else
-    frame.overlay = GetOverlayGlow()
-    local frameWidth, frameHeight = frame:GetSize()
-    frame.overlay:SetParent(frame)
-    frame.overlay:ClearAllPoints()
-    --Make the height/width available before the next frame:
-    frame.overlay:SetSize(frameWidth * 1.4, frameHeight * 1.4)
-    frame.overlay:SetPoint("TOPLEFT", frame, "TOPLEFT", -frameWidth * glow_spacing, frameHeight * glow_spacing)
-    frame.overlay:SetPoint("BOTTOMRIGHT", frame, "BOTTOMRIGHT", frameWidth * glow_spacing, -frameHeight * glow_spacing)
-    frame.overlay.animIn:Play()
-  end
-end
-
---FeralDotDamage.ShowOverlayGlow = ShowOverlayGlow
-
-local function HideOverlayGlow(frame)
-  if frame.overlay then
-    if frame.overlay.animIn:IsPlaying() then
-      frame.overlay.animIn:Stop()
-    end
-    if frame:IsVisible() then
-      frame.overlay.animOut:Play()
-    else
-      OverlayGlowAnimOutFinished(frame.overlay.animOut)
-    end
-  end
-end
-
---FeralDotDamage.HideOverlayGlow = HideOverlayGlow
-]==]
-function C:UpdateCooldownsFrames()
+function ns:UpdateCooldownsFrames()
 	
-	if C.db.profile.cooldowns.isvertical == 2 then
-		C:Mover(cooldownsParent, "CooldownsFrames", 20, 220, "CENTER")
+	if ns.db.profile.cooldowns.isvertical == 2 then
+		ns:Mover(cooldownsParent, "CooldownsFrames", 20, 220, "CENTER")
 	else
-		C:Mover(cooldownsParent, "CooldownsFrames", 220, 20, "CENTER")
+		ns:Mover(cooldownsParent, "CooldownsFrames", 220, 20, "CENTER")
 	end
 	
-	options = C.db.profile
+	options = ns.db.profile
 
 	local numicons = #order_spell
 	local partial_1 = numicons%2  -- если 0 то середина между иконками 1 то середина иконки
 	local numIconStep = floor(#order_spell*0.5)
-	local width = C.db.profile.cooldowns.width-(C.db.profile.cooldowns.gap*(numicons-1))
+	local width = ns.db.profile.cooldowns.width-(ns.db.profile.cooldowns.gap*(numicons-1))
 
 	local rwidth = width/numicons
 	
-	if rwidth > C.db.profile.cooldowns.max_width then
-		rwidth = C.db.profile.cooldowns.max_width 
+	if rwidth > ns.db.profile.cooldowns.max_width then
+		rwidth = ns.db.profile.cooldowns.max_width 
 	end
 	
 	local iconOffset = 0
 	
 	if partial_1 == 1 then
 		-- Середина иконки			
-		iconOffset = ( numIconStep * ( rwidth + C.db.profile.cooldowns.gap ) ) --+  ( swidth * 0.5 )
+		iconOffset = ( numIconStep * ( rwidth + ns.db.profile.cooldowns.gap ) ) --+  ( swidth * 0.5 )
 	else
 		-- Середина отступа				
-		iconOffset = ( numIconStep * rwidth ) + (( numIconStep - 1 ) * C.db.profile.cooldowns.gap) + ( C.db.profile.cooldowns.gap * 0.5 ) - ( rwidth * 0.5 )
+		iconOffset = ( numIconStep * rwidth ) + (( numIconStep - 1 ) * ns.db.profile.cooldowns.gap) + ( ns.db.profile.cooldowns.gap * 0.5 ) - ( rwidth * 0.5 )
 	end
 	
 	for i=1, #order_spell do
 		
 		local spellID = order_spell[i]
 		
-		frames[i] = frames[i] or C:AddCooldownIcon(order_spell[i], cooldownsParent)
+		frames[i] = frames[i] or ns:AddCooldownIcon(order_spell[i], cooldownsParent)
 		
 		frames[i].spellID2 = nil
 		
-		if spellID == 106951 and C.IsTalentKnown(102543) then
+		if spellID == 106951 and ns.IsTalentKnown(102543) then
 			frames[i].spellID2 = 102543
 		end
 		
@@ -412,66 +336,28 @@ function C:UpdateCooldownsFrames()
 		
 		frames[i].icon:SetTexture(GetSpellTexture(spellID))
 		
-		if C.db.profile.cooldowns.isvertical == 2 then -- 1 Горизонт 2 - Вертикально			
+		if ns.db.profile.cooldowns.isvertical == 2 then -- 1 Горизонт 2 - Вертикально			
 			if i == 1 then
-				if C.db.profile.cooldowns.anchoring == 1 then
+				if ns.db.profile.cooldowns.anchoring == 1 then
 					frames[i]:SetPoint("LEFT", cooldownsParent, "LEFT", 0, iconOffset)
 				else
 					frames[i]:SetPoint("RIGHT", cooldownsParent, "RIGHT", 0, iconOffset)
 				end
 			else
-				frames[i]:SetPoint("TOP", frames[i-1], "BOTTOM", 0, -C.db.profile.cooldowns.gap)
+				frames[i]:SetPoint("TOP", frames[i-1], "BOTTOM", 0, -ns.db.profile.cooldowns.gap)
 			end		
 		else		
 			if i == 1 then
-				if C.db.profile.cooldowns.anchoring == 1 then
+				if ns.db.profile.cooldowns.anchoring == 1 then
 					frames[i]:SetPoint("BOTTOM", cooldownsParent, "BOTTOM", -iconOffset, 0)
 				else
 					frames[i]:SetPoint("TOP", cooldownsParent, "TOP", -iconOffset, 0)
 				end
 			else
-				frames[i]:SetPoint("LEFT", frames[i-1], "RIGHT", C.db.profile.cooldowns.gap, 0)
+				frames[i]:SetPoint("LEFT", frames[i-1], "RIGHT", ns.db.profile.cooldowns.gap, 0)
 			end
 		end
 	end
-	--[==[
-	for i=1, #order_spell do
-		if partial_1 == 1 then
-			if partial_frame == i then
-			
-				if C.db.profile.cooldowns.anchoring == 1 then
-					frames[i]:SetPoint("BOTTOM", cooldownsParent, "BOTTOM", 0, 0)
-				else
-					frames[i]:SetPoint("TOP", cooldownsParent, "TOP", 0, 0)
-				end
-				
-			elseif i < partial_frame then
-				frames[i]:SetPoint("RIGHT", frames[i+1], "LEFT", -C.db.profile.cooldowns.gap, 0)
-			elseif i > partial_frame then
-				frames[i]:SetPoint("LEFT", frames[i-1], "RIGHT", C.db.profile.cooldowns.gap, 0)
-			end
-		else
-			if i == partial_frame_1 then
-			
-				if C.db.profile.cooldowns.anchoring == 1 then
-					frames[i]:SetPoint("BOTTOMRIGHT", cooldownsParent, "BOTTOM", -C.db.profile.cooldowns.gap*0.5, 0)
-				else
-					frames[i]:SetPoint("TOPRIGHT", cooldownsParent, "TOP", -C.db.profile.cooldowns.gap*0.5, 0)
-				end
-			elseif i == partial_frame_1+1 then
-				if C.db.profile.cooldowns.anchoring == 1 then
-					frames[i]:SetPoint("BOTTOMLEFT", cooldownsParent, "BOTTOM", C.db.profile.cooldowns.gap*0.5, 0)
-				else
-					frames[i]:SetPoint("TOPLEFT", cooldownsParent, "TOP", C.db.profile.cooldowns.gap*0.5, 0)
-				end
-			elseif i < partial_frame_1 then
-				frames[i]:SetPoint("RIGHT", frames[i+1], "LEFT", -C.db.profile.cooldowns.gap, 0)
-			elseif i > partial_frame_1+1 then
-				frames[i]:SetPoint("LEFT", frames[i-1], "RIGHT", C.db.profile.cooldowns.gap, 0)
-			end	
-		end	
-	end
-	]==]
 end
 
 local function GetSpellNameGUI(spellID)
@@ -480,26 +366,25 @@ local function GetSpellNameGUI(spellID)
 	return "\124T"..( icon or '' )..":14\124t "..( name or 'InvalidID:'..spellID )
 end
 
-function C:UpdateStatusBarOrder()
---	cooldownsParent:SetPoint("TOP", C.movingFrame, "BOTTOM", 0, self.db.profile.cooldowns.spacing_v)
+function ns:UpdateStatusBarOrder()
+
+	ns:Mover(cooldownsParent, "CooldownsFrames", 220, 20, "CENTER")
 	
-	C:Mover(cooldownsParent, "CooldownsFrames", 220, 20, "CENTER")
+	options = ns.db.profile
 	
-	options = C.db.profile
-	
-	local width = C.db.profile.cooldowns.width
+	local width = ns.db.profile.cooldowns.width
 	
 	for i=1, #order_spell do
 		
 		local spellID = order_spell[i]
 		
-		statusbars[i] = statusbars[i] or C:AddStatusBar(order_spell[i], cooldownsParent)
+		statusbars[i] = statusbars[i] or ns:AddStatusBar(order_spell[i], cooldownsParent)
 	
 		statusbars[i].spellID = spellID
 		
 		statusbars[i].spellID2 = nil
 		
-		if spellID == 106951 and C.IsTalentKnown(102543) then
+		if spellID == 106951 and ns.IsTalentKnown(102543) then
 			statusbars[i].spellID2 = 102543
 		end
 		
@@ -514,24 +399,24 @@ function C:UpdateStatusBarOrder()
 		statusbars[i].icon:SetSize(16, 16)
 	end
 	
-	C:PostupdateOrdering()
+	ns:PostupdateOrdering()
 end
 
-function C:PostupdateOrdering()
+function ns:PostupdateOrdering()
 
-	if C.db.profile.cooldowns.showmissing then
+	if ns.db.profile.cooldowns.showmissing then
 		for i=1, #order_spell do
 			if i == 1 then		
-				if C.db.profile.cooldowns.anchoring == 1 then
+				if ns.db.profile.cooldowns.anchoring == 1 then
 					statusbars[i]:SetPoint("BOTTOM", cooldownsParent, "BOTTOM", 0, 0)
 				else
 					statusbars[i]:SetPoint("TOP", cooldownsParent, "TOP", 0, 0)
 				end
 			else
-				if C.db.profile.cooldowns.anchoring == 1 then
-					statusbars[i]:SetPoint("BOTTOM", statusbars[i-1], "TOP", 0, C.db.profile.cooldowns.gap)
+				if ns.db.profile.cooldowns.anchoring == 1 then
+					statusbars[i]:SetPoint("BOTTOM", statusbars[i-1], "TOP", 0, ns.db.profile.cooldowns.gap)
 				else
-					statusbars[i]:SetPoint("TOP", statusbars[i-1], "BOTTOM", 0, -C.db.profile.cooldowns.gap)
+					statusbars[i]:SetPoint("TOP", statusbars[i-1], "BOTTOM", 0, -ns.db.profile.cooldowns.gap)
 				end
 			end	
 			
@@ -546,7 +431,7 @@ function C:PostupdateOrdering()
 				statusbars[i]:Show()
 
 				if prev == nil then		
-					if C.db.profile.cooldowns.anchoring == 1 then
+					if ns.db.profile.cooldowns.anchoring == 1 then
 						statusbars[i]:SetPoint("BOTTOM", cooldownsParent, "BOTTOM", 0, 0)
 					else
 						statusbars[i]:SetPoint("TOP", cooldownsParent, "TOP", 0, 0)
@@ -554,10 +439,10 @@ function C:PostupdateOrdering()
 					
 					prev = statusbars[i]
 				else
-					if C.db.profile.cooldowns.anchoring == 1 then
-						statusbars[i]:SetPoint("BOTTOM", prev, "TOP", 0, C.db.profile.cooldowns.gap)
+					if ns.db.profile.cooldowns.anchoring == 1 then
+						statusbars[i]:SetPoint("BOTTOM", prev, "TOP", 0, ns.db.profile.cooldowns.gap)
 					else
-						statusbars[i]:SetPoint("TOP", prev, "BOTTOM", 0, -C.db.profile.cooldowns.gap)
+						statusbars[i]:SetPoint("TOP", prev, "BOTTOM", 0, -ns.db.profile.cooldowns.gap)
 					end
 					prev = statusbars[i]
 				end
@@ -568,7 +453,7 @@ function C:PostupdateOrdering()
 	end
 end
 
-function C:AddCooldownIcon(spellid, parent)
+function ns:AddCooldownIcon(spellid, parent)
 	local f = CreateFrame("Frame", nil, parent)
 	f:SetSize(1, 1)
 	local spellName, _, spellIcon = GetSpellInfo(spellid)
@@ -609,7 +494,7 @@ function C:AddCooldownIcon(spellid, parent)
 	cd:SetScript("OnUpdate", function(self, elapsed)
 		local numb = ((self.parent._start + self.parent._duration) - GetTime())
 
-		self.parent.timer:SetText(formatList[C.db.profile.cooldowns.time_format or 1](numb))
+		self.parent.timer:SetText(formatList[ns.db.profile.cooldowns.time_format or 1](numb))
 
 		if spells_to_show[id_to_spell[self.parent.spellID]].onTimeIcon then
 			perSpellMethids[spells_to_show[id_to_spell[self.parent.spellID]].onTimeIcon](self.parent, numb)
@@ -682,17 +567,17 @@ function C:AddCooldownIcon(spellid, parent)
 			if not self.cooldown:IsShown() then
 				self.cooldown:Show()
 			end
-			self.cooldown:SetSwipeColor(0, 0, 0, C.db.profile.cooldowns.swipe_alpha or 0.7) --0.7)
+			self.cooldown:SetSwipeColor(0, 0, 0, ns.db.profile.cooldowns.swipe_alpha or 0.7) --0.7)
 			self.cooldown:SetDrawEdge(false)	
 			self.cooldown:SetReverse(true)
 			self.cooldown:SetCooldown(start, duration)
 			
 			self.icon:SetVertexColor(1, 1, 1, 1)
-			self.icon2:SetColorTexture(0, 0, 0, C.db.profile.cooldowns.icon_dark)
+			self.icon2:SetColorTexture(0, 0, 0, ns.db.profile.cooldowns.icon_dark)
 			
 			self:SetAlpha(1)
 			
-			if C.db.profile.cooldowns.glowAnim then
+			if ns.db.profile.cooldowns.glowAnim then
 				
 				if spells_to_show[id_to_spell[self.spellID]].onShowGlow then
 					if perSpellMethids[spells_to_show[id_to_spell[self.spellID]].onShowGlow]() then
@@ -707,7 +592,7 @@ function C:AddCooldownIcon(spellid, parent)
 				self.icon:SetDesaturated(stacks == 0 and true or false)
 				
 				if stacks == 0 then
-					self.cooldown:SetSwipeColor(0, 0, 0, C.db.profile.cooldowns.swipe_alpha or 0.7) --0.7)
+					self.cooldown:SetSwipeColor(0, 0, 0, ns.db.profile.cooldowns.swipe_alpha or 0.7) --0.7)
 					self.cooldown:SetDrawEdge(false)		
 				else
 					self.cooldown:SetSwipeColor(0, 0, 0, 0)	
@@ -724,23 +609,23 @@ function C:AddCooldownIcon(spellid, parent)
 				self.icon:SetVertexColor(1, 1, 1, 1)
 				self.icon2:SetColorTexture(0, 0, 0, 0)
 			else
-				self.icon:SetDesaturated(C.db.profile.cooldowns.blackwhite)
+				self.icon:SetDesaturated(ns.db.profile.cooldowns.blackwhite)
 				if not self.cooldown:IsShown() then
 					self.cooldown:Show()
 				end
 				self.cooldown:SetReverse(false)
 				self.cooldown:SetCooldown(start, duration)
 
-				self:SetAlpha(C.db.profile.cooldowns.nonactivealpha)
+				self:SetAlpha(ns.db.profile.cooldowns.nonactivealpha)
 				self.icon:SetVertexColor(1, 1, 1, 1)
-				self.icon2:SetColorTexture(0, 0, 0, C.db.profile.cooldowns.icon_dark)
+				self.icon2:SetColorTexture(0, 0, 0, ns.db.profile.cooldowns.icon_dark)
 			end
 
 			FeralDotDamage.HideOverlayGlow(self.cooldown)
 		elseif status == 3 then
 			self.icon:SetDesaturated(false)
 			self.cooldown:Hide()
-			self.cooldown:SetSwipeColor(0, 0, 0, C.db.profile.cooldowns.swipe_alpha or 0.7) --0.7)
+			self.cooldown:SetSwipeColor(0, 0, 0, ns.db.profile.cooldowns.swipe_alpha or 0.7) --0.7)
 			self.cooldown:SetDrawEdge(false)	
 			self.cooldown:SetReverse(true)
 			self.cooldown:Clear()
@@ -753,16 +638,16 @@ function C:AddCooldownIcon(spellid, parent)
 
 			FeralDotDamage.HideOverlayGlow(self.cooldown)
 		elseif status == 4 then	
-			self.icon:SetDesaturated(C.db.profile.cooldowns.blackwhite)
+			self.icon:SetDesaturated(ns.db.profile.cooldowns.blackwhite)
 			self.cooldown:Hide()
-			self.cooldown:SetSwipeColor(0, 0, 0, C.db.profile.cooldowns.swipe_alpha or 0.7) --0.7)
+			self.cooldown:SetSwipeColor(0, 0, 0, ns.db.profile.cooldowns.swipe_alpha or 0.7) --0.7)
 			self.cooldown:SetDrawEdge(false)	
 			self.cooldown:SetReverse(true)
 			self.cooldown:Clear()
 			
-			self:SetAlpha(C.db.profile.cooldowns.nonactivealpha)
+			self:SetAlpha(ns.db.profile.cooldowns.nonactivealpha)
 			self.icon:SetVertexColor(1, 1, 1, 1)
-			self.icon2:SetColorTexture(0, 0, 0, C.db.profile.cooldowns.icon_dark)
+			self.icon2:SetColorTexture(0, 0, 0, ns.db.profile.cooldowns.icon_dark)
 			
 			self.timer:SetText('')
 			FeralDotDamage.HideOverlayGlow(self.cooldown)
@@ -772,7 +657,7 @@ function C:AddCooldownIcon(spellid, parent)
 	return f
 end
 
-function C:AddStatusBar(spellid, parent)
+function ns:AddStatusBar(spellid, parent)
 	
 	local f = CreateFrame("Frame", nil, parent)
 	f:SetSize(1, 1)
@@ -830,7 +715,7 @@ function C:AddStatusBar(spellid, parent)
 			numb = ( self._start+self._duration - GetTime() )
 			self:SetValue(numb)
 			
-			self.parent.timer:SetText(formatList[C.db.profile.cooldowns.time_format or 1](numb))
+			self.parent.timer:SetText(formatList[ns.db.profile.cooldowns.time_format or 1](numb))
 		end
 
 	end)
@@ -862,7 +747,7 @@ function C:AddStatusBar(spellid, parent)
 		
 		if self.statusbar._status ~= status then
 			self.statusbar._status = status
-			C:PostupdateOrdering()
+			ns:PostupdateOrdering()
 		end
 		self.statusbar._status = status
 		
@@ -870,23 +755,23 @@ function C:AddStatusBar(spellid, parent)
 		
 		if status == 1 then
 			self.statusbar:SetMinMaxValues(0, duration)
-			local color = C.db.profile.cooldowns.colors[1]			
+			local color = ns.db.profile.cooldowns.colors[1]			
 			self.statusbar:SetStatusBarColor(color[1],color[2],color[3],color[4])
 		elseif status == 2 then
 			self.statusbar:SetMinMaxValues(0, duration)
-			local color = C.db.profile.cooldowns.colors[2]			
+			local color = ns.db.profile.cooldowns.colors[2]			
 			self.statusbar:SetStatusBarColor(color[1],color[2],color[3],color[4])
 		elseif status == 3 then
 			self.statusbar:SetMinMaxValues(0, 1)
 			self.statusbar:SetValue(1)
 			self.rightText:SetText('')
-			local color = C.db.profile.cooldowns.colors[3]			
+			local color = ns.db.profile.cooldowns.colors[3]			
 			self.statusbar:SetStatusBarColor(color[1],color[2],color[3],color[4])
 		elseif status == 4 then
 			self.statusbar:SetMinMaxValues(0, 1)
 			self.statusbar:SetValue(1)
 			self.rightText:SetText('')
-			local color = C.db.profile.cooldowns.colors[4]			
+			local color = ns.db.profile.cooldowns.colors[4]			
 			self.statusbar:SetStatusBarColor(color[1],color[2],color[3],color[4])
 		end
 	end
@@ -909,30 +794,30 @@ local UpdateCooldownSortings_SortFunc = function(x, y)
 end
 	
 local function ResetCorruptedSettings()
-	wipe(C.db.profile.cooldowns.ordering_spells.spellList)
+	wipe(ns.db.profile.cooldowns.ordering_spells.spellList)
 	for index, data in pairs(spells_to_show) do	
-		C.db.profile.cooldowns.ordering_spells.spellList[data.id] = { sort = index, on = data.default }
+		ns.db.profile.cooldowns.ordering_spells.spellList[data.id] = { sort = index, on = data.default }
 	end
 end
 
 local function CheckForCorruptedSettigns()	
 
-	if C.db.profile.cooldowns.ordering_spells.initialReset ~= initialDBUpdate then
+	if ns.db.profile.cooldowns.ordering_spells.initialReset ~= initialDBUpdate then
 		print('FDD: Update cooldown settings cuz of force update')
-		C.db.profile.cooldowns.ordering_spells.initialReset = initialDBUpdate
+		ns.db.profile.cooldowns.ordering_spells.initialReset = initialDBUpdate
 		ResetCorruptedSettings()
 		return
 	end
 	
 	for index, data in pairs(spells_to_show) do	
-		if not C.db.profile.cooldowns.ordering_spells.spellList[data.id] then
+		if not ns.db.profile.cooldowns.ordering_spells.spellList[data.id] then
 			print('FDD: Update cooldown settings cuz of invalid spell to show', data.id, (GetSpellInfo(data.id)) )
 			ResetCorruptedSettings()
 			return
 		end
 	end
 	
-	for spellID in pairs(C.db.profile.cooldowns.ordering_spells.spellList) do
+	for spellID in pairs(ns.db.profile.cooldowns.ordering_spells.spellList) do
 		if not id_to_spell[ spellID ] then
 			print('FDD: Update cooldown settings cuz of invalid spellid to id', spellID, (GetSpellInfo(spellID)) )
 			ResetCorruptedSettings()
@@ -944,7 +829,7 @@ end
 FDD_ResetCorruptedSettings = ResetCorruptedSettings
 
 local sortedSpellList = {}
-function C:UpdateCooldownSortings()
+function ns:UpdateCooldownSortings()
 	CheckForCorruptedSettigns()	
 	
 	wipe(order_spell)
@@ -954,21 +839,21 @@ function C:UpdateCooldownSortings()
 	wipe(sortedSpellList)
 
 	
-	for spellID, data in pairs(C.db.profile.cooldowns.ordering_spells.spellList) do	
+	for spellID, data in pairs(ns.db.profile.cooldowns.ordering_spells.spellList) do	
 		sortedSpellList[data.sort] = spellID
 	end
 	
 	for i, spellID in ipairs(sortedSpellList) do
-		local data = C.db.profile.cooldowns.ordering_spells.spellList[spellID]
+		local data = ns.db.profile.cooldowns.ordering_spells.spellList[spellID]
 	
-		if spellID == C.trollberserk_spid then		
+		if spellID == ns.trollberserk_spid then		
 			if select(2, UnitRace("player")) == "Troll" and data.on then
 				framecount = framecount + 1			
 				order_spell[framecount] = spellID
 				order_spell_to_id[spellID] = framecount
 			end
 		elseif spells_to_show[id_to_spell[spellID]].talent then
-			if data.on and C.IsTalentKnown(spells_to_show[id_to_spell[spellID]].talent) then
+			if data.on and ns.IsTalentKnown(spells_to_show[id_to_spell[spellID]].talent) then
 				framecount = framecount + 1
 				order_spell[framecount] = spellID			
 				order_spell_to_id[spellID] = framecount
@@ -980,7 +865,7 @@ function C:UpdateCooldownSortings()
 				order_spell_to_id[spellID] = framecount
 			end
 		elseif spells_to_show[id_to_spell[spellID]].item then
-			if data.on and C.IsItemEqupped(spells_to_show[id_to_spell[spellID]].item) then
+			if data.on and ns.IsItemEqupped(spells_to_show[id_to_spell[spellID]].item) then
 				framecount = framecount + 1
 				order_spell[framecount] = spellID			
 				order_spell_to_id[spellID] = framecount
@@ -994,22 +879,22 @@ function C:UpdateCooldownSortings()
 	
 end
 
-function C:CooldownFontUpdate()
+function ns:CooldownFontUpdate()
 	
 	for i=1, #frames do
 		
 		local f = frames[i]
 		local justifyV, justifyH = strsplit(";", options.cooldowns.fonts.timer.text_point) -- = "BOTTOM;CENTER",
 		
-		if C.db.profile.cooldowns.hide_timer_text then
+		if ns.db.profile.cooldowns.hide_timer_text then
 			f.timer:Show()
 		else
 			f.timer:Hide()
 		end
 		
-		f.cooldown:SetHideCountdownNumbers(C.db.profile.cooldowns.hide_timer_text)	
+		f.cooldown:SetHideCountdownNumbers(ns.db.profile.cooldowns.hide_timer_text)	
 		
-		f.timer:SetFont(C.SharedMedia:Fetch("font", options.cooldowns.fonts.font), options.cooldowns.fonts.timer.fontsize, options.cooldowns.fonts.fontflag)
+		f.timer:SetFont(ns.SharedMedia:Fetch("font", options.cooldowns.fonts.font), options.cooldowns.fonts.timer.fontsize, options.cooldowns.fonts.fontflag)
 		f.timer:SetJustifyH(justifyH)
 		f.timer:SetJustifyV(justifyV)
 		f.timer:SetShadowColor(
@@ -1032,7 +917,7 @@ function C:CooldownFontUpdate()
 		
 		justifyV, justifyH = strsplit(";", options.cooldowns.fonts.stack.text_point) -- = "BOTTOM;CENTER",
 		
-		f.stack:SetFont(C.SharedMedia:Fetch("font", options.cooldowns.fonts.font), options.cooldowns.fonts.stack.fontsize, options.cooldowns.fonts.fontflag)
+		f.stack:SetFont(ns.SharedMedia:Fetch("font", options.cooldowns.fonts.font), options.cooldowns.fonts.stack.fontsize, options.cooldowns.fonts.fontflag)
 		f.stack:SetJustifyH(justifyH)
 		f.stack:SetJustifyV(justifyV)
 		f.stack:SetShadowColor(
@@ -1050,25 +935,25 @@ function C:CooldownFontUpdate()
 	for i=1, #statusbars do
 		local f = statusbars[i]
 
-		f.leftText:SetFont(C.SharedMedia:Fetch("font", options.cooldowns.fonts.font), options.cooldowns.fonts.timer.fontsize, options.cooldowns.fonts.fontflag)
+		f.leftText:SetFont(ns.SharedMedia:Fetch("font", options.cooldowns.fonts.font), options.cooldowns.fonts.timer.fontsize, options.cooldowns.fonts.fontflag)
 		f.leftText:SetShadowColor(options.cooldowns.fonts.timer.shadow_color[1],options.cooldowns.fonts.timer.shadow_color[2],options.cooldowns.fonts.timer.shadow_color[3],options.cooldowns.fonts.timer.shadow_color[4])
 		f.leftText:SetShadowOffset(options.cooldowns.fonts.shadow_pos[1],options.cooldowns.fonts.timer.shadow_pos[2])
 		f.leftText:SetTextColor(options.cooldowns.fonts.timer.color[1],options.cooldowns.fonts.timer.color[2],options.cooldowns.fonts.timer.color[3],1)
 		
-		f.rightText:SetFont(C.SharedMedia:Fetch("font", options.cooldowns.fonts.font), options.cooldowns.fonts.timer.fontsize, options.cooldowns.fonts.fontflag)
+		f.rightText:SetFont(ns.SharedMedia:Fetch("font", options.cooldowns.fonts.font), options.cooldowns.fonts.timer.fontsize, options.cooldowns.fonts.fontflag)
 		f.rightText:SetShadowColor(options.cooldowns.fonts.timer.shadow_color[1],options.cooldowns.fonts.timer.shadow_color[2],options.cooldowns.fonts.timer.shadow_color[3],options.cooldowns.fonts.timer.shadow_color[4])
 		f.rightText:SetShadowOffset(options.cooldowns.fonts.shadow_pos[1],options.cooldowns.fonts.timer.shadow_pos[2])
 		f.rightText:SetTextColor(options.cooldowns.fonts.timer.color[1],options.cooldowns.fonts.timer.color[2],options.cooldowns.fonts.timer.color[3],1)
 	end
 end
 
-function C:CooldownBorderUpdate()
+function ns:CooldownBorderUpdate()
 	for i=1, #frames do
 		
 		local f = frames[i]
 		
 		f.backdrop:SetBackdrop({
-			edgeFile = C.SharedMedia:Fetch("border", options.cooldowns.border.texture),
+			edgeFile = ns.SharedMedia:Fetch("border", options.cooldowns.border.texture),
 			edgeSize = options.cooldowns.border.size,
 		})
 		f.backdrop:SetBackdropBorderColor(options.cooldowns.border.color[1], options.cooldowns.border.color[2], options.cooldowns.border.color[3], options.cooldowns.border.color[4])
@@ -1085,7 +970,7 @@ function C:CooldownBorderUpdate()
 		local f = statusbars[i].statusbar
 		
 		f.backdrop:SetBackdrop({
-			edgeFile = C.SharedMedia:Fetch("border", options.cooldowns.border.texture),
+			edgeFile = ns.SharedMedia:Fetch("border", options.cooldowns.border.texture),
 			edgeSize = options.cooldowns.border.size,
 		})
 		f.backdrop:SetBackdropBorderColor(options.cooldowns.border.color[1], options.cooldowns.border.color[2], options.cooldowns.border.color[3], options.cooldowns.border.color[4])
@@ -1096,8 +981,8 @@ function C:CooldownBorderUpdate()
 		f.bg:SetPoint("BOTTOMRIGHT", f, "BOTTOMRIGHT", options.cooldowns.border.bg_inset, -options.cooldowns.border.bg_inset)
 		f.bg:SetColorTexture(options.cooldowns.border.background[1], options.cooldowns.border.background[2], options.cooldowns.border.background[3], options.cooldowns.border.background[4])
 	
-		f:SetStatusBarTexture(C.SharedMedia:Fetch("statusbar", self.db.profile.cooldowns.bartexture1))
-		f.background:SetTexture(C.SharedMedia:Fetch("statusbar", self.db.profile.cooldowns.bartexturebg))
+		f:SetStatusBarTexture(ns.SharedMedia:Fetch("statusbar", self.db.profile.cooldowns.bartexture1))
+		f.background:SetTexture(ns.SharedMedia:Fetch("statusbar", self.db.profile.cooldowns.bartexturebg))
 		f.background:SetVertexColor(options.cooldowns.bg_color[1], options.cooldowns.bg_color[2], options.cooldowns.bg_color[3], options.cooldowns.bg_color[4])
 		
 		f:SetPoint("TOPLEFT", statusbars[i].icon, "TOPRIGHT", options.cooldowns.icon_spacing, 0)
@@ -1105,7 +990,7 @@ function C:CooldownBorderUpdate()
 		f = statusbars[i].icon
 		
 		f.backdrop:SetBackdrop({
-			edgeFile = C.SharedMedia:Fetch("border", options.cooldowns.border.texture),
+			edgeFile = ns.SharedMedia:Fetch("border", options.cooldowns.border.texture),
 			edgeSize = options.cooldowns.border.size,
 		})
 		f.backdrop:SetBackdropBorderColor(options.cooldowns.border.color[1], options.cooldowns.border.color[2], options.cooldowns.border.color[3], options.cooldowns.border.color[4])
@@ -1119,10 +1004,10 @@ function C:CooldownBorderUpdate()
 	end
 end
 
-function C:UpdateCooldownOrders()
-	options = C.db.profile
+function ns:UpdateCooldownOrders()
+	options = ns.db.profile
 	
-	C:ToggleCooldownBar("Show")
+	ns:ToggleCooldownBar("Show")
 	
 	self:UpdateCooldownSortings()
 	
@@ -1141,16 +1026,16 @@ function C:UpdateCooldownOrders()
 		statusbars[i]:Hide()
 	end
 	
-	if C.db.profile.cooldowns.visual == 1 then self:UpdateCooldownsFrames() end
-	if C.db.profile.cooldowns.visual == 2 then self:UpdateStatusBarOrder() end
+	if ns.db.profile.cooldowns.visual == 1 then self:UpdateCooldownsFrames() end
+	if ns.db.profile.cooldowns.visual == 2 then self:UpdateStatusBarOrder() end
 	
 	self:CooldownFontUpdate()
 	self:CooldownBorderUpdate()
 end
 
-function C:ToggleCooldownBar(status)
+function ns:ToggleCooldownBar(status)
 	
-	if not C.db.profile.cooldowns.enable then
+	if not ns.db.profile.cooldowns.enable then
 		cooldownsParent:Hide()
 		cooldownsParent:UnregisterEvent("UNIT_AURA")
 		cooldownsParent:UnregisterEvent("SPELL_UPDATE_COOLDOWN")
@@ -1186,15 +1071,15 @@ cooldownsParent:SetScript("OnUpdate", function(self, elapsed)
 	if self.elapsed < 0.1 then return end
 	self.elapsed = 0
 	
-	C:RefreshCooldownFrames()	
+	ns:RefreshCooldownFrames()	
 end)
 
 cooldownsParent:SetScript("OnEvent", function(self, event, unit)
 	
 	if event == "UNIT_AURA" and unit == "player" then
-		C:RefreshCooldownFrames()	
+		ns:RefreshCooldownFrames()	
 	elseif event == "SPELL_UPDATE_COOLDOWN" then
-		C:RefreshCooldownFrames()	
+		ns:RefreshCooldownFrames()	
 	end
 end)
 
@@ -1218,11 +1103,11 @@ local function GetAuras(spellID)
 	end
 end
 
-function C:RefreshCooldownFrames()
+function ns:RefreshCooldownFrames()
 	
 	cooldownsParent.elapsed = 0
 	
-	local _frames = C.db.profile.cooldowns.visual == 1 and frames or statusbars
+	local _frames = ns.db.profile.cooldowns.visual == 1 and frames or statusbars
 	for i=1, #_frames do
 		
 		local f = _frames[i]
@@ -1234,23 +1119,14 @@ function C:RefreshCooldownFrames()
 
 			if tip == COOLDOWN_AURA_TAG then
 				local start, duration, enable, currentCharges, maxCharges, oldstart = GetSpellCooldownCharges(f.spellID2 or spellID)
-			--	local rname = GetSpellInfo(f.spellID2 or spellID)
-		
+
 				local name, count, duration2, expirationTime = GetAuras(f.spellID2 or spellID)
 				
 				if spellID == 5217 and start == 0 and duration == 0 then
 					f:SetTimer(0, 0, count, 3) -- status 1 active aura buff ; status 2 cooldown ; status 3 active timer		
-			--[==[	elseif spellID == 22570 then
-					local legProc = GetAuras(maimLegProcID)
-				
-					if duration > 1.5 then
-						f:SetTimer(start, duration, currentCharges, legProc and 1 or 2, maxCharges)
-					else
-						f:SetTimer(0, 0, count, legProc and 1 or 3)
-					end]==]
 				elseif name then
 					f:SetTimer(expirationTime-duration2, duration2, currentCharges, 1) -- status 1 active aura buff ; status 2 cooldown ; status 3 active timer
-				elseif duration > 0 and duration ~= C.GetGCD() then
+				elseif duration > 0 and duration ~= ns.GetGCD() then
 					f:SetTimer(start, duration, currentCharges, 2, maxCharges) -- status 1 active aura buff ; status 2 cooldown ; status 3 active timer
 				else
 					f:SetTimer(0, 0, count, 3) -- status 1 active aura buff ; status 2 cooldown ; status 3 active timer
@@ -1258,7 +1134,7 @@ function C:RefreshCooldownFrames()
 			elseif tip == COOLDOWN_TAG then
 				local start, duration, enable, currentCharges, maxCharges, oldstart = GetSpellCooldownCharges(f.spellID2 or spellID)
 				
-				if duration > 0 and duration ~= C.GetGCD() then
+				if duration > 0 and duration ~= ns.GetGCD() then
 					f:SetTimer(start, duration, currentCharges, 2, maxCharges) -- status 1 active aura buff ; status 2 cooldown ; status 3 active timer
 				else
 					f:SetTimer(0, 0, currentCharges, 3, maxCharges) -- status 1 active aura buff ; status 2 cooldown ; status 3 active timer
@@ -1277,9 +1153,9 @@ function C:RefreshCooldownFrames()
 	end
 end
 
-function C:UpdateCooldownStyleOpts(o)
+function ns:UpdateCooldownStyleOpts(o)
 	local o = o or self.GUI.args.cooldowns
-	if C.db.profile.cooldowns.visual == 1 then
+	if ns.db.profile.cooldowns.visual == 1 then
 		
 			
 		o.args.isvertical = {
@@ -1287,11 +1163,11 @@ function C:UpdateCooldownStyleOpts(o)
 			type = "dropdown",
 			values = { L['Горизонтально'], L['Вертикально'] },
 			set = function(self, value)
-				C.db.profile.cooldowns.isvertical = value;
-				C:UpdateCooldownOrders()
+				ns.db.profile.cooldowns.isvertical = value;
+				ns:UpdateCooldownOrders()
 			end,
 			get = function(self)		
-				return C.db.profile.cooldowns.isvertical
+				return ns.db.profile.cooldowns.isvertical
 			end	
 		}
 	
@@ -1300,10 +1176,10 @@ function C:UpdateCooldownStyleOpts(o)
 			order = 1.3, name = L["Черно-белая"],
 			type = "toggle", 
 			set = function(self)
-				C.db.profile.cooldowns.blackwhite = not C.db.profile.cooldowns.blackwhite;
+				ns.db.profile.cooldowns.blackwhite = not ns.db.profile.cooldowns.blackwhite;
 			end,
 			get = function(self)
-				return C.db.profile.cooldowns.blackwhite;
+				return ns.db.profile.cooldowns.blackwhite;
 			end
 		}
 		
@@ -1311,10 +1187,10 @@ function C:UpdateCooldownStyleOpts(o)
 			order = 1.4, name = L["Свечение"],
 			type = "toggle", 
 			set = function(self)
-				C.db.profile.cooldowns.glowAnim = not C.db.profile.cooldowns.glowAnim;
+				ns.db.profile.cooldowns.glowAnim = not ns.db.profile.cooldowns.glowAnim;
 			end,
 			get = function(self)
-				return C.db.profile.cooldowns.glowAnim;
+				return ns.db.profile.cooldowns.glowAnim;
 			end
 		}
 		
@@ -1322,7 +1198,7 @@ function C:UpdateCooldownStyleOpts(o)
 		o.args.font.args.timer.args.hide_timer_text = {
 			order = 1,name = L["Показать текст таймера"],type = "toggle",
 			desc = L["Показать текст таймера"],
-			set = function(info,val) self.db.profile.cooldowns.hide_timer_text = not self.db.profile.cooldowns.hide_timer_text; C:CooldownFontUpdate(); end,
+			set = function(info,val) self.db.profile.cooldowns.hide_timer_text = not self.db.profile.cooldowns.hide_timer_text; ns:CooldownFontUpdate(); end,
 			get = function(info) return self.db.profile.cooldowns.hide_timer_text end
 		}
 		
@@ -1330,11 +1206,11 @@ function C:UpdateCooldownStyleOpts(o)
 			order = 2, name = L["Затемнение"],
 			type = "slider", min = 0, max = 1, step = 0.1,
 			set = function(self, value)
-				C.db.profile.cooldowns.icon_dark = value;
-				C:UpdateCooldownOrders()
+				ns.db.profile.cooldowns.icon_dark = value;
+				ns:UpdateCooldownOrders()
 			end,
 			get = function(self)		
-				return C.db.profile.cooldowns.icon_dark
+				return ns.db.profile.cooldowns.icon_dark
 			end	
 		}
 		
@@ -1342,11 +1218,11 @@ function C:UpdateCooldownStyleOpts(o)
 			order = 2.1, name = L["Оверлей перезарядки"],
 			type = "slider", min = 0, max = 1, step = 0.1,
 			set = function(self, value)
-				C.db.profile.cooldowns.swipe_alpha = value;
-				C:UpdateCooldownOrders()
+				ns.db.profile.cooldowns.swipe_alpha = value;
+				ns:UpdateCooldownOrders()
 			end,
 			get = function(self)		
-				return C.db.profile.cooldowns.swipe_alpha
+				return ns.db.profile.cooldowns.swipe_alpha
 			end	
 		}
 
@@ -1362,7 +1238,7 @@ function C:UpdateCooldownStyleOpts(o)
 					step	= 1,
 					set = function(info,val) 
 						self.db.profile.cooldowns.fonts.stack.fontsize = val
-						C:CooldownFontUpdate()
+						ns:CooldownFontUpdate()
 					end,
 					get =function(info)
 						return self.db.profile.cooldowns.fonts.stack.fontsize
@@ -1385,7 +1261,7 @@ function C:UpdateCooldownStyleOpts(o)
 					},
 					set = function(info,val) 
 						self.db.profile.cooldowns.fonts.stack.text_point = val
-						C:CooldownFontUpdate()
+						ns:CooldownFontUpdate()
 					end,
 					get = function(info) return self.db.profile.cooldowns.fonts.stack.text_point end
 				},
@@ -1393,7 +1269,7 @@ function C:UpdateCooldownStyleOpts(o)
 					order = 7,name = L["Цвет"], type = "color", hasAlpha = false,
 					set = function(info,r,g,b,a) 
 						self.db.profile.cooldowns.fonts.stack.color ={r,g,b,1};
-						C:CooldownFontUpdate()
+						ns:CooldownFontUpdate()
 					end,
 					get = function(info) 
 						return self.db.profile.cooldowns.fonts.stack.color[1], self.db.profile.cooldowns.fonts.stack.color[2], self.db.profile.cooldowns.fonts.stack.color[3], 1
@@ -1408,7 +1284,7 @@ function C:UpdateCooldownStyleOpts(o)
 					step	= 1,
 					set = function(info,val) 
 						self.db.profile.cooldowns.fonts.stack.spacing_h = val
-						C:CooldownFontUpdate()
+						ns:CooldownFontUpdate()
 					end,
 					get =function(info)
 						return self.db.profile.cooldowns.fonts.stack.spacing_h
@@ -1423,7 +1299,7 @@ function C:UpdateCooldownStyleOpts(o)
 					step	= 1,
 					set = function(info,val) 
 						self.db.profile.cooldowns.fonts.stack.spacing_v = val
-						C:CooldownFontUpdate()
+						ns:CooldownFontUpdate()
 					end,
 					get =function(info)
 						return self.db.profile.cooldowns.fonts.stack.spacing_v
@@ -1437,11 +1313,11 @@ function C:UpdateCooldownStyleOpts(o)
 			desc = L["Если заклинание на перезарядке и аура отсутствует"],
 			type = "slider", min = 0, max = 1, step = 0.1,
 			set = function(self, value)
-				C.db.profile.cooldowns.nonactivealpha = value;
-				C:UpdateCooldownOrders()
+				ns.db.profile.cooldowns.nonactivealpha = value;
+				ns:UpdateCooldownOrders()
 			end,
 			get = function(self)		
-				return C.db.profile.cooldowns.nonactivealpha
+				return ns.db.profile.cooldowns.nonactivealpha
 			end	
 		}
 		
@@ -1450,11 +1326,11 @@ function C:UpdateCooldownStyleOpts(o)
 			desc = L["Размер иконки не будет превышать максимального значения при изменении колличества иконок"],
 			type = "slider", min = 1, max = 60, step = 1,
 			set = function(self, value)
-				C.db.profile.cooldowns.max_width = value;
-				C:UpdateCooldownOrders()
+				ns.db.profile.cooldowns.max_width = value;
+				ns:UpdateCooldownOrders()
 			end,
 			get = function(self)		
-				return C.db.profile.cooldowns.max_width
+				return ns.db.profile.cooldowns.max_width
 			end	
 		}
 		
@@ -1477,11 +1353,11 @@ function C:UpdateCooldownStyleOpts(o)
 			order = 1, name = L["Показать отсутствующие ауры"], desc = L["Только для полос"],
 			type = "toggle", 
 			set = function(self)
-				C.db.profile.cooldowns.showmissing = not C.db.profile.cooldowns.showmissing;
-				C:UpdateCooldownOrders()
+				ns.db.profile.cooldowns.showmissing = not ns.db.profile.cooldowns.showmissing;
+				ns:UpdateCooldownOrders()
 			end,
 			get = function(self)
-				return C.db.profile.cooldowns.showmissing;
+				return ns.db.profile.cooldowns.showmissing;
 			end
 		}
 	
@@ -1489,11 +1365,11 @@ function C:UpdateCooldownStyleOpts(o)
 			order = 3.1, name = L["Отступ иконки"],
 			type = "slider", min = 0, max = 50, step = 1,
 			set = function(self, value)
-				C.db.profile.cooldowns.icon_spacing = value;
-				C:UpdateCooldownOrders()
+				ns.db.profile.cooldowns.icon_spacing = value;
+				ns:UpdateCooldownOrders()
 			end,
 			get = function(self)		
-				return C.db.profile.cooldowns.icon_spacing
+				return ns.db.profile.cooldowns.icon_spacing
 			end	
 		}
 	
@@ -1506,15 +1382,15 @@ function C:UpdateCooldownStyleOpts(o)
 
 		o.args.statusbargrp.args.statusbar1 = {
 			order = 1,type = 'statusbar',name = L["Основная текстура"], 
-			values = C.SharedMedia:HashTable("statusbar"),
-			set = function(info,value) self.db.profile.cooldowns.bartexture1 = value; C:UpdateCooldownOrders();end,
+			values = ns.SharedMedia:HashTable("statusbar"),
+			set = function(info,value) self.db.profile.cooldowns.bartexture1 = value; ns:UpdateCooldownOrders();end,
 			get = function(info) return self.db.profile.cooldowns.bartexture1 end,
 		}
 
 		o.args.statusbargrp.args.statusbarbg = {
 			order = 2,type = 'statusbar',name = L["Текстура фона"], 
-			values = C.SharedMedia:HashTable("statusbar"),
-			set = function(info,value) self.db.profile.cooldowns.bartexturebg = value; C:UpdateCooldownOrders();end,
+			values = ns.SharedMedia:HashTable("statusbar"),
+			set = function(info,value) self.db.profile.cooldowns.bartexturebg = value; ns:UpdateCooldownOrders();end,
 			get = function(info) return self.db.profile.cooldowns.bartexturebg end,
 		}
 
@@ -1555,7 +1431,7 @@ function C:UpdateCooldownStyleOpts(o)
 	end
 end
 
-function C:AddCooldownsGUI()
+function ns:AddCooldownsGUI()
 	local o = {
 		order = 7,name = L["Перезарядки"],type = "group",
 		args={
@@ -1567,17 +1443,17 @@ function C:AddCooldownsGUI()
 		order = 0.1, name = L["Включить"],
 		type = "toggle", 
 		set = function(self)
-			C.db.profile.cooldowns.enable = not C.db.profile.cooldowns.enable;
-			C:UpdateCooldownOrders()
+			ns.db.profile.cooldowns.enable = not ns.db.profile.cooldowns.enable;
+			ns:UpdateCooldownOrders()
 		end,
 		get = function(self)
-			return C.db.profile.cooldowns.enable;
+			return ns.db.profile.cooldowns.enable;
 		end
 	}
 	
 	o.args.movingme = {
 		order = 0.2,name = L["Передвинь меня!"], type = "execute",
-		set = function(info,val) C:UnlockMover("CooldownsFrames"); end,
+		set = function(info,val) ns:UnlockMover("CooldownsFrames"); end,
 		get = function(info) return false end
 	}
 	
@@ -1586,12 +1462,12 @@ function C:AddCooldownsGUI()
 		type = "dropdown",
 		values = { L['Иконки'], L['Полоски'] },
 		set = function(self, value)
-			C.db.profile.cooldowns.visual = value;
-			C:UpdateCooldownStyleOpts()
-			C:UpdateCooldownOrders()
+			ns.db.profile.cooldowns.visual = value;
+			ns:UpdateCooldownStyleOpts()
+			ns:UpdateCooldownOrders()
 		end,
 		get = function(self)		
-			return C.db.profile.cooldowns.visual
+			return ns.db.profile.cooldowns.visual
 		end	
 	}
 	
@@ -1599,11 +1475,11 @@ function C:AddCooldownsGUI()
 		order = 2, name = L["Ширина"],
 		type = "slider", min = 1, max = 1500, step = 1,
 		set = function(self, value)
-			C.db.profile.cooldowns.width = value;
-			C:UpdateCooldownOrders()
+			ns.db.profile.cooldowns.width = value;
+			ns:UpdateCooldownOrders()
 		end,
 		get = function(self)		
-			return C.db.profile.cooldowns.width
+			return ns.db.profile.cooldowns.width
 		end	
 	}
 	
@@ -1611,44 +1487,25 @@ function C:AddCooldownsGUI()
 		order = 3, name = L["Отступ"],
 		type = "slider", min = 0, max = 50, step = 1,
 		set = function(self, value)
-			C.db.profile.cooldowns.gap = value;
-			C:UpdateCooldownOrders()
+			ns.db.profile.cooldowns.gap = value;
+			ns:UpdateCooldownOrders()
 		end,
 		get = function(self)		
-			return C.db.profile.cooldowns.gap
+			return ns.db.profile.cooldowns.gap
 		end	
 	}
-	
-	
-	--[[
-	o.args.spacing_v = {
-		name = L["Отступ по вертикали"], disabled = false,
-		type = "slider",
-		order	= 1.5,
-		min		= -1500,
-		max		= 1500,
-		step	= 1,
-		set = function(info,val) 
-			self.db.profile.cooldowns.spacing_v = val
-			C:UpdateCooldownOrders()
-		end,
-		get =function(info)
-			return self.db.profile.cooldowns.spacing_v
-		end,
-	}
-	]]
 	o.args.anchoring = {
 		order = 3.4, name = L["Точка привязки"],
 		type = "dropdown",
 		values = function()
-			return ( C.db.profile.cooldowns.isvertical == 2 and { L['Справа'], L['Слева'] } or { L['Снизу'], L['Сверху'] } )
+			return ( ns.db.profile.cooldowns.isvertical == 2 and { L['Справа'], L['Слева'] } or { L['Снизу'], L['Сверху'] } )
 		end,
 		set = function(self, value)
-			C.db.profile.cooldowns.anchoring = value;
-			C:UpdateCooldownOrders()
+			ns.db.profile.cooldowns.anchoring = value;
+			ns:UpdateCooldownOrders()
 		end,
 		get = function(self)		
-			return C.db.profile.cooldowns.anchoring
+			return ns.db.profile.cooldowns.anchoring
 		end	
 	}
 	
@@ -1657,10 +1514,10 @@ function C:AddCooldownsGUI()
 		args={
 			font = {
 				order = 4,name = L["Шрифт"],type = 'font',
-				values = C.SharedMedia:HashTable("font"),
+				values = ns.SharedMedia:HashTable("font"),
 				set = function(info,key) 
 					self.db.profile.cooldowns.fonts.font = key
-					C:UpdateCooldownOrders()
+					ns:UpdateCooldownOrders()
 				end,
 				get = function(info) return self.db.profile.cooldowns.fonts.font end,
 			},
@@ -1692,44 +1549,12 @@ function C:AddCooldownsGUI()
 				},
 				set = function(info,val) 
 					self.db.profile.cooldowns.fonts.fontflag = val
-					C:UpdateFramesStyle()
-					C:MultitargetFontUpdate()
-					C:UpdateCooldownOrders()
+					ns:UpdateFramesStyle()
+					ns:MultitargetFontUpdate()
+					ns:UpdateCooldownOrders()
 				end,
 				get = function(info) return self.db.profile.cooldowns.fonts.fontflag end
 			},
-			--[[
-			shadow_pos1 = {
-				name = L["Тень текста X"], disabled = false,
-				type = "slider",
-				order	= 5,
-				min		= -5,
-				max		= 5,
-				step	= 0.1,
-				set = function(info,val) 
-					self.db.profile.cooldowns.fonts.shadow_pos[1] = val
-					C:UpdateCooldownOrders()
-				end,
-				get =function(info)
-					return self.db.profile.cooldowns.fonts.shadow_pos[1]
-				end,
-			},
-			shadow_pos2 = {
-				name = L["Тень текста Y"], disabled = false,
-				type = "slider",
-				order	= 5.1,
-				min		= -5,
-				max		= 5,
-				step	= 0.1,
-				set = function(info,val) 
-					self.db.profile.cooldowns.fonts.shadow_pos[2] = val
-					C:UpdateCooldownOrders()
-				end,
-				get =function(info)
-					return self.db.profile.cooldowns.fonts.shadow_pos[2]
-				end,
-			},
-			]]
 		},
 	}
 	
@@ -1745,7 +1570,7 @@ function C:AddCooldownsGUI()
 				step	= 1,
 				set = function(info,val) 
 					self.db.profile.cooldowns.fonts.timer.fontsize = val
-					C:CooldownFontUpdate()
+					ns:CooldownFontUpdate()
 				end,
 				get =function(info)
 					return self.db.profile.cooldowns.fonts.timer.fontsize
@@ -1768,7 +1593,7 @@ function C:AddCooldownsGUI()
 				},
 				set = function(info,val) 
 					self.db.profile.cooldowns.fonts.timer.text_point = val
-					C:CooldownFontUpdate()
+					ns:CooldownFontUpdate()
 				end,
 				get = function(info) return self.db.profile.cooldowns.fonts.timer.text_point end
 			},
@@ -1776,7 +1601,7 @@ function C:AddCooldownsGUI()
 				order = 7,name = L["Цвет"], type = "color", hasAlpha = false,
 				set = function(info,r,g,b,a) 
 					self.db.profile.cooldowns.fonts.timer.color ={r,g,b,1};
-					C:CooldownFontUpdate()
+					ns:CooldownFontUpdate()
 				end,
 				get = function(info) 
 					return self.db.profile.cooldowns.fonts.timer.color[1], self.db.profile.cooldowns.fonts.timer.color[2], self.db.profile.cooldowns.fonts.timer.color[3], 1
@@ -1791,7 +1616,7 @@ function C:AddCooldownsGUI()
 				step	= 1,
 				set = function(info,val) 
 					self.db.profile.cooldowns.fonts.timer.spacing_h = val
-					C:CooldownFontUpdate()
+					ns:CooldownFontUpdate()
 				end,
 				get =function(info)
 					return self.db.profile.cooldowns.fonts.timer.spacing_h
@@ -1806,7 +1631,7 @@ function C:AddCooldownsGUI()
 				step	= 1,
 				set = function(info,val) 
 					self.db.profile.cooldowns.fonts.timer.spacing_v = val
-					C:CooldownFontUpdate()
+					ns:CooldownFontUpdate()
 				end,
 				get =function(info)
 					return self.db.profile.cooldowns.fonts.timer.spacing_v
@@ -1825,8 +1650,8 @@ function C:AddCooldownsGUI()
 	
 	o.args.borders.args.border = {
 		order = 19.1,type = 'border',name = L["Текстура"],
-		values = C.SharedMedia:HashTable("border"),
-		set = function(info,value) self.db.profile.cooldowns.border.texture = value;C:CooldownBorderUpdate();end,
+		values = ns.SharedMedia:HashTable("border"),
+		set = function(info,value) self.db.profile.cooldowns.border.texture = value;ns:CooldownBorderUpdate();end,
 		get = function(info) return self.db.profile.cooldowns.border.texture end,
 	}
 					
@@ -1834,7 +1659,7 @@ function C:AddCooldownsGUI()
 		order = 19.2,name = L["Цвет"],type = "color", hasAlpha = true,
 		set = function(info,r,g,b,a) 
 			self.db.profile.cooldowns.border.color={r,g,b,a};
-			C:CooldownBorderUpdate();end,
+			ns:CooldownBorderUpdate();end,
 		get = function(info) 
 			return self.db.profile.cooldowns.border.color[1],
 			self.db.profile.cooldowns.border.color[2],
@@ -1852,7 +1677,7 @@ function C:AddCooldownsGUI()
 		step	= 1,
 		set = function(info,val) 
 			self.db.profile.cooldowns.border.size = val
-			C:CooldownBorderUpdate();
+			ns:CooldownBorderUpdate();
 		end,
 		get =function(info)
 			return self.db.profile.cooldowns.border.size
@@ -1867,7 +1692,7 @@ function C:AddCooldownsGUI()
 		step	= 1,
 		set = function(info,val) 
 			self.db.profile.cooldowns.border.inset = val
-			C:CooldownBorderUpdate();
+			ns:CooldownBorderUpdate();
 		end,
 		get =function(info)
 			return self.db.profile.cooldowns.border.inset
@@ -1878,7 +1703,7 @@ function C:AddCooldownsGUI()
 		order = 19.2,name = L["Фон"],type = "color", hasAlpha = true,
 		set = function(info,r,g,b,a) 
 			self.db.profile.cooldowns.border.background={r,g,b,a};
-			C:CooldownBorderUpdate();
+			ns:CooldownBorderUpdate();
 		end,
 		get = function(info) 
 			return self.db.profile.cooldowns.border.background[1],
@@ -1896,7 +1721,7 @@ function C:AddCooldownsGUI()
 		step	= 1,
 		set = function(info,val) 
 			self.db.profile.cooldowns.border.bg_inset = val
-			C:CooldownBorderUpdate();
+			ns:CooldownBorderUpdate();
 		end,
 		get =function(info)
 			return self.db.profile.cooldowns.border.bg_inset
@@ -1928,7 +1753,7 @@ function C:AddCooldownsGUI()
 				set = function(info,val)
 					options.cooldowns.ordering_spells.spellList[spells_to_show[i].id].on = 
 						not options.cooldowns.ordering_spells.spellList[spells_to_show[i].id].on				
-					C:UpdateCooldownOrders()
+					ns:UpdateCooldownOrders()
 				end,
 				get =function(info)
 					return options.cooldowns.ordering_spells.spellList[spells_to_show[i].id].on
@@ -1972,7 +1797,7 @@ function C:AddCooldownsGUI()
 				set = function(info,val)			
 					options.cooldowns.ordering_spells.spellList[spells_to_show[i].id].on = 
 						not options.cooldowns.ordering_spells.spellList[spells_to_show[i].id].on				
-					C:UpdateCooldownOrders()
+					ns:UpdateCooldownOrders()
 				end,
 				get =function(info)
 					return options.cooldowns.ordering_spells.spellList[spells_to_show[i].id].on
@@ -1988,7 +1813,7 @@ function C:AddCooldownsGUI()
 			
 				for spellID, data in pairs(options.cooldowns.ordering_spells.spellList) do
 					if spellID == spells_to_show[i].id then
-						t[data.sort] = '#'..data.sort--..' |cFF00FF00'..GetSpellNameGUI(spells_to_show[i].id)..'|r'
+						t[data.sort] = '#'..data.sort
 					else
 						t[data.sort] = '#'..data.sort..' '..GetSpellNameGUI(spellID)..'|r'
 					end
@@ -2007,7 +1832,7 @@ function C:AddCooldownsGUI()
 				
 				options.cooldowns.ordering_spells.spellList[spells_to_show[i].id].sort = val
 					
-				C:UpdateCooldownOrders()
+				ns:UpdateCooldownOrders()
 			end,
 			get =function(info)
 				return options.cooldowns.ordering_spells.spellList[spells_to_show[i].id].sort
@@ -2016,7 +1841,7 @@ function C:AddCooldownsGUI()
 	
 	end
 	
-	C:UpdateCooldownStyleOpts(o)
+	ns:UpdateCooldownStyleOpts(o)
 	
 	return o
 end

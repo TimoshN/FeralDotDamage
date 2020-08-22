@@ -1,4 +1,6 @@
 local AddOn, ns = ...
+_G[AddOn] = ns 
+
 local L = AleaUI_GUI.GetLocale("FeralDotDamage")
 
 local is70300 = false
@@ -43,8 +45,6 @@ end
 ns.UnregisterAllEvents = function(self, ...)
 	ns.eventFrame:UnregisterAllEvents(...)
 end
-
-_G[AddOn] = ns
 
 ns.SharedMedia = LibStub("LibSharedMedia-3.0")
 ns.SharedMedia:Register("border", "WHITE8x8", [[Interface\Buttons\WHITE8x8]])
@@ -3387,88 +3387,6 @@ function ns:OnProfileChange()
 end
 
 do
-	-- Artifact Parser
-	--[==[
-	local function PrepareForScan()
-		local ArtifactFrame = _G.ArtifactFrame
-		
-		if not ArtifactFrame or not ArtifactFrame:IsShown() then
-
-			_G.UIParent:UnregisterEvent("ARTIFACT_UPDATE")
-			if ArtifactFrame then
-				ArtifactFrame:UnregisterEvent("ARTIFACT_UPDATE")
-			end
-		end
-	end
-
-	local function RestoreStateAfterScan()
-		local ArtifactFrame = _G.ArtifactFrame
-			
-		if not ArtifactFrame or not ArtifactFrame:IsShown() then
-			C_ArtifactUI.Clear()
-
-			if ArtifactFrame then
-				ArtifactFrame:RegisterEvent("ARTIFACT_UPDATE")
-			end
-			_G.UIParent:RegisterEvent("ARTIFACT_UPDATE")
-		end
-	end
-
-	local lastUpdate = -1
-	local init = true
-	local percs = {}
-	
-	function ns:ResetArifactPercInfo()
-		lastUpdate = -1
-	end
-	
-	function ns:GetAtrifactPercInfo(reqSpellID)
-
-		if not HasArtifactEquipped() then
-		
-			wipe(percs)
-			lastUpdate = -1
-			
-			return false
-		end
-		
-		if init or lastUpdate < GetTime() then
-			lastUpdate = GetTime() + 2
-			init = false
-
-			PrepareForScan()
-			SocketInventoryItem(INVSLOT_MAINHAND)
-			
-			local powers = C_ArtifactUI.GetPowers();
-
-			if powers then
-				wipe(percs)
-				for i, powerID in ipairs(powers) do
-				
-					local powerInfo = C_ArtifactUI.GetPowerInfo(powerID);
-					
-					local spellID, cost, currentRank, maxRank, bonusRanks
-					
-					if powerInfo and type(powerInfo) == 'table' then
-						spellID = powerInfo.spellID;
-						currentRank = powerInfo.currentRank;
-					else
-						spellID, cost, currentRank, maxRank, bonusRanks = C_ArtifactUI.GetPowerInfo(powerID);	
-					end
-
-					percs[spellID] = currentRank
-				end
-			end
-			
-			RestoreStateAfterScan()
-		end
-
-		return percs[reqSpellID]
-	end
-	]==]
-end
-
-do
 	local IsSpellKnown = IsSpellKnown
 	local GetTalentInfo = GetTalentInfo
 	local MAX_TALENT_TIERS = MAX_TALENT_TIERS
@@ -4539,7 +4457,6 @@ do
 end
 
 --------автоинвайт-------------------------------
-
 do
 	local keyword = { ["инв"] = true, ["inv"] = true, }
 	local InviteUnit = InviteUnit

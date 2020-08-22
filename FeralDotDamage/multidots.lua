@@ -1,5 +1,4 @@
-local AddOn = ...
-local C = _G[AddOn]
+local AddOn, ns = ...
 
 local frames = {}
 
@@ -60,7 +59,7 @@ for i=1, 10 do
 		t:SetJustifyH("RIGHT")
 		t:SetJustifyV("BOTTOM")
 		backdrop:SetBackdrop({
-			edgeFile = C.SharedMedia:Fetch("border", "Default"),
+			edgeFile = ns.SharedMedia:Fetch("border", "Default"),
 			edgeSize = 1,
 		})
 		backdrop:SetBackdropBorderColor(0, 0, 0, 1)
@@ -144,7 +143,7 @@ loop:SetScript("OnUpdate", function(self, elapsed)
 								frames[i].spells[ii]:Hide()
 								frames[i].spells[ii].bg:Hide(); frames[i].spells[ii].bg:SetAlpha(0.6);
 								frames[i].spells[ii].backdrop:Hide(); frames[i].spells[ii].backdrop:SetAlpha(0.6);
-							elseif frames[i].spells[ii]._spellID == 210705 and not C.ashamaneBite then
+							elseif frames[i].spells[ii]._spellID == 210705 and not ns.ashamaneBite then
 								frames[i].spells[ii]:Hide()
 								frames[i].spells[ii].bg:Hide(); frames[i].spells[ii].bg:SetAlpha(0.6);
 								frames[i].spells[ii].backdrop:Hide(); frames[i].spells[ii].backdrop:SetAlpha(0.6);
@@ -173,45 +172,45 @@ loop:SetScript("OnUpdate", function(self, elapsed)
 	
 	if doupdate then
 		doupdate = false
-		C:UpdateMultiDot()
+		ns:UpdateMultiDot()
 	end
 end)
 
-function C:MultitargetFontUpdate()
+function ns:MultitargetFontUpdate()
 	for i=1, 10 do
-		frames[i].name:SetFont(C.SharedMedia:Fetch("font", C.db.profile.font), C.db.profile.multi_font_size, C.db.profile.fontflag)
+		frames[i].name:SetFont(ns.SharedMedia:Fetch("font", ns.db.profile.font), ns.db.profile.multi_font_size, ns.db.profile.fontflag)
 		
-		if C.db.profile.multi_hide_names then
+		if ns.db.profile.multi_hide_names then
 			frames[i].name:Hide()
 		else
 			frames[i].name:Show()
 		end
 		
 		for f = 1, num_auras do			
-			frames[i].spells[f].timer:SetFont(C.SharedMedia:Fetch("font", C.db.profile.font), C.db.profile.multi_font_icon_size, C.db.profile.fontflag)
+			frames[i].spells[f].timer:SetFont(ns.SharedMedia:Fetch("font", ns.db.profile.font), ns.db.profile.multi_font_icon_size, ns.db.profile.fontflag)
 			
-			frames[i].spells[f].timer:SetSize(C.db.profile.multi_font_size*4, C.db.profile.multi_font_size*2)
-			frames[i].spells[f].timer:SetPoint("BOTTOMRIGHT", frames[i].spells[f], "BOTTOMRIGHT", C.db.profile.multi_font_size*0.4, 0)
+			frames[i].spells[f].timer:SetSize(ns.db.profile.multi_font_size*4, ns.db.profile.multi_font_size*2)
+			frames[i].spells[f].timer:SetPoint("BOTTOMRIGHT", frames[i].spells[f], "BOTTOMRIGHT", ns.db.profile.multi_font_size*0.4, 0)
 		end
 	end
 end
 
-function C:UpdateMultiDotBorders()
+function ns:UpdateMultiDotBorders()
 	for i=1, 10 do
 		
 		for f=1, num_auras do
 	
 			frames[i].spells[f].backdrop:SetBackdrop({
-				edgeFile = C.SharedMedia:Fetch("border", C.db.profile.multi_border.texture),
-				edgeSize = C.db.profile.multi_border.size,
+				edgeFile = ns.SharedMedia:Fetch("border", ns.db.profile.multi_border.texture),
+				edgeSize = ns.db.profile.multi_border.size,
 			})
-			frames[i].spells[f].backdrop:SetBackdropBorderColor(C.db.profile.multi_border.color[1], C.db.profile.multi_border.color[2], C.db.profile.multi_border.color[3], C.db.profile.multi_border.color[4])
-			frames[i].spells[f].backdrop:SetPoint("TOPLEFT", frames[i].spells[f], "TOPLEFT", -C.db.profile.multi_border.inset, C.db.profile.multi_border.inset)
-			frames[i].spells[f].backdrop:SetPoint("BOTTOMRIGHT", frames[i].spells[f], "BOTTOMRIGHT", C.db.profile.multi_border.inset, -C.db.profile.multi_border.inset)
+			frames[i].spells[f].backdrop:SetBackdropBorderColor(ns.db.profile.multi_border.color[1], ns.db.profile.multi_border.color[2], ns.db.profile.multi_border.color[3], ns.db.profile.multi_border.color[4])
+			frames[i].spells[f].backdrop:SetPoint("TOPLEFT", frames[i].spells[f], "TOPLEFT", -ns.db.profile.multi_border.inset, ns.db.profile.multi_border.inset)
+			frames[i].spells[f].backdrop:SetPoint("BOTTOMRIGHT", frames[i].spells[f], "BOTTOMRIGHT", ns.db.profile.multi_border.inset, -ns.db.profile.multi_border.inset)
 			
-			frames[i].spells[f].bg:SetPoint("TOPLEFT", frames[i].spells[f], "TOPLEFT", -C.db.profile.multi_border.bg_inset, C.db.profile.multi_border.bg_inset)
-			frames[i].spells[f].bg:SetPoint("BOTTOMRIGHT", frames[i].spells[f], "BOTTOMRIGHT", C.db.profile.multi_border.bg_inset, -C.db.profile.multi_border.bg_inset)
-			frames[i].spells[f].bg:SetColorTexture(C.db.profile.multi_border.background[1], C.db.profile.multi_border.background[2], C.db.profile.multi_border.background[3], C.db.profile.multi_border.background[4])
+			frames[i].spells[f].bg:SetPoint("TOPLEFT", frames[i].spells[f], "TOPLEFT", -ns.db.profile.multi_border.bg_inset, ns.db.profile.multi_border.bg_inset)
+			frames[i].spells[f].bg:SetPoint("BOTTOMRIGHT", frames[i].spells[f], "BOTTOMRIGHT", ns.db.profile.multi_border.bg_inset, -ns.db.profile.multi_border.bg_inset)
+			frames[i].spells[f].bg:SetColorTexture(ns.db.profile.multi_border.background[1], ns.db.profile.multi_border.background[2], ns.db.profile.multi_border.background[3], ns.db.profile.multi_border.background[4])
 		end
 	end
 end
@@ -228,10 +227,10 @@ movingFrameMulti:SetScript("OnDragStop", function(self)
 	local x, y = frames[1]:GetCenter()
 	local ux, uy = UIParent:GetCenter()
 
-	C.db.profile.multi_xpos = floor(x - ux + 0.5)
-	C.db.profile.multi_ypos = floor(y - uy + 0.5)
+	ns.db.profile.multi_xpos = floor(x - ux + 0.5)
+	ns.db.profile.multi_ypos = floor(y - uy + 0.5)
 	
-	frames[1]:SetPoint("CENTER", UIParent, "CENTER", C.db.profile.multi_xpos, C.db.profile.multi_ypos)	
+	frames[1]:SetPoint("CENTER", UIParent, "CENTER", ns.db.profile.multi_xpos, ns.db.profile.multi_ypos)	
 end)
 		
 movingFrameMulti.bg = movingFrameMulti:CreateTexture()
@@ -239,10 +238,10 @@ movingFrameMulti.bg:SetAllPoints()
 movingFrameMulti.bg:SetColorTexture(1, 1, 1, 0.6)
 movingFrameMulti:Hide()
 
-function C:ShowMovingFrame()
-	C:UpdateMultiDot()
+function ns:ShowMovingFrame()
+	ns:UpdateMultiDot()
 	
-	C:UnlockMover("MultiTargetFrames")
+	ns:UnlockMover("MultiTargetFrames")
 end
 
 -- 1079 ����
@@ -272,33 +271,33 @@ end
 local function IsEnabled(spellID)
 
 	if spellID == 339 or spellID == 155625 then
-		return C.db.profile.multi_spells_[339][1] or C.db.profile.multi_spells_[155625][1]
+		return ns.db.profile.multi_spells_[339][1] or ns.db.profile.multi_spells_[155625][1]
 	end
 	--[==[
 	if spellID == 210705 then
-		return C.db.profile.multi_spells_[210705][1]
+		return ns.db.profile.multi_spells_[210705][1]
 	end
 	]==]
-	return C.db.profile.multi_spells_[spellID][1]
+	return ns.db.profile.multi_spells_[spellID][1]
 end
 
-function C:UpdateMultiDot()
+function ns:UpdateMultiDot()
 
 	wipe(order)
 
-	local growup = C.db.profile.growing or false
+	local growup = ns.db.profile.growing or false
 	
-	local xpos, ypos = C.db.profile.multi_xpos, C.db.profile.multi_ypos
-	local scale = C.db.profile.multi_scale or 1
-	local size = C.db.profile.multi_icon_size or 25
-	local gap = C.db.profile.multi_icon_gap or 1
-	local spacing = C.db.profile.multi_spacing or 2
+	local xpos, ypos = ns.db.profile.multi_xpos, ns.db.profile.multi_ypos
+	local scale = ns.db.profile.multi_scale or 1
+	local size = ns.db.profile.multi_icon_size or 25
+	local gap = ns.db.profile.multi_icon_gap or 1
+	local spacing = ns.db.profile.multi_spacing or 2
 	
-	multi_icon_time_format = C.db.profile.multi_icon_time_format or 1
+	multi_icon_time_format = ns.db.profile.multi_icon_time_format or 1
 	
-	hidenotexists = C.db.profile.multi_icon_hide_not_exists or false
+	hidenotexists = ns.db.profile.multi_icon_hide_not_exists or false
 	
-	C:Mover(frames[1], "MultiTargetFrames", 220, 20, "RIGHT")
+	ns:Mover(frames[1], "MultiTargetFrames", 220, 20, "RIGHT")
 	
 	frames[1]:Hide()
 	frames[1].show = false
@@ -350,7 +349,7 @@ function C:UpdateMultiDot()
 		return
 	end
 	
-	if C.only_in_cantForm and ( GetShapeshiftFormID() ~= CAT_FORM ) then
+	if ns.only_in_cantForm and ( GetShapeshiftFormID() ~= CAT_FORM ) then
 		return
 	end
 	
@@ -408,9 +407,9 @@ function C:UpdateMultiDot()
 					frames[index]["_spell"..index2] = spell
 					frames[index].spells[index2]._spellID = spellID
 					
-					if spellID == C.razorvat_spid then
-						if C:IsAshamaneBiteAvailible(guid) then
-							frames[index].spells[index2]:SetTexture(C.customAshamaneBiteTexture)
+					if spellID == ns.razorvat_spid then
+						if ns:IsAshamaneBiteAvailible(guid) then
+							frames[index].spells[index2]:SetTexture(ns.customAshamaneBiteTexture)
 						else
 							frames[index].spells[index2]:SetTexture(GetSpellTexture(spellID))
 						end
@@ -476,9 +475,9 @@ function C:UpdateMultiDot()
 					showing = true
 					frames[index].spells[index3]._spellID = spellID
 					
-					if spellID == C.razorvat_spid then
-						if C:IsAshamaneBiteAvailible(guid) then
-							frames[index].spells[index3]:SetTexture(C.customAshamaneBiteTexture)
+					if spellID == ns.razorvat_spid then
+						if ns:IsAshamaneBiteAvailible(guid) then
+							frames[index].spells[index3]:SetTexture(ns.customAshamaneBiteTexture)
 						else
 							frames[index].spells[index3]:SetTexture(GetSpellTexture(spellID))
 						end
@@ -487,7 +486,7 @@ function C:UpdateMultiDot()
 					end
 					
 					index3 = index3 - 1
-				elseif C.db.profile.multi_spells_[spellID][1] then		
+				elseif ns.db.profile.multi_spells_[spellID][1] then		
 
 				--	print('T4', 'num_auras', i, 'index3', index3, 'spellID', spellID, spell)
 					
@@ -506,7 +505,7 @@ function C:UpdateMultiDot()
 			frames[index]._name = name or GetGUIDName(guid) or UNKNOWN
 		
 			if UnitGUID("target") == guid then			
-				frames[index].name:SetTextColor(C.db.profile.multi_target_color[1], C.db.profile.multi_target_color[2], C.db.profile.multi_target_color[3], 1)
+				frames[index].name:SetTextColor(ns.db.profile.multi_target_color[1], ns.db.profile.multi_target_color[2], ns.db.profile.multi_target_color[3], 1)
 			else
 				frames[index].name:SetTextColor(1, 1, 1, 1)
 			end

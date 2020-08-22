@@ -1,4 +1,4 @@
-local addon, C = ...
+local addon, ns = ...
 local addonChannel = "FDDAlea"
 local remindMeagain = true
 local name
@@ -17,7 +17,7 @@ if not IsAddonMessagePrefixRegistered(addonChannel) then
 	RegisterAddonMessagePrefix(addonChannel)
 end
 
-function C:AddonMessage(msg, channel)
+function ns:AddonMessage(msg, channel)
 
 	if channel == "GUILD" and IsInGuild() then
 		SendAddonMessage(addonChannel, msg, "GUILD")
@@ -76,7 +76,7 @@ function events:CHAT_MSG_ADDON(event, prefix, message, channel, sender)
 	
 	if version and source then
 		local cntrV = constructVersion(version)
-		local cntrmV = constructVersion(C.myVersionT)
+		local cntrmV = constructVersion(ns.myVersionT)
 	
 		if cntrV > cntrmV then
 			remindMeagain = false
@@ -88,13 +88,13 @@ end
 function events:SendAddonIndo()
 	if GetTime() < versioncheck then return end
 	versioncheck = GetTime() + sendmessagethottle
-	C:AddonMessage(format("%s:%s", C.myVersionT, C.VersionSource))
+	ns:AddonMessage(format("%s:%s", ns.myVersionT, ns.VersionSource))
 end
 
 function events:SendAddonIndo2(event)
 	if GetTime() < versioncheck_guild then return end
 	versioncheck_guild = GetTime() + sendmessagethottle
-	C:AddonMessage(format("%s:%s", C.myVersionT, C.VersionSource) , "GUILD")
+	ns:AddonMessage(format("%s:%s", ns.myVersionT, ns.VersionSource) , "GUILD")
 end
 
 events.GROUP_ROSTER_UPDATE = events.SendAddonIndo
@@ -116,9 +116,9 @@ function events:PLAYER_LOGIN()
 	
 	name = UnitName("player").."-"..GetRealmName()
 	
-	C.myVersionT = version
-	C.myVersion = tonumber(version_c) or 0
-	C.VersionSource = GetAddOnMetadata(addon, "VersionType") or "curse"
+	ns.myVersionT = version
+	ns.myVersion = tonumber(version_c) or 0
+	ns.VersionSource = GetAddOnMetadata(addon, "VersionType") or "curse"
 
 	events:RegisterEvent("CHAT_MSG_ADDON")
 	events:RegisterEvent("GROUP_ROSTER_UPDATE")

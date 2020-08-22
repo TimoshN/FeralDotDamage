@@ -1,5 +1,5 @@
-local AddOn = ...
-local C = _G[AddOn]
+local AddOn, ns = ...
+
 local L = AleaUI_GUI.GetLocale("FeralDotDamage")
 local selectedspell = nil
 
@@ -56,7 +56,7 @@ local function GetIcon()
 		elseif numb > 3 then
 			self.parent.timer:SetText(format(" %.0f ", numb))
 		elseif numb > 0 then
-			if C.db.profile.aurawidgets.spelllist[self.parent.spellName].time_format == 2 then
+			if ns.db.profile.aurawidgets.spelllist[self.parent.spellName].time_format == 2 then
 				self.parent.timer:SetText(format(" %.1f ", numb))
 			else
 				self.parent.timer:SetText(format(" %.0f ", numb))
@@ -200,11 +200,11 @@ local function UpdateIcons(self, event, unit)
 		end
 			
 		i = i + 1
-		local opts = C.db.profile.aurawidgets.spelllist[name]
+		local opts = ns.db.profile.aurawidgets.spelllist[name]
 		
 		if name then
 		
-			local opts = C.db.profile.aurawidgets.spelllist[name]
+			local opts = ns.db.profile.aurawidgets.spelllist[name]
 				
 			if opts and opts.show then
 				if opts.checkID and opts.spellID == spellID2 then				
@@ -326,7 +326,7 @@ local function GetStatusbar()
 			elseif numb > 3 then
 				self.parent.rightText:SetText(format(" %.0f ", numb))
 			elseif numb > 0 then
-				if C.db.profile.aurawidgets.spelllist[self.parent.spellName].time_format == 2 then
+				if ns.db.profile.aurawidgets.spelllist[self.parent.spellName].time_format == 2 then
 					self.parent.rightText:SetText(format(" %.1f ", numb))
 				else
 					self.parent.rightText:SetText(format(" %.0f ", numb))
@@ -393,7 +393,7 @@ local function GetStatusbar()
 	return f
 end
 
-function C:UpdateAuraWidgets()
+function ns:UpdateAuraWidgets()
 	wipe(spellName_to_Widget)	
 	if disabled then return end
 	
@@ -411,7 +411,7 @@ function C:UpdateAuraWidgets()
 	eventFrame:UnregisterAllEvents()
 	eventFrame:Hide()
 	
-	for spellName, params in pairs(C.db.profile.aurawidgets.spelllist) do		
+	for spellName, params in pairs(ns.db.profile.aurawidgets.spelllist) do		
 		if params.show then
 			if params.style == 1 then				
 				local f = GetIcon()
@@ -420,13 +420,13 @@ function C:UpdateAuraWidgets()
 				f.icon:SetTexture(GetSpellTexture(params.spellID))
 				
 				f:SetSize(params.size or 20, params.size or 20)
-				C:Mover(f, spellName)				
+				ns:Mover(f, spellName)				
 				spellName_to_Widget[spellName] = f
 			--	f:Show()
 				f.spellName = spellName
 				active_aura = active_aura + 1
 				
-				C:UpdateIconStyle(spellName, true)
+				ns:UpdateIconStyle(spellName, true)
 			else
 				local f = GetStatusbar()
 				f.free = false
@@ -438,7 +438,7 @@ function C:UpdateAuraWidgets()
 				f.statusbar:SetPoint("TOPLEFT", f.icon, "TOPRIGHT", params.iconGap, 0)
 
 				
-				C:Mover(f, spellName)
+				ns:Mover(f, spellName)
 				spellName_to_Widget[spellName] = f
 				
 				f.leftText:SetText(spellName)
@@ -447,7 +447,7 @@ function C:UpdateAuraWidgets()
 				
 				active_aura = active_aura + 1
 				
-				C:UpdateStatusBarStyle_Aura(spellName, true)
+				ns:UpdateStatusBarStyle_Aura(spellName, true)
 			end
 		end
 	end	
@@ -458,13 +458,13 @@ function C:UpdateAuraWidgets()
 	end
 end
 
-function C:UpdateStatusBarStyle_Aura(spellName, skiptest)
+function ns:UpdateStatusBarStyle_Aura(spellName, skiptest)
 	
 	local f = spellName_to_Widget[spellName]
 	if f then
-		local opts = C.db.profile.aurawidgets.spelllist[spellName]	
+		local opts = ns.db.profile.aurawidgets.spelllist[spellName]	
 		
-		f.leftText:SetFont(C.SharedMedia:Fetch("font", opts.fonts.font), opts.fonts.timer.fontsize, opts.fonts.fontflag)
+		f.leftText:SetFont(ns.SharedMedia:Fetch("font", opts.fonts.font), opts.fonts.timer.fontsize, opts.fonts.fontflag)
 		f.leftText:SetShadowColor(
 			opts.fonts.timer.shadow_color[1],
 			opts.fonts.timer.shadow_color[2],
@@ -478,7 +478,7 @@ function C:UpdateStatusBarStyle_Aura(spellName, skiptest)
 			opts.fonts.timer.color[3],
 			1)
 		
-		f.rightText:SetFont(C.SharedMedia:Fetch("font", opts.fonts.font), opts.fonts.stack.fontsize, opts.fonts.fontflag)
+		f.rightText:SetFont(ns.SharedMedia:Fetch("font", opts.fonts.font), opts.fonts.stack.fontsize, opts.fonts.fontflag)
 		f.rightText:SetShadowColor(
 			opts.fonts.stack.shadow_color[1],
 			opts.fonts.stack.shadow_color[2],
@@ -489,7 +489,7 @@ function C:UpdateStatusBarStyle_Aura(spellName, skiptest)
 	
 		
 		f.icon_backdrop:SetBackdrop({
-			edgeFile = C.SharedMedia:Fetch("border", opts.border.texture),
+			edgeFile = ns.SharedMedia:Fetch("border", opts.border.texture),
 			edgeSize = opts.border.size,
 		})
 		f.icon_backdrop:SetBackdropBorderColor(opts.border.color[1], opts.border.color[2], opts.border.color[3], opts.border.color[4])
@@ -503,7 +503,7 @@ function C:UpdateStatusBarStyle_Aura(spellName, skiptest)
 		
 		
 		f.statusbar_backdrop:SetBackdrop({
-			edgeFile = C.SharedMedia:Fetch("border", opts.border.texture),
+			edgeFile = ns.SharedMedia:Fetch("border", opts.border.texture),
 			edgeSize = opts.border.size,
 		})
 		f.statusbar_backdrop:SetBackdropBorderColor(opts.border.color[1], opts.border.color[2], opts.border.color[3], opts.border.color[4])
@@ -515,12 +515,12 @@ function C:UpdateStatusBarStyle_Aura(spellName, skiptest)
 		f.statusbar_bg:SetColorTexture(opts.border.background[1], opts.border.background[2], opts.border.background[3], opts.border.background[4])
 		
 		
-		f.statusbar:SetStatusBarTexture(C.SharedMedia:Fetch("statusbar", opts.bartexture))
+		f.statusbar:SetStatusBarTexture(ns.SharedMedia:Fetch("statusbar", opts.bartexture))
 		f.statusbar:SetStatusBarColor(opts.color[1][1], opts.color[1][2], opts.color[1][3], opts.color[1][4])
 
-		--C.db.profile.aurawidgets.spelllist[selectedspell].color[2][1],
-		--C.db.profile.aurawidgets.spelllist[selectedspell].spelllist[selectedspell].bartexturebg
-		--C.db.profile.aurawidgets.spelllist[selectedspell].bartexture
+		--ns.db.profile.aurawidgets.spelllist[selectedspell].color[2][1],
+		--ns.db.profile.aurawidgets.spelllist[selectedspell].spelllist[selectedspell].bartexturebg
+		--ns.db.profile.aurawidgets.spelllist[selectedspell].bartexture
 		
 		if skiptest == nil then
 		--	f:SetTimer(GetTime(), 30, nil, 1) -- status 1 buff; 2 icd; 3 forceshow
@@ -528,11 +528,11 @@ function C:UpdateStatusBarStyle_Aura(spellName, skiptest)
 	end
 end
 
-function C:UpdateIconStyle(spellName, skiptest)
+function ns:UpdateIconStyle(spellName, skiptest)
 	
 	local f = spellName_to_Widget[spellName]
 	if f then
-		local opts = C.db.profile.aurawidgets.spelllist[spellName]
+		local opts = ns.db.profile.aurawidgets.spelllist[spellName]
 		
 		local justifyV, justifyH = strsplit(";", opts.fonts.timer.text_point) -- = "BOTTOM;CENTER",
 		
@@ -542,7 +542,7 @@ function C:UpdateIconStyle(spellName, skiptest)
 			f.timer:Hide()
 		end
 		
-		f.timer:SetFont(C.SharedMedia:Fetch("font", opts.fonts.font), opts.fonts.timer.fontsize, opts.fonts.fontflag)
+		f.timer:SetFont(ns.SharedMedia:Fetch("font", opts.fonts.font), opts.fonts.timer.fontsize, opts.fonts.fontflag)
 		f.timer:SetJustifyH(justifyH)
 		f.timer:SetJustifyV(justifyV)
 		f.timer:SetShadowColor(
@@ -565,7 +565,7 @@ function C:UpdateIconStyle(spellName, skiptest)
 		
 		justifyV, justifyH = strsplit(";", opts.fonts.stack.text_point) -- = "BOTTOM;CENTER",
 		
-		f.stack:SetFont(C.SharedMedia:Fetch("font", opts.fonts.font), opts.fonts.stack.fontsize, opts.fonts.fontflag)
+		f.stack:SetFont(ns.SharedMedia:Fetch("font", opts.fonts.font), opts.fonts.stack.fontsize, opts.fonts.fontflag)
 		f.stack:SetJustifyH(justifyH)
 		f.stack:SetJustifyV(justifyV)
 		f.stack:SetShadowColor(
@@ -581,7 +581,7 @@ function C:UpdateIconStyle(spellName, skiptest)
 		
 		
 		f.backdrop:SetBackdrop({
-			edgeFile = C.SharedMedia:Fetch("border", opts.border.texture),
+			edgeFile = ns.SharedMedia:Fetch("border", opts.border.texture),
 			edgeSize = opts.border.size,
 		})
 		f.backdrop:SetBackdropBorderColor(opts.border.color[1], opts.border.color[2], opts.border.color[3], opts.border.color[4])
@@ -604,7 +604,7 @@ local function GetSpellNameGUI(spellID)
 	return "\124T"..icon..":14\124t "..name
 end
 
-function C:AddAuraWatcherGUI()
+function ns:AddAuraWatcherGUI()
 	if disabled then return nil end
 	
 	local o = {
@@ -639,29 +639,29 @@ function C:AddAuraWatcherGUI()
 			local num = tonumber(value)			
 			if num and GetSpellInfo(num) then
 				local spellName = GetSpellInfo(num)
-				if not C.db.profile.aurawidgets.spelllist[spellName] then				
-					C.db.profile.aurawidgets.spelllist[spellName] = {}
-					C.db.profile.aurawidgets.spelllist[spellName].show = true
-					C.db.profile.aurawidgets.spelllist[spellName].style = 1
-					C.db.profile.aurawidgets.spelllist[spellName].checkID = false
-					C.db.profile.aurawidgets.spelllist[spellName].spellID = num
-					C.db.profile.aurawidgets.spelllist[spellName].ICD = 0
-					C.db.profile.aurawidgets.spelllist[spellName].showICD = false
-					C.db.profile.aurawidgets.spelllist[spellName].size = 20
-					C.db.profile.aurawidgets.spelllist[spellName].iconGap = 3
+				if not ns.db.profile.aurawidgets.spelllist[spellName] then				
+					ns.db.profile.aurawidgets.spelllist[spellName] = {}
+					ns.db.profile.aurawidgets.spelllist[spellName].show = true
+					ns.db.profile.aurawidgets.spelllist[spellName].style = 1
+					ns.db.profile.aurawidgets.spelllist[spellName].checkID = false
+					ns.db.profile.aurawidgets.spelllist[spellName].spellID = num
+					ns.db.profile.aurawidgets.spelllist[spellName].ICD = 0
+					ns.db.profile.aurawidgets.spelllist[spellName].showICD = false
+					ns.db.profile.aurawidgets.spelllist[spellName].size = 20
+					ns.db.profile.aurawidgets.spelllist[spellName].iconGap = 3
 					
-					C.db.profile.aurawidgets.spelllist[spellName].width = 200
-					C.db.profile.aurawidgets.spelllist[spellName].height = 20
+					ns.db.profile.aurawidgets.spelllist[spellName].width = 200
+					ns.db.profile.aurawidgets.spelllist[spellName].height = 20
 
-					C.db.profile.aurawidgets.spelllist[spellName].time_format = 1
+					ns.db.profile.aurawidgets.spelllist[spellName].time_format = 1
 			
 			
 			
-					C.db.profile.aurawidgets.spelllist[spellName].bartexture = "Blizzard Raid Bar"
-					C.db.profile.aurawidgets.spelllist[spellName].bartexturebg = "Blizzard Raid Bar"
-					C.db.profile.aurawidgets.spelllist[spellName].color = { { 1, 1, 0, 1 }, { 0, 0, 0, 1} }
+					ns.db.profile.aurawidgets.spelllist[spellName].bartexture = "Blizzard Raid Bar"
+					ns.db.profile.aurawidgets.spelllist[spellName].bartexturebg = "Blizzard Raid Bar"
+					ns.db.profile.aurawidgets.spelllist[spellName].color = { { 1, 1, 0, 1 }, { 0, 0, 0, 1} }
 			
-					C.db.profile.aurawidgets.spelllist[spellName].border = {
+					ns.db.profile.aurawidgets.spelllist[spellName].border = {
 						texture = "WHITE8x8",
 						size = 1,
 						inset = 1,
@@ -669,7 +669,7 @@ function C:AddAuraWatcherGUI()
 						background = { 0, 0, 0, 1},
 						bg_inset = 0,
 					}					
-					C.db.profile.aurawidgets.spelllist[spellName].fonts = {
+					ns.db.profile.aurawidgets.spelllist[spellName].fonts = {
 						font = "Arial Narrow",
 						fontflag = "OUTLINE",
 						shadow_pos = { 1, -1 },
@@ -700,18 +700,18 @@ function C:AddAuraWatcherGUI()
 					}
 					
 				else
-					C.db.profile.aurawidgets.spelllist[spellName].show = true
+					ns.db.profile.aurawidgets.spelllist[spellName].show = true
 				end
 				
 				selectedspell = spellName
-				C:UpdateAuraWidgets()
+				ns:UpdateAuraWidgets()
 				
-				if C.db.profile.aurawidgets.spelllist[selectedspell].style == 1 then
-					C.GUI.args.aurawidgets.args.settings.args.styleGroup = C:BuildIconStyleSetup()
-				elseif C.db.profile.aurawidgets.spelllist[selectedspell].style == 2 then
-					C.GUI.args.aurawidgets.args.settings.args.styleGroup = C:BuildBarStyleSetup()
+				if ns.db.profile.aurawidgets.spelllist[selectedspell].style == 1 then
+					ns.GUI.args.aurawidgets.args.settings.args.styleGroup = ns:BuildIconStyleSetup()
+				elseif ns.db.profile.aurawidgets.spelllist[selectedspell].style == 2 then
+					ns.GUI.args.aurawidgets.args.settings.args.styleGroup = ns:BuildBarStyleSetup()
 				else
-					C.GUI.args.aurawidgets.args.settings.args.styleGroup = nil
+					ns.GUI.args.aurawidgets.args.settings.args.styleGroup = nil
 				end
 			end
 		end,
@@ -729,7 +729,7 @@ function C:AddAuraWatcherGUI()
 		values = function()
 			local t = {}
 			
-			for spellName,params in pairs(C.db.profile.aurawidgets.spelllist) do		
+			for spellName,params in pairs(ns.db.profile.aurawidgets.spelllist) do		
 				t[spellName] = GetSpellNameGUI(params.spellID).. " #"..params.spellID
 			end
 			
@@ -737,14 +737,14 @@ function C:AddAuraWatcherGUI()
 		end,
 		set = function(self, value)			
 			selectedspell = value
-			C:UpdateAuraWidgets()
+			ns:UpdateAuraWidgets()
 			
-			if not C.db.profile.aurawidgets.spelllist[selectedspell].iconGap then
-				C.db.profile.aurawidgets.spelllist[selectedspell].iconGap = 3
+			if not ns.db.profile.aurawidgets.spelllist[selectedspell].iconGap then
+				ns.db.profile.aurawidgets.spelllist[selectedspell].iconGap = 3
 			end
 			
-			if not C.db.profile.aurawidgets.spelllist[selectedspell].border then
-				C.db.profile.aurawidgets.spelllist[selectedspell].border = {
+			if not ns.db.profile.aurawidgets.spelllist[selectedspell].border then
+				ns.db.profile.aurawidgets.spelllist[selectedspell].border = {
 					texture = "WHITE8x8",
 					size = 1,
 					inset = 1,
@@ -754,12 +754,12 @@ function C:AddAuraWatcherGUI()
 				}
 			end
 			
-			if not C.db.profile.aurawidgets.spelllist[selectedspell].time_format then
-				C.db.profile.aurawidgets.spelllist[selectedspell].time_format = 1
+			if not ns.db.profile.aurawidgets.spelllist[selectedspell].time_format then
+				ns.db.profile.aurawidgets.spelllist[selectedspell].time_format = 1
 			end
 			
-			if not C.db.profile.aurawidgets.spelllist[selectedspell].fonts then
-				C.db.profile.aurawidgets.spelllist[selectedspell].fonts = {
+			if not ns.db.profile.aurawidgets.spelllist[selectedspell].fonts then
+				ns.db.profile.aurawidgets.spelllist[selectedspell].fonts = {
 					font = "Arial Narrow",
 					fontflag = "OUTLINE",
 					shadow_pos = { 1, -1 },
@@ -790,31 +790,31 @@ function C:AddAuraWatcherGUI()
 				}
 			end
 			
-			if not C.db.profile.aurawidgets.spelllist[selectedspell].width then
-				C.db.profile.aurawidgets.spelllist[selectedspell].width = 200
+			if not ns.db.profile.aurawidgets.spelllist[selectedspell].width then
+				ns.db.profile.aurawidgets.spelllist[selectedspell].width = 200
 			end
 		
-			if not C.db.profile.aurawidgets.spelllist[selectedspell].height then
-				C.db.profile.aurawidgets.spelllist[selectedspell].height = 20
+			if not ns.db.profile.aurawidgets.spelllist[selectedspell].height then
+				ns.db.profile.aurawidgets.spelllist[selectedspell].height = 20
 			end
 			
-			if not C.db.profile.aurawidgets.spelllist[selectedspell].bartexture then
-				C.db.profile.aurawidgets.spelllist[selectedspell].bartexture = "Blizzard Raid Bar"
+			if not ns.db.profile.aurawidgets.spelllist[selectedspell].bartexture then
+				ns.db.profile.aurawidgets.spelllist[selectedspell].bartexture = "Blizzard Raid Bar"
 			end
 			
-			if not C.db.profile.aurawidgets.spelllist[selectedspell].bartexturebg then
-				C.db.profile.aurawidgets.spelllist[selectedspell].bartexturebg = "Blizzard Raid Bar"
+			if not ns.db.profile.aurawidgets.spelllist[selectedspell].bartexturebg then
+				ns.db.profile.aurawidgets.spelllist[selectedspell].bartexturebg = "Blizzard Raid Bar"
 			end
-			if not C.db.profile.aurawidgets.spelllist[selectedspell].color then
-				C.db.profile.aurawidgets.spelllist[selectedspell].color = { { 1, 1, 0, 1 }, { 0, 0, 0, 1} }
+			if not ns.db.profile.aurawidgets.spelllist[selectedspell].color then
+				ns.db.profile.aurawidgets.spelllist[selectedspell].color = { { 1, 1, 0, 1 }, { 0, 0, 0, 1} }
 			end
 			
-			if C.db.profile.aurawidgets.spelllist[selectedspell].style == 1 then
-				C.GUI.args.aurawidgets.args.settings.args.styleGroup = C:BuildIconStyleSetup()
-			elseif C.db.profile.aurawidgets.spelllist[selectedspell].style == 2 then
-				C.GUI.args.aurawidgets.args.settings.args.styleGroup = C:BuildBarStyleSetup()
+			if ns.db.profile.aurawidgets.spelllist[selectedspell].style == 1 then
+				ns.GUI.args.aurawidgets.args.settings.args.styleGroup = ns:BuildIconStyleSetup()
+			elseif ns.db.profile.aurawidgets.spelllist[selectedspell].style == 2 then
+				ns.GUI.args.aurawidgets.args.settings.args.styleGroup = ns:BuildBarStyleSetup()
 			else
-				C.GUI.args.aurawidgets.args.settings.args.styleGroup = nil
+				ns.GUI.args.aurawidgets.args.settings.args.styleGroup = nil
 			end
 				
 		end,
@@ -838,13 +838,13 @@ function C:AddAuraWatcherGUI()
 		order = 1,
 		set = function(self, value)
 			if selectedspell then
-				C.db.profile.aurawidgets.spelllist[selectedspell].show = not C.db.profile.aurawidgets.spelllist[selectedspell].show
-				C:UpdateAuraWidgets()
+				ns.db.profile.aurawidgets.spelllist[selectedspell].show = not ns.db.profile.aurawidgets.spelllist[selectedspell].show
+				ns:UpdateAuraWidgets()
 			end
 		end,
 		get = function(self)
 			if selectedspell then
-				return C.db.profile.aurawidgets.spelllist[selectedspell].show or false
+				return ns.db.profile.aurawidgets.spelllist[selectedspell].show or false
 			else
 				return false
 			end
@@ -857,7 +857,7 @@ function C:AddAuraWatcherGUI()
 		order = 3,
 		set = function(self, value)
 			if selectedspell then
-				C:UnlockMover(selectedspell)
+				ns:UnlockMover(selectedspell)
 			end
 		end,
 		get = function(self)
@@ -875,22 +875,22 @@ function C:AddAuraWatcherGUI()
 		},
 		set = function(self, value)
 			if selectedspell then
-				C.db.profile.aurawidgets.spelllist[selectedspell].style = value
-				C:UpdateAuraWidgets()
+				ns.db.profile.aurawidgets.spelllist[selectedspell].style = value
+				ns:UpdateAuraWidgets()
 			
-				if C.db.profile.aurawidgets.spelllist[selectedspell].style == 1 then
-					C.GUI.args.aurawidgets.args.settings.args.styleGroup = C:BuildIconStyleSetup()
-				elseif C.db.profile.aurawidgets.spelllist[selectedspell].style == 2 then
-					C.GUI.args.aurawidgets.args.settings.args.styleGroup = C:BuildBarStyleSetup()
+				if ns.db.profile.aurawidgets.spelllist[selectedspell].style == 1 then
+					ns.GUI.args.aurawidgets.args.settings.args.styleGroup = ns:BuildIconStyleSetup()
+				elseif ns.db.profile.aurawidgets.spelllist[selectedspell].style == 2 then
+					ns.GUI.args.aurawidgets.args.settings.args.styleGroup = ns:BuildBarStyleSetup()
 				else
-					C.GUI.args.aurawidgets.args.settings.args.styleGroup = nil
+					ns.GUI.args.aurawidgets.args.settings.args.styleGroup = nil
 				end
 		
 			end
 		end,
 		get = function(self)
 			if selectedspell then
-				return C.db.profile.aurawidgets.spelllist[selectedspell].style or 1
+				return ns.db.profile.aurawidgets.spelllist[selectedspell].style or 1
 			else
 				return 1
 			end
@@ -898,10 +898,10 @@ function C:AddAuraWatcherGUI()
 	}
 	
 	if selectedspell then
-		if C.db.profile.aurawidgets.spelllist[selectedspell].style == 1 then
-			o.args.settings.args.styleGroup = C:BuildIconStyleSetup()
-		elseif C.db.profile.aurawidgets.spelllist[selectedspell].style == 2 then
-			o.args.settings.args.styleGroup = C:BuildBarStyleSetup()
+		if ns.db.profile.aurawidgets.spelllist[selectedspell].style == 1 then
+			o.args.settings.args.styleGroup = ns:BuildIconStyleSetup()
+		elseif ns.db.profile.aurawidgets.spelllist[selectedspell].style == 2 then
+			o.args.settings.args.styleGroup = ns:BuildBarStyleSetup()
 		else
 			o.args.settings.args.styleGroup = nil
 		end
@@ -923,13 +923,13 @@ function C:AddAuraWatcherGUI()
 		order = 2,
 		set = function(self, value)
 			if selectedspell then
-				C.db.profile.aurawidgets.spelllist[selectedspell].checkID = not C.db.profile.aurawidgets.spelllist[selectedspell].checkID
-				C:UpdateAuraWidgets()
+				ns.db.profile.aurawidgets.spelllist[selectedspell].checkID = not ns.db.profile.aurawidgets.spelllist[selectedspell].checkID
+				ns:UpdateAuraWidgets()
 			end
 		end,
 		get = function(self)
 			if selectedspell then
-				return C.db.profile.aurawidgets.spelllist[selectedspell].checkID or false
+				return ns.db.profile.aurawidgets.spelllist[selectedspell].checkID or false
 			else
 				return false
 			end
@@ -943,13 +943,13 @@ function C:AddAuraWatcherGUI()
 			local num = tonumber(value)
 			
 			if selectedspell and num then
-				C.db.profile.aurawidgets.spelllist[selectedspell].spellID = num
-				C:UpdateAuraWidgets()
+				ns.db.profile.aurawidgets.spelllist[selectedspell].spellID = num
+				ns:UpdateAuraWidgets()
 			end
 		end,
 		get = function(self)
 			if selectedspell then
-				return C.db.profile.aurawidgets.spelllist[selectedspell].spellID or ''
+				return ns.db.profile.aurawidgets.spelllist[selectedspell].spellID or ''
 			else
 				return ''
 			end
@@ -972,13 +972,13 @@ function C:AddAuraWatcherGUI()
 			local num = tonumber(value)
 			
 			if selectedspell and num then
-				C.db.profile.aurawidgets.spelllist[selectedspell].ICD = num
-				C:UpdateAuraWidgets()
+				ns.db.profile.aurawidgets.spelllist[selectedspell].ICD = num
+				ns:UpdateAuraWidgets()
 			end
 		end,
 		get = function(self)
 			if selectedspell then
-				return C.db.profile.aurawidgets.spelllist[selectedspell].ICD or ''
+				return ns.db.profile.aurawidgets.spelllist[selectedspell].ICD or ''
 			else
 				return ''
 			end
@@ -991,13 +991,13 @@ function C:AddAuraWatcherGUI()
 		order = 2,
 		set = function(self, value)
 			if selectedspell then
-				C.db.profile.aurawidgets.spelllist[selectedspell].showICD = not C.db.profile.aurawidgets.spelllist[selectedspell].showICD
-				C:UpdateAuraWidgets()
+				ns.db.profile.aurawidgets.spelllist[selectedspell].showICD = not ns.db.profile.aurawidgets.spelllist[selectedspell].showICD
+				ns:UpdateAuraWidgets()
 			end
 		end,
 		get = function(self)
 			if selectedspell then
-				return C.db.profile.aurawidgets.spelllist[selectedspell].showICD or false
+				return ns.db.profile.aurawidgets.spelllist[selectedspell].showICD or false
 			else
 				return false
 			end
@@ -1007,7 +1007,7 @@ function C:AddAuraWatcherGUI()
 	return o
 end
 
-function C:BuildIconStyleSetup()
+function ns:BuildIconStyleSetup()
 	local st = {
 		name = "Стиль",
 		type = "group",
@@ -1021,14 +1021,14 @@ function C:BuildIconStyleSetup()
 		type = "slider", min = 1, max = 300, step = 1,
 		set = function(self, value)
 			if selectedspell then
-				C.db.profile.aurawidgets.spelllist[selectedspell].size = value
+				ns.db.profile.aurawidgets.spelllist[selectedspell].size = value
 			end
-			C:UpdateAuraWidgets()
-			C:UpdateIconStyle(selectedspell)
+			ns:UpdateAuraWidgets()
+			ns:UpdateIconStyle(selectedspell)
 		end,
 		get = function(self)		
 			if selectedspell then
-				return C.db.profile.aurawidgets.spelllist[selectedspell].size or 20
+				return ns.db.profile.aurawidgets.spelllist[selectedspell].size or 20
 			else
 				return 20
 			end
@@ -1044,22 +1044,22 @@ function C:BuildIconStyleSetup()
 	
 	st.args.borders.args.border = {
 		order = 19.1,type = 'border',name = L["Текстура"],
-		values = C.SharedMedia:HashTable("border"),
-		set = function(info,value) C.db.profile.aurawidgets.spelllist[selectedspell].border.texture = value; C:UpdateIconStyle(selectedspell)end,
-		get = function(info) return C.db.profile.aurawidgets.spelllist[selectedspell].border.texture end,
+		values = ns.SharedMedia:HashTable("border"),
+		set = function(info,value) ns.db.profile.aurawidgets.spelllist[selectedspell].border.texture = value; ns:UpdateIconStyle(selectedspell)end,
+		get = function(info) return ns.db.profile.aurawidgets.spelllist[selectedspell].border.texture end,
 	}
 					
 	st.args.borders.args.bordercolor = {
 		order = 19.2,name = L["Цвет"],type = "color", hasAlpha = true,
 		set = function(info,r,g,b,a) 
-			C.db.profile.aurawidgets.spelllist[selectedspell].border.color={r,g,b,a};
-			C:UpdateIconStyle(selectedspell)
+			ns.db.profile.aurawidgets.spelllist[selectedspell].border.color={r,g,b,a};
+			ns:UpdateIconStyle(selectedspell)
 		end,
 		get = function(info) 
-			return C.db.profile.aurawidgets.spelllist[selectedspell].border.color[1],
-			C.db.profile.aurawidgets.spelllist[selectedspell].border.color[2],
-			C.db.profile.aurawidgets.spelllist[selectedspell].border.color[3],
-			C.db.profile.aurawidgets.spelllist[selectedspell].border.color[4]
+			return ns.db.profile.aurawidgets.spelllist[selectedspell].border.color[1],
+			ns.db.profile.aurawidgets.spelllist[selectedspell].border.color[2],
+			ns.db.profile.aurawidgets.spelllist[selectedspell].border.color[3],
+			ns.db.profile.aurawidgets.spelllist[selectedspell].border.color[4]
 		end
 	}
 					
@@ -1071,11 +1071,11 @@ function C:BuildIconStyleSetup()
 		max		= 32,
 		step	= 1,
 		set = function(info,val) 
-			C.db.profile.aurawidgets.spelllist[selectedspell].border.size = val
-			C:UpdateIconStyle(selectedspell)
+			ns.db.profile.aurawidgets.spelllist[selectedspell].border.size = val
+			ns:UpdateIconStyle(selectedspell)
 		end,
 		get =function(info)
-			return C.db.profile.aurawidgets.spelllist[selectedspell].border.size
+			return ns.db.profile.aurawidgets.spelllist[selectedspell].border.size
 		end,
 	}
 	st.args.borders.args.borderinset = {
@@ -1086,25 +1086,25 @@ function C:BuildIconStyleSetup()
 		max		= 32,
 		step	= 1,
 		set = function(info,val) 
-			C.db.profile.aurawidgets.spelllist[selectedspell].border.inset = val
-			C:UpdateIconStyle(selectedspell)
+			ns.db.profile.aurawidgets.spelllist[selectedspell].border.inset = val
+			ns:UpdateIconStyle(selectedspell)
 		end,
 		get =function(info)
-			return C.db.profile.aurawidgets.spelllist[selectedspell].border.inset
+			return ns.db.profile.aurawidgets.spelllist[selectedspell].border.inset
 		end,
 	}
 	
 	st.args.borders.args.bgcolor = {
 		order = 19.2,name = L["Фон"],type = "color", hasAlpha = true,
 		set = function(info,r,g,b,a) 
-			C.db.profile.aurawidgets.spelllist[selectedspell].border.background={r,g,b,a};
-			C:UpdateIconStyle(selectedspell)
+			ns.db.profile.aurawidgets.spelllist[selectedspell].border.background={r,g,b,a};
+			ns:UpdateIconStyle(selectedspell)
 		end,
 		get = function(info) 
-			return C.db.profile.aurawidgets.spelllist[selectedspell].border.background[1],
-			C.db.profile.aurawidgets.spelllist[selectedspell].border.background[2],
-			C.db.profile.aurawidgets.spelllist[selectedspell].border.background[3],
-			C.db.profile.aurawidgets.spelllist[selectedspell].border.background[4]
+			return ns.db.profile.aurawidgets.spelllist[selectedspell].border.background[1],
+			ns.db.profile.aurawidgets.spelllist[selectedspell].border.background[2],
+			ns.db.profile.aurawidgets.spelllist[selectedspell].border.background[3],
+			ns.db.profile.aurawidgets.spelllist[selectedspell].border.background[4]
 		end
 	}
 	st.args.borders.args.bginset = {
@@ -1115,11 +1115,11 @@ function C:BuildIconStyleSetup()
 		max		= 50,
 		step	= 1,
 		set = function(info,val) 
-			C.db.profile.aurawidgets.spelllist[selectedspell].border.bg_inset = val
-			C:UpdateIconStyle(selectedspell)
+			ns.db.profile.aurawidgets.spelllist[selectedspell].border.bg_inset = val
+			ns:UpdateIconStyle(selectedspell)
 		end,
 		get =function(info)
-			return C.db.profile.aurawidgets.spelllist[selectedspell].border.bg_inset
+			return ns.db.profile.aurawidgets.spelllist[selectedspell].border.bg_inset
 		end,
 	}
 	
@@ -1128,12 +1128,12 @@ function C:BuildIconStyleSetup()
 		args={
 			font = {
 				order = 4,name = L["Шрифт"],type = 'font',
-				values = C.SharedMedia:HashTable("font"),
+				values = ns.SharedMedia:HashTable("font"),
 				set = function(info,key) 
-					C.db.profile.aurawidgets.spelllist[selectedspell].fonts.font = key
-					C:UpdateIconStyle(selectedspell)
+					ns.db.profile.aurawidgets.spelllist[selectedspell].fonts.font = key
+					ns:UpdateIconStyle(selectedspell)
 				end,
-				get = function(info) return C.db.profile.aurawidgets.spelllist[selectedspell].fonts.font end,
+				get = function(info) return ns.db.profile.aurawidgets.spelllist[selectedspell].fonts.font end,
 			},
 			time_format = {
 				name = L["Формат времени"],
@@ -1144,10 +1144,10 @@ function C:BuildIconStyleSetup()
 					"0.1 1 1.5 3"
 				},
 				set = function(info,val) 
-					C.db.profile.aurawidgets.spelllist[selectedspell].time_format = val
+					ns.db.profile.aurawidgets.spelllist[selectedspell].time_format = val
 				end,
 				get =function(info)
-					return C.db.profile.aurawidgets.spelllist[selectedspell].time_format
+					return ns.db.profile.aurawidgets.spelllist[selectedspell].time_format
 				end,
 			},
 			fontflag = {
@@ -1160,43 +1160,11 @@ function C:BuildIconStyleSetup()
 					["MONOCHROMEOUTLINE"] = "MONOCHROMEOUTLINE",
 				},
 				set = function(info,val) 
-					C.db.profile.aurawidgets.spelllist[selectedspell].fonts.fontflag = val
-					C:UpdateIconStyle(selectedspell)
+					ns.db.profile.aurawidgets.spelllist[selectedspell].fonts.fontflag = val
+					ns:UpdateIconStyle(selectedspell)
 				end,
-				get = function(info) return C.db.profile.aurawidgets.spelllist[selectedspell].fonts.fontflag end
+				get = function(info) return ns.db.profile.aurawidgets.spelllist[selectedspell].fonts.fontflag end
 			},
-			--[[
-			shadow_pos1 = {
-				name = L["Тень текста X"], disabled = false,
-				type = "slider",
-				order	= 5,
-				min		= -5,
-				max		= 5,
-				step	= 0.1,
-				set = function(info,val) 
-					C.db.profile.aurawidgets.spelllist[selectedspell].fonts.shadow_pos[1] = val
-					C:UpdateIconStyle(selectedspell)
-				end,
-				get =function(info)
-					return C.db.profile.aurawidgets.spelllist[selectedspell].fonts.shadow_pos[1]
-				end,
-			},
-			shadow_pos2 = {
-				name = L["Тень текста Y"], disabled = false,
-				type = "slider",
-				order	= 5.1,
-				min		= -5,
-				max		= 5,
-				step	= 0.1,
-				set = function(info,val) 
-					C.db.profile.aurawidgets.spelllist[selectedspell].fonts.shadow_pos[2] = val
-					C:UpdateIconStyle(selectedspell)
-				end,
-				get =function(info)
-					return C.db.profile.aurawidgets.spelllist[selectedspell].fonts.shadow_pos[2]
-				end,
-			},
-			]]
 		},
 	}
 	
@@ -1206,8 +1174,8 @@ function C:BuildIconStyleSetup()
 			hide_timer_text = {
 				order = 1,name = L["Показать текст таймера"],type = "toggle",
 				desc = L["Показать текст таймера"],
-				set = function(info,val) C.db.profile.aurawidgets.spelllist[selectedspell].hide_timer_text = not C.db.profile.aurawidgets.spelllist[selectedspell].hide_timer_text; C:UpdateIconStyle(selectedspell);end,
-				get = function(info) return C.db.profile.aurawidgets.spelllist[selectedspell].hide_timer_text end
+				set = function(info,val) ns.db.profile.aurawidgets.spelllist[selectedspell].hide_timer_text = not ns.db.profile.aurawidgets.spelllist[selectedspell].hide_timer_text; ns:UpdateIconStyle(selectedspell);end,
+				get = function(info) return ns.db.profile.aurawidgets.spelllist[selectedspell].hide_timer_text end
 			},
 			fontisize_stack = {
 				name = L["Размер шрифта"], disabled = false,
@@ -1217,11 +1185,11 @@ function C:BuildIconStyleSetup()
 				max		= 32,
 				step	= 1,
 				set = function(info,val) 
-					C.db.profile.aurawidgets.spelllist[selectedspell].fonts.timer.fontsize = val
-					C:UpdateIconStyle(selectedspell)
+					ns.db.profile.aurawidgets.spelllist[selectedspell].fonts.timer.fontsize = val
+					ns:UpdateIconStyle(selectedspell)
 				end,
 				get =function(info)
-					return C.db.profile.aurawidgets.spelllist[selectedspell].fonts.timer.fontsize
+					return ns.db.profile.aurawidgets.spelllist[selectedspell].fonts.timer.fontsize
 				end,
 			},
 			textposition_stack = {	
@@ -1240,19 +1208,19 @@ function C:BuildIconStyleSetup()
 					["CENTER;RIGHT"] = L["По центру справа"],
 				},
 				set = function(info,val) 
-					C.db.profile.aurawidgets.spelllist[selectedspell].fonts.timer.text_point = val
-					C:UpdateIconStyle(selectedspell)
+					ns.db.profile.aurawidgets.spelllist[selectedspell].fonts.timer.text_point = val
+					ns:UpdateIconStyle(selectedspell)
 				end,
-				get = function(info) return C.db.profile.aurawidgets.spelllist[selectedspell].fonts.timer.text_point end
+				get = function(info) return ns.db.profile.aurawidgets.spelllist[selectedspell].fonts.timer.text_point end
 			},
 			color = {
 				order = 7,name = L["Цвет"], type = "color", hasAlpha = false,
 				set = function(info,r,g,b,a) 
-					C.db.profile.aurawidgets.spelllist[selectedspell].fonts.timer.color ={r,g,b,1};
-					C:UpdateIconStyle(selectedspell)
+					ns.db.profile.aurawidgets.spelllist[selectedspell].fonts.timer.color ={r,g,b,1};
+					ns:UpdateIconStyle(selectedspell)
 				end,
 				get = function(info) 
-					return C.db.profile.aurawidgets.spelllist[selectedspell].fonts.timer.color[1], C.db.profile.aurawidgets.spelllist[selectedspell].fonts.timer.color[2], C.db.profile.aurawidgets.spelllist[selectedspell].fonts.timer.color[3], 1
+					return ns.db.profile.aurawidgets.spelllist[selectedspell].fonts.timer.color[1], ns.db.profile.aurawidgets.spelllist[selectedspell].fonts.timer.color[2], ns.db.profile.aurawidgets.spelllist[selectedspell].fonts.timer.color[3], 1
 				end
 			},
 			font_pos_x = {
@@ -1263,11 +1231,11 @@ function C:BuildIconStyleSetup()
 				max		= 50,
 				step	= 1,
 				set = function(info,val) 
-					C.db.profile.aurawidgets.spelllist[selectedspell].fonts.timer.spacing_h = val
-					C:UpdateIconStyle(selectedspell)
+					ns.db.profile.aurawidgets.spelllist[selectedspell].fonts.timer.spacing_h = val
+					ns:UpdateIconStyle(selectedspell)
 				end,
 				get =function(info)
-					return C.db.profile.aurawidgets.spelllist[selectedspell].fonts.timer.spacing_h
+					return ns.db.profile.aurawidgets.spelllist[selectedspell].fonts.timer.spacing_h
 				end,
 			},
 			font_pos_7 = {
@@ -1278,11 +1246,11 @@ function C:BuildIconStyleSetup()
 				max		= 50,
 				step	= 1,
 				set = function(info,val) 
-					C.db.profile.aurawidgets.spelllist[selectedspell].fonts.timer.spacing_v = val
-					C:UpdateIconStyle(selectedspell)
+					ns.db.profile.aurawidgets.spelllist[selectedspell].fonts.timer.spacing_v = val
+					ns:UpdateIconStyle(selectedspell)
 				end,
 				get =function(info)
-					return C.db.profile.aurawidgets.spelllist[selectedspell].fonts.timer.spacing_v
+					return ns.db.profile.aurawidgets.spelllist[selectedspell].fonts.timer.spacing_v
 				end,
 			},
 		},
@@ -1299,11 +1267,11 @@ function C:BuildIconStyleSetup()
 				max		= 32,
 				step	= 1,
 				set = function(info,val) 
-					C.db.profile.aurawidgets.spelllist[selectedspell].fonts.stack.fontsize = val
-					C:UpdateIconStyle(selectedspell)
+					ns.db.profile.aurawidgets.spelllist[selectedspell].fonts.stack.fontsize = val
+					ns:UpdateIconStyle(selectedspell)
 				end,
 				get =function(info)
-					return C.db.profile.aurawidgets.spelllist[selectedspell].fonts.stack.fontsize
+					return ns.db.profile.aurawidgets.spelllist[selectedspell].fonts.stack.fontsize
 				end,
 			},
 			textposition_stack = {	
@@ -1322,19 +1290,19 @@ function C:BuildIconStyleSetup()
 					["CENTER;RIGHT"] = L["По центру справа"],
 				},
 				set = function(info,val) 
-					C.db.profile.aurawidgets.spelllist[selectedspell].fonts.stack.text_point = val
-					C:UpdateIconStyle(selectedspell)
+					ns.db.profile.aurawidgets.spelllist[selectedspell].fonts.stack.text_point = val
+					ns:UpdateIconStyle(selectedspell)
 				end,
-				get = function(info) return C.db.profile.aurawidgets.spelllist[selectedspell].fonts.stack.text_point end
+				get = function(info) return ns.db.profile.aurawidgets.spelllist[selectedspell].fonts.stack.text_point end
 			},
 			color = {
 				order = 7,name = L["Цвет"], type = "color", hasAlpha = false,
 				set = function(info,r,g,b,a) 
-					C.db.profile.aurawidgets.spelllist[selectedspell].fonts.stack.color ={r,g,b,1};					
-					C:UpdateIconStyle(selectedspell)
+					ns.db.profile.aurawidgets.spelllist[selectedspell].fonts.stack.color ={r,g,b,1};					
+					ns:UpdateIconStyle(selectedspell)
 				end,
 				get = function(info) 
-					return C.db.profile.aurawidgets.spelllist[selectedspell].fonts.stack.color[1], C.db.profile.aurawidgets.spelllist[selectedspell].fonts.stack.color[2], C.db.profile.aurawidgets.spelllist[selectedspell].fonts.stack.color[3], 1
+					return ns.db.profile.aurawidgets.spelllist[selectedspell].fonts.stack.color[1], ns.db.profile.aurawidgets.spelllist[selectedspell].fonts.stack.color[2], ns.db.profile.aurawidgets.spelllist[selectedspell].fonts.stack.color[3], 1
 				end
 			},
 			font_pos_x = {
@@ -1345,11 +1313,11 @@ function C:BuildIconStyleSetup()
 				max		= 50,
 				step	= 1,
 				set = function(info,val) 
-					C.db.profile.aurawidgets.spelllist[selectedspell].fonts.stack.spacing_h = val
-					C:UpdateIconStyle(selectedspell)
+					ns.db.profile.aurawidgets.spelllist[selectedspell].fonts.stack.spacing_h = val
+					ns:UpdateIconStyle(selectedspell)
 				end,
 				get =function(info)
-					return C.db.profile.aurawidgets.spelllist[selectedspell].fonts.stack.spacing_h
+					return ns.db.profile.aurawidgets.spelllist[selectedspell].fonts.stack.spacing_h
 				end,
 			},
 			font_pos_7 = {
@@ -1360,11 +1328,11 @@ function C:BuildIconStyleSetup()
 				max		= 50,
 				step	= 1,
 				set = function(info,val) 
-					C.db.profile.aurawidgets.spelllist[selectedspell].fonts.stack.spacing_v = val
-					C:UpdateIconStyle(selectedspell)
+					ns.db.profile.aurawidgets.spelllist[selectedspell].fonts.stack.spacing_v = val
+					ns:UpdateIconStyle(selectedspell)
 				end,
 				get =function(info)
-					return C.db.profile.aurawidgets.spelllist[selectedspell].fonts.stack.spacing_v
+					return ns.db.profile.aurawidgets.spelllist[selectedspell].fonts.stack.spacing_v
 				end,
 			},
 		},
@@ -1373,7 +1341,7 @@ function C:BuildIconStyleSetup()
 	return st
 end
 
-function C:BuildBarStyleSetup()
+function ns:BuildBarStyleSetup()
 	local st = {
 		name = "Стиль",
 		type = "group",
@@ -1387,14 +1355,14 @@ function C:BuildBarStyleSetup()
 		type = "slider", min = 1, max = 500, step = 1,
 		set = function(self, value)
 			if selectedspell then
-				C.db.profile.aurawidgets.spelllist[selectedspell].width = value
+				ns.db.profile.aurawidgets.spelllist[selectedspell].width = value
 			end
-			C:UpdateAuraWidgets()
-			C:UpdateStatusBarStyle_Aura(selectedspell)
+			ns:UpdateAuraWidgets()
+			ns:UpdateStatusBarStyle_Aura(selectedspell)
 		end,
 		get = function(self)		
 			if selectedspell then
-				return C.db.profile.aurawidgets.spelllist[selectedspell].width or 200
+				return ns.db.profile.aurawidgets.spelllist[selectedspell].width or 200
 			else
 				return 200
 			end
@@ -1406,14 +1374,14 @@ function C:BuildBarStyleSetup()
 		type = "slider", min = 1, max = 60, step = 1,
 		set = function(self, value)
 			if selectedspell then
-				C.db.profile.aurawidgets.spelllist[selectedspell].height = value
+				ns.db.profile.aurawidgets.spelllist[selectedspell].height = value
 			end
-			C:UpdateAuraWidgets()
-			C:UpdateStatusBarStyle_Aura(selectedspell)
+			ns:UpdateAuraWidgets()
+			ns:UpdateStatusBarStyle_Aura(selectedspell)
 		end,
 		get = function(self)		
 			if selectedspell then
-				return C.db.profile.aurawidgets.spelllist[selectedspell].height or 20
+				return ns.db.profile.aurawidgets.spelllist[selectedspell].height or 20
 			else
 				return 20
 			end
@@ -1425,14 +1393,14 @@ function C:BuildBarStyleSetup()
 		type = "slider", min = 1, max = 60, step = 1,
 		set = function(self, value)
 			if selectedspell then
-				C.db.profile.aurawidgets.spelllist[selectedspell].iconGap = value
+				ns.db.profile.aurawidgets.spelllist[selectedspell].iconGap = value
 			end
-			C:UpdateAuraWidgets()
-			C:UpdateStatusBarStyle_Aura(selectedspell)
+			ns:UpdateAuraWidgets()
+			ns:UpdateStatusBarStyle_Aura(selectedspell)
 		end,
 		get = function(self)		
 			if selectedspell then
-				return C.db.profile.aurawidgets.spelllist[selectedspell].iconGap or 3
+				return ns.db.profile.aurawidgets.spelllist[selectedspell].iconGap or 3
 			else
 				return 3
 			end
@@ -1448,22 +1416,22 @@ function C:BuildBarStyleSetup()
 	
 	st.args.borders.args.border = {
 		order = 19.1,type = 'border',name = L["Текстура"],
-		values = C.SharedMedia:HashTable("border"),
-		set = function(info,value) C.db.profile.aurawidgets.spelllist[selectedspell].border.texture = value; C:UpdateStatusBarStyle_Aura(selectedspell) end,
-		get = function(info) return C.db.profile.aurawidgets.spelllist[selectedspell].border.texture end,
+		values = ns.SharedMedia:HashTable("border"),
+		set = function(info,value) ns.db.profile.aurawidgets.spelllist[selectedspell].border.texture = value; ns:UpdateStatusBarStyle_Aura(selectedspell) end,
+		get = function(info) return ns.db.profile.aurawidgets.spelllist[selectedspell].border.texture end,
 	}
 					
 	st.args.borders.args.bordercolor = {
 		order = 19.2,name = L["Цвет"],type = "color", hasAlpha = true,
 		set = function(info,r,g,b,a) 
-			C.db.profile.aurawidgets.spelllist[selectedspell].border.color={r,g,b,a};
-			C:UpdateStatusBarStyle_Aura(selectedspell)
+			ns.db.profile.aurawidgets.spelllist[selectedspell].border.color={r,g,b,a};
+			ns:UpdateStatusBarStyle_Aura(selectedspell)
 		end,
 		get = function(info) 
-			return C.db.profile.aurawidgets.spelllist[selectedspell].border.color[1],
-			C.db.profile.aurawidgets.spelllist[selectedspell].border.color[2],
-			C.db.profile.aurawidgets.spelllist[selectedspell].border.color[3],
-			C.db.profile.aurawidgets.spelllist[selectedspell].border.color[4]
+			return ns.db.profile.aurawidgets.spelllist[selectedspell].border.color[1],
+			ns.db.profile.aurawidgets.spelllist[selectedspell].border.color[2],
+			ns.db.profile.aurawidgets.spelllist[selectedspell].border.color[3],
+			ns.db.profile.aurawidgets.spelllist[selectedspell].border.color[4]
 		end
 	}
 					
@@ -1475,11 +1443,11 @@ function C:BuildBarStyleSetup()
 		max		= 32,
 		step	= 1,
 		set = function(info,val) 
-			C.db.profile.aurawidgets.spelllist[selectedspell].border.size = val
-			C:UpdateStatusBarStyle_Aura(selectedspell)
+			ns.db.profile.aurawidgets.spelllist[selectedspell].border.size = val
+			ns:UpdateStatusBarStyle_Aura(selectedspell)
 		end,
 		get =function(info)
-			return C.db.profile.aurawidgets.spelllist[selectedspell].border.size
+			return ns.db.profile.aurawidgets.spelllist[selectedspell].border.size
 		end,
 	}
 	st.args.borders.args.borderinset = {
@@ -1490,25 +1458,25 @@ function C:BuildBarStyleSetup()
 		max		= 32,
 		step	= 1,
 		set = function(info,val) 
-			C.db.profile.aurawidgets.spelllist[selectedspell].border.inset = val
-			C:UpdateStatusBarStyle_Aura(selectedspell)
+			ns.db.profile.aurawidgets.spelllist[selectedspell].border.inset = val
+			ns:UpdateStatusBarStyle_Aura(selectedspell)
 		end,
 		get =function(info)
-			return C.db.profile.aurawidgets.spelllist[selectedspell].border.inset
+			return ns.db.profile.aurawidgets.spelllist[selectedspell].border.inset
 		end,
 	}
 	
 	st.args.borders.args.bgcolor = {
 		order = 19.2,name = L["Фон"],type = "color", hasAlpha = true,
 		set = function(info,r,g,b,a) 
-			C.db.profile.aurawidgets.spelllist[selectedspell].border.background={r,g,b,a};
-			C:UpdateStatusBarStyle_Aura(selectedspell)
+			ns.db.profile.aurawidgets.spelllist[selectedspell].border.background={r,g,b,a};
+			ns:UpdateStatusBarStyle_Aura(selectedspell)
 		end,
 		get = function(info) 
-			return C.db.profile.aurawidgets.spelllist[selectedspell].border.background[1],
-			C.db.profile.aurawidgets.spelllist[selectedspell].border.background[2],
-			C.db.profile.aurawidgets.spelllist[selectedspell].border.background[3],
-			C.db.profile.aurawidgets.spelllist[selectedspell].border.background[4]
+			return ns.db.profile.aurawidgets.spelllist[selectedspell].border.background[1],
+			ns.db.profile.aurawidgets.spelllist[selectedspell].border.background[2],
+			ns.db.profile.aurawidgets.spelllist[selectedspell].border.background[3],
+			ns.db.profile.aurawidgets.spelllist[selectedspell].border.background[4]
 		end
 	}
 	st.args.borders.args.bginset = {
@@ -1519,11 +1487,11 @@ function C:BuildBarStyleSetup()
 		max		= 50,
 		step	= 1,
 		set = function(info,val) 
-			C.db.profile.aurawidgets.spelllist[selectedspell].border.bg_inset = val
-			C:UpdateStatusBarStyle_Aura(selectedspell)
+			ns.db.profile.aurawidgets.spelllist[selectedspell].border.bg_inset = val
+			ns:UpdateStatusBarStyle_Aura(selectedspell)
 		end,
 		get =function(info)
-			return C.db.profile.aurawidgets.spelllist[selectedspell].border.bg_inset
+			return ns.db.profile.aurawidgets.spelllist[selectedspell].border.bg_inset
 		end,
 	}
 	
@@ -1532,12 +1500,12 @@ function C:BuildBarStyleSetup()
 		args={
 			font = {
 				order = 4,name = L["Шрифт"],type = 'font',
-				values = C.SharedMedia:HashTable("font"),
+				values = ns.SharedMedia:HashTable("font"),
 				set = function(info,key) 
-					C.db.profile.aurawidgets.spelllist[selectedspell].fonts.font = key
-					C:UpdateStatusBarStyle_Aura(selectedspell)
+					ns.db.profile.aurawidgets.spelllist[selectedspell].fonts.font = key
+					ns:UpdateStatusBarStyle_Aura(selectedspell)
 				end,
-				get = function(info) return C.db.profile.aurawidgets.spelllist[selectedspell].fonts.font end,
+				get = function(info) return ns.db.profile.aurawidgets.spelllist[selectedspell].fonts.font end,
 			},
 			time_format = {
 				name = L["Формат времени"],
@@ -1548,11 +1516,11 @@ function C:BuildBarStyleSetup()
 					"0.1 1 1.5 3"
 				},
 				set = function(info,val) 
-					C.db.profile.aurawidgets.spelllist[selectedspell].time_format = val;
-					C:UpdateStatusBarStyle_Aura(selectedspell);
+					ns.db.profile.aurawidgets.spelllist[selectedspell].time_format = val;
+					ns:UpdateStatusBarStyle_Aura(selectedspell);
 				end,
 				get =function(info)
-					return C.db.profile.aurawidgets.spelllist[selectedspell].time_format
+					return ns.db.profile.aurawidgets.spelllist[selectedspell].time_format
 				end,
 			},
 			fontflag = {
@@ -1565,104 +1533,40 @@ function C:BuildBarStyleSetup()
 					["MONOCHROMEOUTLINE"] = "MONOCHROMEOUTLINE",
 				},
 				set = function(info,val) 
-					C.db.profile.aurawidgets.spelllist[selectedspell].fonts.fontflag = val
-					C:UpdateStatusBarStyle_Aura(selectedspell)
+					ns.db.profile.aurawidgets.spelllist[selectedspell].fonts.fontflag = val
+					ns:UpdateStatusBarStyle_Aura(selectedspell)
 				end,
-				get = function(info) return C.db.profile.aurawidgets.spelllist[selectedspell].fonts.fontflag end
+				get = function(info) return ns.db.profile.aurawidgets.spelllist[selectedspell].fonts.fontflag end
 			},
-			--[[
-			shadow_pos1 = {
-				name = L["Тень текста X"], disabled = false,
-				type = "slider",
-				order	= 5,
-				min		= -5,
-				max		= 5,
-				step	= 0.1,
-				set = function(info,val) 
-					C.db.profile.aurawidgets.spelllist[selectedspell].fonts.shadow_pos[1] = val
-					C:UpdateStatusBarStyle_Aura(selectedspell)
-				end,
-				get =function(info)
-					return C.db.profile.aurawidgets.spelllist[selectedspell].fonts.shadow_pos[1]
-				end,
-			},
-			shadow_pos2 = {
-				name = L["Тень текста Y"], disabled = false,
-				type = "slider",
-				order	= 5.1,
-				min		= -5,
-				max		= 5,
-				step	= 0.1,
-				set = function(info,val) 
-					C.db.profile.aurawidgets.spelllist[selectedspell].fonts.shadow_pos[2] = val
-					C:UpdateStatusBarStyle_Aura(selectedspell)
-				end,
-				get =function(info)
-					return C.db.profile.aurawidgets.spelllist[selectedspell].fonts.shadow_pos[2]
-				end,
-			},
-			]]
 		},
 	}
-	
 	st.args.statusbargrp ={
 		order = 5.1, name = L["Текстуры полосы"],type = "group", embend = true,
 		args={
 		
 		},
 	}
-	
 	st.args.statusbargrp.args.statusbar1 = {
 		order = 1,type = 'statusbar',name = L["Основная текстура"], 
-		values = C.SharedMedia:HashTable("statusbar"),
-		set = function(info,value) C.db.profile.aurawidgets.spelllist[selectedspell].bartexture = value; C:UpdateStatusBarStyle_Aura(selectedspell);end,
-		get = function(info) return C.db.profile.aurawidgets.spelllist[selectedspell].bartexture end,
+		values = ns.SharedMedia:HashTable("statusbar"),
+		set = function(info,value) ns.db.profile.aurawidgets.spelllist[selectedspell].bartexture = value; ns:UpdateStatusBarStyle_Aura(selectedspell);end,
+		get = function(info) return ns.db.profile.aurawidgets.spelllist[selectedspell].bartexture end,
 	}
-	--[[
-	st.args.statusbargrp.args.statusbarbg = {
-		order = 3,type = 'statusbar',name = L["Текстура фона"], 
-		values = C.SharedMedia:HashTable("statusbar"),
-		set = function(info,value) C.db.profile.aurawidgets.spelllist[selectedspell].spelllist[selectedspell].bartexturebg = value; C:UpdateStatusBarStyle_Aura(selectedspell);end,
-		get = function(info) return C.db.profile.aurawidgets.spelllist[selectedspell].bartexturebg end,
-	}
-	]]
 	st.args.statusbargrp.args.statusbar1_color = {
 		order = 2,name = L["Цвет"], type = "color", hasAlpha = false,
 		set = function(info,r,g,b,a) 
-			C.db.profile.aurawidgets.spelllist[selectedspell].color[1] ={r,g,b,1};					
-			C:UpdateStatusBarStyle_Aura(selectedspell)
+			ns.db.profile.aurawidgets.spelllist[selectedspell].color[1] ={r,g,b,1};					
+			ns:UpdateStatusBarStyle_Aura(selectedspell)
 		end,
 		get = function(info) 
-			return C.db.profile.aurawidgets.spelllist[selectedspell].color[1][1], 
-			C.db.profile.aurawidgets.spelllist[selectedspell].color[1][2], 
-			C.db.profile.aurawidgets.spelllist[selectedspell].color[1][3], 1
+			return ns.db.profile.aurawidgets.spelllist[selectedspell].color[1][1], 
+			ns.db.profile.aurawidgets.spelllist[selectedspell].color[1][2], 
+			ns.db.profile.aurawidgets.spelllist[selectedspell].color[1][3], 1
 		end
 	}
-	--[[
-	st.args.statusbargrp.args.statusbarbg_color = {
-		order = 4,name = L["Цвет фона"], type = "color", hasAlpha = false,
-		set = function(info,r,g,b,a) 
-			C.db.profile.aurawidgets.spelllist[selectedspell].color[2] ={r,g,b,1};					
-			C:UpdateStatusBarStyle_Aura(selectedspell)
-		end,
-		get = function(info) 
-			return C.db.profile.aurawidgets.spelllist[selectedspell].color[2][1], 
-			C.db.profile.aurawidgets.spelllist[selectedspell].color[2][2], 
-			C.db.profile.aurawidgets.spelllist[selectedspell].color[2][3], 1
-		end
-	}
-	]]
 	st.args.timer ={
 		order = 10,name = L["Текст"],type = "group", embend = true,
 		args={
-			--[[
-			hide_timer_text = {
-				order = 1,name = L["Показать текст таймера"],type = "toggle",
-				desc = L["Показать текст таймера"],
-				set = function(info,val) C.db.profile.aurawidgets.spelllist[selectedspell].hide_timer_text = not C.db.profile.aurawidgets.spelllist[selectedspell].hide_timer_text; C:UpdateIconStyle(selectedspell);end,
-				get = function(info) return C.db.profile.aurawidgets.spelllist[selectedspell].hide_timer_text end
-			},
-			]]
 			fontisize_stack = {
 				name = L["Размер шрифта"], disabled = false,
 				type = "slider",
@@ -1671,163 +1575,25 @@ function C:BuildBarStyleSetup()
 				max		= 32,
 				step	= 1,
 				set = function(info,val) 
-					C.db.profile.aurawidgets.spelllist[selectedspell].fonts.timer.fontsize = val
-					C:UpdateStatusBarStyle_Aura(selectedspell)
+					ns.db.profile.aurawidgets.spelllist[selectedspell].fonts.timer.fontsize = val
+					ns:UpdateStatusBarStyle_Aura(selectedspell)
 				end,
 				get =function(info)
-					return C.db.profile.aurawidgets.spelllist[selectedspell].fonts.timer.fontsize
+					return ns.db.profile.aurawidgets.spelllist[selectedspell].fonts.timer.fontsize
 				end,
-			},
-			--[[
-			textposition_stack = {	
-				type = "dropdown",order = 6,
-				name = L["Выравнивание текста"],
-				desc = L["Выравнивание текста"],
-				values = {
-					["TOP;CENTER"] = L["Сверху"],
-					["TOP;LEFT"] = L["Слева вверху"],
-					["TOP;RIGHT"] = L["Справа вверху"],
-					["CENTER;CENTER"] = L["Центр"],
-					["BOTTOM;CENTER"] = L["Снизу"],
-					["BOTTOM;LEFT"] = L["Слева внизу"],
-					["BOTTOM;RIGHT"] = L["Справа внизу"],
-					["CENTER;LEFT"] = L["По центру слева"],
-					["CENTER;RIGHT"] = L["По центру справа"],
-				},
-				set = function(info,val) 
-					C.db.profile.aurawidgets.spelllist[selectedspell].fonts.timer.text_point = val
-					C:UpdateIconStyle(selectedspell)
-				end,
-				get = function(info) return C.db.profile.aurawidgets.spelllist[selectedspell].fonts.timer.text_point end
-			},
-			]]
-			color = {
-				order = 7,name = L["Цвет"], type = "color", hasAlpha = false,
-				set = function(info,r,g,b,a) 
-					C.db.profile.aurawidgets.spelllist[selectedspell].fonts.timer.color ={r,g,b,1};
-					C:UpdateStatusBarStyle_Aura(selectedspell)
-				end,
-				get = function(info) 
-					return C.db.profile.aurawidgets.spelllist[selectedspell].fonts.timer.color[1], C.db.profile.aurawidgets.spelllist[selectedspell].fonts.timer.color[2], C.db.profile.aurawidgets.spelllist[selectedspell].fonts.timer.color[3], 1
-				end
-			},
-			--[[
-			font_pos_x = {
-				name = L["Смещение по горизонтали"], disabled = false,
-				type = "slider",
-				order	= 10,
-				min		= -50,
-				max		= 50,
-				step	= 1,
-				set = function(info,val) 
-					C.db.profile.aurawidgets.spelllist[selectedspell].fonts.timer.spacing_h = val
-					C:UpdateIconStyle(selectedspell)
-				end,
-				get =function(info)
-					return C.db.profile.aurawidgets.spelllist[selectedspell].fonts.timer.spacing_h
-				end,
-			},
-			font_pos_7 = {
-				name = L["Смещение по вертикали"], disabled = false,
-				type = "slider",
-				order	= 15,
-				min		= -50,
-				max		= 50,
-				step	= 1,
-				set = function(info,val) 
-					C.db.profile.aurawidgets.spelllist[selectedspell].fonts.timer.spacing_v = val
-					C:UpdateIconStyle(selectedspell)
-				end,
-				get =function(info)
-					return C.db.profile.aurawidgets.spelllist[selectedspell].fonts.timer.spacing_v
-				end,
-			},
-			]]
-		},
-	}
-	--[[
-	st.args.stacks ={
-		order = 20,name = L["Стаки"],type = "group", embend = true,
-		args={
-			fontisize_stack = {
-				name = L["Размер шрифта"], disabled = false,
-				type = "slider",
-				order	= 1,
-				min		= 1,
-				max		= 32,
-				step	= 1,
-				set = function(info,val) 
-					C.db.profile.aurawidgets.spelllist[selectedspell].fonts.stack.fontsize = val
-					C:UpdateIconStyle(selectedspell)
-				end,
-				get =function(info)
-					return C.db.profile.aurawidgets.spelllist[selectedspell].fonts.stack.fontsize
-				end,
-			},
-			textposition_stack = {	
-				type = "dropdown",order = 6,
-				name = L["Выравнивание текста"],
-				desc = L["Выравнивание текста"],
-				values = {
-					["TOP;CENTER"] = L["Сверху"],
-					["TOP;LEFT"] = L["Слева вверху"],
-					["TOP;RIGHT"] = L["Справа вверху"],
-					["CENTER;CENTER"] = L["Центр"],
-					["BOTTOM;CENTER"] = L["Снизу"],
-					["BOTTOM;LEFT"] = L["Слева внизу"],
-					["BOTTOM;RIGHT"] = L["Справа внизу"],
-					["CENTER;LEFT"] = L["По центру слева"],
-					["CENTER;RIGHT"] = L["По центру справа"],
-				},
-				set = function(info,val) 
-					C.db.profile.aurawidgets.spelllist[selectedspell].fonts.stack.text_point = val
-					C:UpdateIconStyle(selectedspell)
-				end,
-				get = function(info) return C.db.profile.aurawidgets.spelllist[selectedspell].fonts.stack.text_point end
 			},
 			color = {
 				order = 7,name = L["Цвет"], type = "color", hasAlpha = false,
 				set = function(info,r,g,b,a) 
-					C.db.profile.aurawidgets.spelllist[selectedspell].fonts.stack.color ={r,g,b,1};					
-					C:UpdateIconStyle(selectedspell)
+					ns.db.profile.aurawidgets.spelllist[selectedspell].fonts.timer.color ={r,g,b,1};
+					ns:UpdateStatusBarStyle_Aura(selectedspell)
 				end,
 				get = function(info) 
-					return C.db.profile.aurawidgets.spelllist[selectedspell].fonts.stack.color[1], C.db.profile.aurawidgets.spelllist[selectedspell].fonts.stack.color[2], C.db.profile.aurawidgets.spelllist[selectedspell].fonts.stack.color[3], 1
+					return ns.db.profile.aurawidgets.spelllist[selectedspell].fonts.timer.color[1], ns.db.profile.aurawidgets.spelllist[selectedspell].fonts.timer.color[2], ns.db.profile.aurawidgets.spelllist[selectedspell].fonts.timer.color[3], 1
 				end
-			},
-			font_pos_x = {
-				name = L["Смещение по горизонтали"], disabled = false,
-				type = "slider",
-				order	= 10,
-				min		= -50,
-				max		= 50,
-				step	= 1,
-				set = function(info,val) 
-					C.db.profile.aurawidgets.spelllist[selectedspell].fonts.stack.spacing_h = val
-					C:UpdateIconStyle(selectedspell)
-				end,
-				get =function(info)
-					return C.db.profile.aurawidgets.spelllist[selectedspell].fonts.stack.spacing_h
-				end,
-			},
-			font_pos_7 = {
-				name = L["Смещение по вертикали"], disabled = false,
-				type = "slider",
-				order	= 15,
-				min		= -50,
-				max		= 50,
-				step	= 1,
-				set = function(info,val) 
-					C.db.profile.aurawidgets.spelllist[selectedspell].fonts.stack.spacing_v = val
-					C:UpdateIconStyle(selectedspell)
-				end,
-				get =function(info)
-					return C.db.profile.aurawidgets.spelllist[selectedspell].fonts.stack.spacing_v
-				end,
 			},
 		},
 	}
-	]]
 
 	return st	
 end

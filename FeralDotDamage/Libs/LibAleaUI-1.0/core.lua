@@ -6,10 +6,6 @@ local SendAddonMessage = C_ChatInfo and C_ChatInfo.SendAddonMessage or SendAddon
 
 --[==[
 	Change log
-	
-	v84
-		исправления в работе свитчера профилей
-		
 	v83
 		еще пропажа с PlaySound
 		
@@ -569,23 +565,23 @@ do
 			_G[variable].profileKeys[profileOwner] = {}
 
 			if usedefault then
-				for i=1, GetNumSpecializations() do
+				for i=1, C.isClassic and 1 or GetNumSpecializations() do
 					_G[variable].profileKeys[profileOwner][i] = DEFAULT_NAME
 				end
 			else
-				for i=1, GetNumSpecializations() do
+				for i=1, C.isClassic and 1 or GetNumSpecializations() do
 					_G[variable].profileKeys[profileOwner][i] = profileOwner		
 				end
 			end
 		else	
 			if usedefault then
-				for i=1, GetNumSpecializations() do
+				for i=1, C.isClassic and 1 or GetNumSpecializations() do
 					if not _G[variable].profileKeys[profileOwner][i] then
 						_G[variable].profileKeys[profileOwner][i] = DEFAULT_NAME
 					end
 				end
 			else
-				for i=1, GetNumSpecializations() do
+				for i=1, C.isClassic and 1 or GetNumSpecializations() do
 					if not _G[variable].profileKeys[profileOwner][i] then
 						_G[variable].profileKeys[profileOwner][i] = profileOwner		
 					end
@@ -593,7 +589,7 @@ do
 			end			
 		end
 	end
-	
+
 	function ALEAUI_NewDB(variable, default, usedefault)
 
 		if not _G[variable] then _G[variable] = {}	end
@@ -608,6 +604,7 @@ do
 		profileOwner = profileOwner or GetOwner()
 
 		Legion_CreateProfileList(variable, profileOwner, usedefault)
+		
 
 		if not _G[variable].profiles[DEFAULT_NAME] then
 			_G[variable].profiles[DEFAULT_NAME] = {}
@@ -620,17 +617,16 @@ do
 			local oldprofile = _G[variable].profileKeys[profileOwner]
 			
 			_G[variable].profileKeys[profileOwner] = {}
-	
-			for i=1, GetNumSpecializations() do
+			
+			for i=1, C.isClassic and 1 or GetNumSpecializations() do
 				_G[variable].profileKeys[profileOwner][i] = oldprofile		
-			end
+			end	
 		end
 		
 		local activespec
 		local instance
 		
-	
-		activespec = ( GetSpecialization() and GetSpecialization() > 0 ) and GetSpecialization() or 1
+		activespec = C.isClassic and 1 or ( GetSpecialization() and GetSpecialization() > 0 ) and GetSpecialization() or 1
 		
 		if not _G[variable].profileKeys[profileOwner][_G[variable][cvarSettings] and activespec or 1] then		
 			_G[variable].profileKeys[profileOwner][_G[variable][cvarSettings] and activespec or 1] = DEFAULT_NAME
@@ -642,7 +638,6 @@ do
 		
 		instance = GetInstance(variable, default, _G[variable].profileKeys[profileOwner][_G[variable][cvarSettings] and activespec or 1])
 		instance:Refresh()			
-	
 		
 		lastactivespec = activespec
 		
@@ -653,26 +648,14 @@ do
 end
 
 local h = CreateFrame("Frame")
-
---[==[
-h:RegisterEvent("PLAYER_SPECIALIZATION_CHANGED")
-print('RegisterEvent("PLAYER_SPECIALIZATION_CHANGED")', C.IsLegion )
-
-h:RegisterEvent("ACTIVE_TALENT_GROUP_CHANGED")
-print('RegisterEvent("ACTIVE_TALENT_GROUP_CHANGED")', C.IsLegion )
-
-]==]
-h:RegisterEvent("PLAYER_TALENT_UPDATE")
-print('RegisterEvent("PLAYER_TALENT_UPDATE")', C.IsLegion )
---[==[
-h:RegisterEvent("PLAYER_LOGIN")
-print('RegisterEvent("PLAYER_LOGIN")', C.IsLegion )
-]==]
+if ( not C.isClassic ) then
+	h:RegisterEvent("PLAYER_TALENT_UPDATE")
+	print('RegisterEvent("PLAYER_TALENT_UPDATE")', C.IsLegion )
+end
 h:SetScript("OnEvent", function(self, event)
 	self[event](self, event)
 end)
 
---[==[
 function h:ACTIVE_TALENT_GROUP_CHANGED(event)
 	local activespec = GetActiveSpecGroup() or 1
 
@@ -703,9 +686,6 @@ end
 
 function h:PLAYER_SPECIALIZATION_CHANGED(event, unit)
 	unit = unit or 'player'
-	
-	print('T', 'PLAYER_SPECIALIZATION_CHANGED', GetSpecialization())
-	
 	if unit ~= 'player' then return end
 	local activespec = ( GetSpecialization() and GetSpecialization() > 0 ) and GetSpecialization() or 1
 
@@ -733,33 +713,31 @@ function h:PLAYER_SPECIALIZATION_CHANGED(event, unit)
 		lastactivespec = activespec
 	end
 end
-]==]
-
 
 local function RunSpecSwap()
 	local activespec = GetSpecialization() or 1
 
 	if activespec ~= lastactivespec then
 		for db, instance in pairs(db_variables) do
-		
+
 			if _G[db][cvarSettings] then
 				local prev = _G[db].profileKeys[profileOwner][lastactivespec]
 				local new = _G[db].profileKeys[profileOwner][activespec]
 				if prev ~= new then
-					
+
 					instance:Save()		
 					instance:Fire(PROFILE_CHANGED)
-					
+
 					print('PLAYER_TALENT_UPDATE - prev ~= new', PROFILE_CHANGED )
 				end
 			elseif lastactivespec == -1 then
 				instance:Save()		
 				instance:Fire(PROFILE_CHANGED)
-				
+
 				print('PLAYER_TALENT_UPDATE - lastactivespec is -1', PROFILE_CHANGED )
 			end
 		end
-		
+
 		lastactivespec = activespec
 	end
 end
@@ -767,12 +745,6 @@ end
 function h:PLAYER_TALENT_UPDATE(event)
 	RunSpecSwap()
 end
-
---[==[
-function h:PLAYER_LOGIN(event)
-	print('T', event, GetSpecialization())
-end
-]==]
 
 local function GetProfileInterator(db, spec)
 	return function()
@@ -1216,6 +1188,9 @@ function ALEAUI_GetProfileOptions(db, singleSpec)
 			handler:RegisterEvent("PLAYER_TALENT_UPDATE")
 			handler:RegisterEvent("PLAYER_LOGIN")
 			handler:SetScript('OnEvent', function(self, event)
+				unit = unit or 'player'
+				if unit ~= 'player' then return end
+				
 				if GetNumSpecializations() == 0 then return end
 				for i=1, GetNumSpecializations() do
 					f.args['spec'..i..'choose'] = {
