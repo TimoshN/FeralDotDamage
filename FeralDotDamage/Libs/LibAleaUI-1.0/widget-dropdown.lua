@@ -1,7 +1,7 @@
 ﻿if AleaUI_GUI then return end
-local C = _G['AleaGUI_PrototypeLib']
+local ns = _G['AleaGUI_PrototypeLib']
 
-C.toggleDropdowns = {}
+ns.toggleDropdowns = {}
 
 local function Update(self, panel, opts)
 	assert(opts.values, "No Values is set on "..opts.name)
@@ -116,7 +116,7 @@ local function CreateCoreDropDown(parent)
 	f.arrow.text = f.arrow:CreateFontString(nil, "OVERLAY")
 	f.arrow.text:SetFont("Fonts\\ARIALN.TTF", 1, "OUTLINE")
 	f.arrow.text:SetPoint("CENTER")
-	f.arrow.text:SetText(C.statearrow[2])
+	f.arrow.text:SetText(ns.statearrow[2])
 	f.arrow.text:Hide()
 	f.arrow.text:SetWordWrap(false)
 	
@@ -129,10 +129,10 @@ local function CreateCoreDropDown(parent)
 	f.arrow:SetHighlightTexture("Interface\\Buttons\\UI-Common-MouseHilight", "ADD")
 	
 	f.arrow:SetScript("OnEnter", function(self)	
-		C.Tooltip(self, f._rname, f.desc, "show")
+		ns.Tooltip(self, f._rname, f.desc, "show")
 	end)
 	f.arrow:SetScript("OnLeave", function(self)
-		C.Tooltip(self, f._rname, f.desc, "hide")
+		ns.Tooltip(self, f._rname, f.desc, "hide")
 	end)
 
 	f.arrow:SetScript("OnClick", function(self)
@@ -140,7 +140,7 @@ local function CreateCoreDropDown(parent)
 		if self:GetParent()._values then
 			self:GetParent().values = self:GetParent()._values()
 		end
-		C.DD.Show(self:GetParent(),self:GetParent()._OnShow())
+		ns.DD.Show(self:GetParent(),self:GetParent()._OnShow())
 	end)
 
 	local text = f:CreateFontString(nil, 'OVERLAY', "GameFontHighlightSmall")
@@ -163,10 +163,10 @@ local function CreateCoreDropDown(parent)
 	f.mouseover:SetPoint("TOPLEFT", value, "TOPLEFT", -3, 3)
 	f.mouseover:SetPoint("BOTTOMRIGHT", value, "BOTTOMRIGHT", 3, -3)
 	f.mouseover:SetScript("OnEnter", function(self)	
-		C.Tooltip(self, self:GetParent()._rname,  self:GetParent().desc, "show")
+		ns.Tooltip(self, self:GetParent()._rname,  self:GetParent().desc, "show")
 	end)
 	f.mouseover:SetScript("OnLeave", function(self)
-		C.Tooltip(self, self:GetParent()._rname, self:GetParent().desc, "hide")
+		ns.Tooltip(self, self:GetParent()._rname, self:GetParent().desc, "hide")
 	end)
 	
 	f.text = text
@@ -175,15 +175,15 @@ local function CreateCoreDropDown(parent)
 	return f
 end
 
-function C:CreateDropDown()
+function ns:CreateDropDown()
 	
-	for i=1, #C.toggleDropdowns do
-		if C.toggleDropdowns[i].free then
-			return C.toggleDropdowns[i]
+	for i=1, #ns.toggleDropdowns do
+		if ns.toggleDropdowns[i].free then
+			return ns.toggleDropdowns[i]
 		end
 	end
 	
-	local f = CreateFrame("Frame", 'AleaUIGUI-DropDownButton'..#C.toggleDropdowns+1, UIParent)
+	local f = CreateFrame("Frame", 'AleaUIGUI-DropDownButton'..#ns.toggleDropdowns+1, UIParent)
 	f:SetSize(180, 45)
 	f.free = true
 	
@@ -199,9 +199,9 @@ function C:CreateDropDown()
 	f.SetDisabledState = SetDisabledState
 	f.UpdateSize = UpdateSize
 	
-	C.toggleDropdowns[#C.toggleDropdowns+1] = f
+	ns.toggleDropdowns[#ns.toggleDropdowns+1] = f
 	
 	return f
 end
 	
-C.prototypes["dropdown"] = "CreateDropDown"
+ns.prototypes["dropdown"] = "CreateDropDown"

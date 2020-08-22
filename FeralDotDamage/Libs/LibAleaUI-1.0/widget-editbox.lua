@@ -1,8 +1,8 @@
 if AleaUI_GUI then return end
-local C = _G['AleaGUI_PrototypeLib']
+local ns = _G['AleaGUI_PrototypeLib']
 
-C.editboxFrames = {}
-
+ns.editboxFrames = {}
+local _
 local function Update(self, panel, opts)
 	
 	self.free = false
@@ -71,7 +71,7 @@ local function CreateCore(parent)
 		self:ClearFocus()
 		self.ok:Hide()
 		self:SetText(self._OnShow() or "")
-		C:GetRealParent(self):RefreshData()	
+		ns:GetRealParent(self):RefreshData()	
 	end)
 	
 	local text = f:CreateFontString(nil, 'OVERLAY', "GameFontNormalSmall")
@@ -90,7 +90,7 @@ local function CreateCore(parent)
 		self:Hide()
 		self:GetParent():ClearFocus()
 		self:GetParent()._OnClick(_, self:GetParent():GetText())	
-		C:GetRealParent(self):RefreshData()	
+		ns:GetRealParent(self):RefreshData()	
 	end)
 	
 	okbttm.text = okbttm:CreateFontString(nil, 'OVERLAY', "GameFontNormalSmall")
@@ -113,10 +113,10 @@ local function CreateCore(parent)
 	f.mouseover:SetPoint("TOPLEFT", text, "TOPLEFT", -3, 3)
 	f.mouseover:SetPoint("BOTTOMRIGHT", text, "BOTTOMRIGHT", 3, -3)
 	f.mouseover:SetScript("OnEnter", function(self)	
-		C.Tooltip(self, self:GetParent()._rname, self:GetParent().desc, "show")
+		ns.Tooltip(self, self:GetParent()._rname, self:GetParent().desc, "show")
 	end)
 	f.mouseover:SetScript("OnLeave", function(self)
-		C.Tooltip(self, self:GetParent()._rname, self:GetParent().desc, "hide")
+		ns.Tooltip(self, self:GetParent()._rname, self:GetParent().desc, "hide")
 	end)
 	
 	
@@ -126,15 +126,15 @@ local function CreateCore(parent)
 	return f
 end
 
-function C:CreateEditBox()
+function ns:CreateEditBox()
 	
-	for i=1, #C.editboxFrames do
-		if C.editboxFrames[i].free then
-			return C.editboxFrames[i]
+	for i=1, #ns.editboxFrames do
+		if ns.editboxFrames[i].free then
+			return ns.editboxFrames[i]
 		end
 	end
 	
-	local f = CreateFrame("Frame", 'AleaUIGUI-EditBox'..#C.editboxFrames+1, UIParent)
+	local f = CreateFrame("Frame", 'AleaUIGUI-EditBox'..#ns.editboxFrames+1, UIParent)
 	f:SetSize(180, 40)
 	f.free = true
 	
@@ -155,16 +155,16 @@ function C:CreateEditBox()
 	f.SetDescription = SetDescription
 	f.UpdateSize = UpdateSize
 	
-	C.editboxFrames[#C.editboxFrames+1] = f
+	ns.editboxFrames[#ns.editboxFrames+1] = f
 	
 	return f
 end
 	
-C.prototypes["editbox"] = "CreateEditBox"
+ns.prototypes["editbox"] = "CreateEditBox"
 
 
 do
-	C.editboxFramesExtends = {}
+	ns.editboxFramesExtends = {}
 
 	local function Update(self, panel, opts)
 		
@@ -243,7 +243,7 @@ do
 		bg_border:SetBackdropColor(0, 0, 0, 0.3)
 		bg_border:SetBackdropBorderColor(0.8, 0.8, 0.8, 1)
 	
-		pf.Scroll = CreateFrame("ScrollFrame", "AleaUIEditBoxMultiLineScrollFrame"..#C.editboxFramesExtends+1, pf, "UIPanelScrollFrameTemplate")
+		pf.Scroll = CreateFrame("ScrollFrame", "AleaUIEditBoxMultiLineScrollFrame"..#ns.editboxFramesExtends+1, pf, "UIPanelScrollFrameTemplate")
 		pf.Scroll:SetFrameLevel(pf:GetFrameLevel() + 1)
 		
 		local focusFrame = CreateFrame('Frame', 'focusFrame', pf)
@@ -293,7 +293,7 @@ do
 			self.ok:Hide()
 			focusFrame:Show()
 			self:SetText(self.pf._OnShow() or "")
-			C:GetRealParent(self.pf):RefreshData()	
+			ns:GetRealParent(self.pf):RefreshData()	
 		end)
 		
 		local text = pf:CreateFontString(nil, 'OVERLAY', "GameFontNormalSmall")
@@ -314,7 +314,7 @@ do
 			focusFrame:Show()
 			self:GetParent():ClearFocus()
 			self:GetParent()._OnClick(_, self:GetParent():GetText())	
-			C:GetRealParent(self):RefreshData()	
+			ns:GetRealParent(self):RefreshData()	
 		end)
 		
 		okbttm.text = okbttm:CreateFontString(nil, 'OVERLAY', "GameFontNormalSmall")
@@ -337,10 +337,10 @@ do
 		f.mouseover:SetPoint("TOPLEFT", text, "TOPLEFT", -3, 3)
 		f.mouseover:SetPoint("BOTTOMRIGHT", text, "BOTTOMRIGHT", 3, -3)
 		f.mouseover:SetScript("OnEnter", function(self)	
-			C.Tooltip(self, self:GetParent()._rname, self:GetParent().desc, "show")
+			ns.Tooltip(self, self:GetParent()._rname, self:GetParent().desc, "show")
 		end)
 		f.mouseover:SetScript("OnLeave", function(self)
-			C.Tooltip(self, self:GetParent()._rname, self:GetParent().desc, "hide")
+			ns.Tooltip(self, self:GetParent()._rname, self:GetParent().desc, "hide")
 		end)
 		
 		
@@ -354,15 +354,15 @@ do
 		return pf
 	end
 
-	function C:CreateEditBoxExtends()
+	function ns:CreateEditBoxExtends()
 		
-		for i=1, #C.editboxFramesExtends do
-			if C.editboxFramesExtends[i].free then
-				return C.editboxFramesExtends[i]
+		for i=1, #ns.editboxFramesExtends do
+			if ns.editboxFramesExtends[i].free then
+				return ns.editboxFramesExtends[i]
 			end
 		end
 		
-		local f = CreateFrame("Frame", 'AleaUIGUI-EditBoxExtends'..#C.editboxFramesExtends+1, UIParent)
+		local f = CreateFrame("Frame", 'AleaUIGUI-EditBoxExtends'..#ns.editboxFramesExtends+1, UIParent)
 		f:SetSize(180, 100)
 		f.free = true
 		
@@ -383,11 +383,11 @@ do
 		f.SetDescription = SetDescription
 		f.UpdateSize = UpdateSize
 		
-		C.editboxFramesExtends[#C.editboxFramesExtends+1] = f
+		ns.editboxFramesExtends[#ns.editboxFramesExtends+1] = f
 		
 		return f
 	end
 		
-	C.prototypes["multieditbox"] = "CreateEditBoxExtends"
+	ns.prototypes["multieditbox"] = "CreateEditBoxExtends"
 
 end

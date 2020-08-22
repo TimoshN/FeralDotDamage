@@ -3,26 +3,14 @@ _G[AddOn] = ns
 
 local L = AleaUI_GUI.GetLocale("FeralDotDamage")
 
-local is70300 = false
-
 local versionStr, internalVersion, dateofpatch, uiVersion = GetBuildInfo(); internalVersion = tonumber(internalVersion)
 
 ns.version = GetAddOnMetadata(AddOn, "Version")
 ns.wowbuild = internalVersion
 ns.uibuild	= tonumber(uiVersion)
 
-if ns.uibuild >= 70300 then
-	is70300 = true
-end
-
-local rakeDamage = 0.80
-local rakeDamagePog = 0.2
-local shadowmeldDebug = false
-local movingFrame = CreateFrame("Frame", AddOn.."MainFrame", UIParent)
-movingFrame.elements = {}
-ns.movingFrame = movingFrame
-
-local order_spell = {}
+local is70300 = ns.uibuild >= 70300
+local isShadowlands = ns.uibuild >= 90000
 
 local build = select(2, GetBuildInfo())
 local versionStr, internalVersion, dateofpatch, uiVersion = GetBuildInfo()
@@ -79,6 +67,23 @@ RegisterSound("Sound\\Spells\\SimonGame_Visual_GameFailedSmall.ogg","Simon Faile
 RegisterSound("Sound\\Spells\\SimonGame_Visual_GameStart.ogg","Simon Start");
 RegisterSound("Sound\\Spells\\SimonGame_Visual_GameTick.ogg","Simon Tick");
 RegisterSound("Sound\\Spells\\SimonGame_Visual_LevelStart.ogg","Simon Level Start");
+
+
+
+local UNIT_HEALTH_EVENT = 'UNIT_HEALTH_FREQUENT'
+
+if ( isShadowlands ) then 
+	UNIT_HEALTH_EVENT = 'UNIT_HEALTH'
+end
+
+local rakeDamage = 0.80
+local rakeDamagePog = 0.2
+local shadowmeldDebug = false
+local movingFrame = CreateFrame("Frame", AddOn.."MainFrame", UIParent)
+movingFrame.elements = {}
+ns.movingFrame = movingFrame
+
+local order_spell = {}
 
 local imprived_rake_gained = false
 local moonfire_talent = false
@@ -1616,7 +1621,7 @@ function ns:AddBar(index)
 		
 		f.OnUpdate = OnUpdate
 		
-		f.backdrop = CreateFrame("Frame", nil, f)
+		f.backdrop = CreateFrame("Frame", nil, f, BackdropTemplateMixin and 'BackdropTemplate')
 		f.backdrop:SetFrameStrata("LOW")
 		
 		f.bg = f.backdrop:CreateTexture(nil, "BACKGROUND", nil, -2)
@@ -1624,7 +1629,7 @@ function ns:AddBar(index)
 		f.bg:SetPoint("BOTTOMRIGHT", f, "BOTTOMRIGHT", 1, -1)
 		f.bg:SetColorTexture(0,0,0,1)
 		
-		f.glow = CreateFrame("Frame", nil, f)
+		f.glow = CreateFrame("Frame", nil, f, BackdropTemplateMixin and 'BackdropTemplate')
 		f.glow:SetBackdrop({
 			edgeFile = "Interface\\ChatFrame\\ChatFrameBackground",
 			edgeSize = 2,
@@ -1639,7 +1644,7 @@ function ns:AddBar(index)
 		f.icon:SetTexCoord(0.08, 0.92, 0.08, 0.92)
 		f.icon:SetDrawLayer("BACKGROUND")
 		
-		f.icon.backdrop = CreateFrame("Frame", nil, f)
+		f.icon.backdrop = CreateFrame("Frame", nil, f, BackdropTemplateMixin and 'BackdropTemplate')
 		f.icon.backdrop:SetFrameStrata("LOW")
 		
 		f.icon.bg = f.icon.backdrop:CreateTexture(nil, "BACKGROUND", nil, -2)
@@ -1796,7 +1801,7 @@ function ns:AddIcon(index)
 		f.icon2:SetAllPoints()
 		f.icon2:SetColorTexture(0, 0, 0, 1)
 		
-		f.backdrop = CreateFrame("Frame", nil, f)
+		f.backdrop = CreateFrame("Frame", nil, f, BackdropTemplateMixin and 'BackdropTemplate')
 		f.backdrop:SetFrameStrata("LOW")
 		
 		f.bg = f.backdrop:CreateTexture(nil, "BACKGROUND", nil, -2)
@@ -1869,7 +1874,7 @@ function ns:AddIcon(index)
 			f.tringleTopLeftBg:SetTexCoord(1, 0, 1, 0)
 			f.tringleTopLeftBg:Hide()
 		
-		f.glow = CreateFrame("Frame", nil, f)
+		f.glow = CreateFrame("Frame", nil, f, BackdropTemplateMixin and 'BackdropTemplate')
 		f.glow:SetFrameLevel(f:GetFrameLevel()+1)
 		f.glow:SetBackdrop({
 			edgeFile = "Interface\\ChatFrame\\ChatFrameBackground",
@@ -1933,7 +1938,7 @@ function ns:AddIcon(index)
 		statusbar:SetMinMaxValues(0,3)
 		statusbar:SetValue(2)
 		
-		statusbar.backdrop = CreateFrame("Frame", nil, statusbar)
+		statusbar.backdrop = CreateFrame("Frame", nil, statusbar, BackdropTemplateMixin and 'BackdropTemplate')
 		statusbar.backdrop:SetFrameStrata("LOW")
 		
 		statusbar.bg = statusbar.backdrop:CreateTexture(nil, "BACKGROUND")
@@ -2238,7 +2243,7 @@ function ns:InitFrames()
 	
 	self:AddMoving(movingFrame)
 
-	local backdrop = CreateFrame("Frame", nil, movingFrame)
+	local backdrop = CreateFrame("Frame", nil, movingFrame, BackdropTemplateMixin and 'BackdropTemplate')
 	backdrop:SetFrameStrata("LOW")
 	movingFrame.backdrop = backdrop
 	
@@ -2279,7 +2284,7 @@ function ns:InitFrames()
 			movingFrame.cp[i]:SetStatusBarColor(1, 1, 0, 1)
 		end
 		
-		movingFrame.cp[i].backdrop = CreateFrame("Frame", nil, movingFrame.cp[i])
+		movingFrame.cp[i].backdrop = CreateFrame("Frame", nil, movingFrame.cp[i], BackdropTemplateMixin and 'BackdropTemplate')
 		movingFrame.cp[i].backdrop:SetFrameStrata("LOW")
 	
 		movingFrame.cp[i].bg = movingFrame.cp[i].backdrop:CreateTexture(nil, "BACKGROUND", nil, -1)
@@ -2305,7 +2310,7 @@ function ns:InitFrames()
 	energybar:SetMinMaxValues(0,100)
 	energybar:SetValue(50)
 	
-	energybar.backdrop = CreateFrame("Frame", nil, energybar)
+	energybar.backdrop = CreateFrame("Frame", nil, energybar, BackdropTemplateMixin and 'BackdropTemplate')
 	
 	energybar.bg = energybar:CreateTexture(nil, "BACKGROUND", nil, 0)
 	energybar.bg:SetPoint("TOPLEFT", energybar, "TOPLEFT", -1, 1)
@@ -2344,7 +2349,7 @@ function ns:InitFrames()
 		end
 	end
 	
-	energybar.glowIndicator = CreateFrame("Frame", nil, energybar)
+	energybar.glowIndicator = CreateFrame("Frame", nil, energybar, BackdropTemplateMixin and 'BackdropTemplate')
 	energybar.glowIndicator:SetFrameStrata("LOW")
 	energybar.glowIndicator:SetBackdrop( {	
  		edgeFile = "Interface\\AddOns\\FeralDotDamage\\glow", edgeSize = 3,
@@ -2405,7 +2410,7 @@ function ns:InitFrames()
 	
 --	self:AddMoving(manabar)
 	
-	manabar.backdrop = CreateFrame("Frame", nil, manabar)
+	manabar.backdrop = CreateFrame("Frame", nil, manabar, BackdropTemplateMixin and 'BackdropTemplate')
 
 	manabar.bg = manabar:CreateTexture(nil, "BACKGROUND", nil, 0)
 	manabar.bg:SetPoint("TOPLEFT", manabar, "TOPLEFT", -1, 1)
@@ -2439,7 +2444,7 @@ function ns:InitFrames()
 	
 --	self:AddMoving(manabar)
 	
-	healthbar.backdrop = CreateFrame("Frame", nil, healthbar)
+	healthbar.backdrop = CreateFrame("Frame", nil, healthbar, BackdropTemplateMixin and 'BackdropTemplate')
 
 	healthbar.bg = healthbar:CreateTexture(nil, "BACKGROUND", nil, 0)
 	healthbar.bg:SetPoint("TOPLEFT", healthbar, "TOPLEFT", -1, 1)
@@ -3298,7 +3303,7 @@ function ns:PLAYER_REGEN_ENABLED()
 end
 ns.PLAYER_REGEN_DISABLED = ns.PLAYER_REGEN_ENABLED
 
-function ns:UNIT_HEALTH_FREQUENT(event, unit)
+ns[UNIT_HEALTH_EVENT] = function(self, event, unit)
 	if unit ~= 'player' then return end
 	
 	local hp = UnitHealth('player')
@@ -3391,14 +3396,14 @@ do
 	local GetTalentInfo = GetTalentInfo
 	local MAX_TALENT_TIERS = MAX_TALENT_TIERS
 	local GetInventoryItemID = GetInventoryItemID
-	
+
 	local feraldd_spec = 103
 	local guardian_spec = 104
 	
 	local function IsTalentKnown(spellID)
 		for i=1, MAX_TALENT_TIERS do
 			for a=1, 3 do
-				local talentID, name, texture, selected, availible, spellID_talent = GetTalentInfo(i, a, GetActiveSpecGroup())
+				local talentID, name, texture, selected, availible, spellID_talent = GetTalentInfo(i, a, 1)
 
 				if selected then
 					if spellID == spellID_talent then
@@ -3480,7 +3485,7 @@ do
 		
 		ns:RegisterEvent("UNIT_POWER_FREQUENT")
 		ns:RegisterEvent("UPDATE_SHAPESHIFT_FORM")
-		ns:RegisterEvent("UNIT_HEALTH_FREQUENT")
+		ns:RegisterEvent(UNIT_HEALTH_EVENT)
 		
 		ns.powerWhileGuardianDruid = ns.db.profile.show_for_guardian_spec and currentSpecID == guardian_spec or false
 		
@@ -3527,7 +3532,7 @@ do
 			ns:RegisterEvent('PLAYER_ENTERING_WORLD')
 		end
 		
-		ns:UNIT_HEALTH_FREQUENT(nil, 'player')
+		ns[UNIT_HEALTH_EVENT](ns, nil, 'player')
 		ns:PLAYER_REGEN_ENABLED()
 		ns:UpdateFramesStyle()
 	end
@@ -4053,7 +4058,7 @@ do
 	local function createbutton(parent, name)
 		if not parent.buttons then parent.buttons = {} end
 		
-		local f = CreateFrame("Button", nil , parent)
+		local f = CreateFrame("Button", nil , parent, BackdropTemplateMixin and 'BackdropTemplate')
 		f:SetFrameLevel(parent:GetFrameLevel() + 1)
 		f.parent = parent
 		f:SetText(name)
@@ -4104,7 +4109,7 @@ do
 	
 	local function createeditboxe(parent)
 		if not parent.editboxes then parent.editboxes = {} end
-		local textbox = CreateFrame("EditBox", nil, parent)
+		local textbox = CreateFrame("EditBox", nil, parent, BackdropTemplateMixin and 'BackdropTemplate')
 		textbox:SetFont("Fonts\\ARIALN.TTF", 12, "OUTLINE")
 		textbox:SetFrameLevel(parent:GetFrameLevel() + 1)
 		textbox:SetAutoFocus(false)
@@ -4356,7 +4361,7 @@ do
 
 		local _width, _height = frame:GetSize()
 		
-		local mover = CreateFrame("Frame", nil, UIParent)
+		local mover = CreateFrame("Frame", nil, UIParent, BackdropTemplateMixin and 'BackdropTemplate')
 		mover.opt = opt
 		mover.parent = frame
 		mover:SetSize(10,10)

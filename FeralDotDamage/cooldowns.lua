@@ -250,25 +250,26 @@ perSpellMethids = {
 local placeholder = {
 	[ns.dikiyrev_glyph_spid] = ns.dikiyrev_spid,
 	[279526] = ns.berserk_spid,
+	[108291] = 319454,
 }
 
 local spells_to_show = {
 	{ id = ns.berserk_spid, 		cd = 180 ,	default = true,  tip = COOLDOWN_AURA_TAG, onShowGlow = 'AzeritBerserkTrait' },
-	{ id = ns.tigrinoe_spid, 	cd = 30 ,	default = true,  tip = COOLDOWN_AURA_TAG, onTimeIcon = 'Art_Regen' },
-	{ id = ns.skullbuch_spid, 	cd = 15	,	default = false, tip = COOLDOWN_AURA_TAG	},
+	{ id = ns.tigrinoe_spid, 		cd = 30 ,	default = true,  tip = COOLDOWN_AURA_TAG, onTimeIcon = 'Art_Regen' },
+	{ id = ns.skullbuch_spid,		cd = 15	,	default = false, tip = COOLDOWN_AURA_TAG	},
 	{ id = ns.dash_spid,			cd = 180,	default = false, tip = COOLDOWN_AURA_TAG	},
 	{ id = ns.survival_spid,		cd = 120,	default = false, tip = COOLDOWN_AURA_TAG	},
 	{ id = ns.predator_spid,		cd = 12,	default = true,  tip = AURA_TAG			 , onTimeIcon = "Predator" },
 	{ id = ns.trollberserk_spid,	cd = 12,	default = true,  tip = COOLDOWN_AURA_TAG	},
-	{ id = ns.krovaviekogti_spid,cd = 30,	default = true,  tip = AURA_TAG			 , talent = 155672 },
+	{ id = ns.krovaviekogti_spid,	cd = 30,	default = true,  tip = AURA_TAG			 , talent = 155672 },
 	{ id = ns.sremit_rivok_spid,	cd = 15,	default = false, tip = COOLDOWN_TAG 	 , talent = 102401 },
 	{ id = ns.trevogniyrev_spid,	cd = 120,	default = false, tip = COOLDOWN_AURA_TAG},
-	{ id = ns.clearcast_id,		cd = 15,	default = false, tip = AURA_TAG, },
+	{ id = ns.clearcast_id,			cd = 15,	default = false, tip = AURA_TAG, },
 	{ id = ns.dikiyrev_spid,		cd = 40,	default = false, tip = AURA_TAG, onTimeIcon = "CP_ShowPandemia", onShowGlow = "CP_ShowGlow", talent = 52610 },
-	{ id = ns.feralFrenzy_spid,	cd = 45,	default = true,  tip = COOLDOWN_TAG,	   talent = 274837 },
-	{ id = ns.ydarkogtiami_spid, cd = 16, 	default = true,  tip = COOLDOWN_TAG,	   talent = ns.ydarkogtiami_spid },
-	
-	{ id = ns.maim_spid,			cd = 1,		default = true,  tip = COOLDOWN_TAG,  onUpdate = 'Maim_LegendaryProc', item = 144354	},
+	{ id = ns.feralFrenzy_spid,		cd = 45,	default = true,  tip = COOLDOWN_TAG,	   talent = 274837 },
+	{ id = ns.ydarkogtiami_spid, 	cd = 16, 	default = true,  tip = COOLDOWN_TAG,	   talent = ns.ydarkogtiami_spid },
+	{ id = ns.maim_spid,			cd = 1,		default = true,  tip = COOLDOWN_TAG,  onUpdate = 'Maim_LegendaryProc', item = 144354 },
+	{ id = 319454, 					cd = 5*60,  default = false, tip = COOLDOWN_AURA_TAG, talent = 319454  }
 }
 
 local id_to_spell = {}
@@ -467,7 +468,7 @@ function ns:AddCooldownIcon(spellid, parent)
 	f.icon2:SetAllPoints()
 	f.icon2:SetColorTexture(0, 0, 0, 1)
 	
-	f.backdrop = CreateFrame("Frame", nil, f)
+	f.backdrop = CreateFrame("Frame", nil, f, BackdropTemplateMixin and 'BackdropTemplate')
 	f.backdrop:SetFrameStrata("LOW")
 	
 	f.bg = f.backdrop:CreateTexture(nil, "BACKGROUND", nil, -2)
@@ -523,7 +524,7 @@ function ns:AddCooldownIcon(spellid, parent)
 	stack:SetJustifyV("BOTTOM")
 	stack:SetText("")
 
-	f.glow = CreateFrame("Frame", nil, cd)
+	f.glow = CreateFrame("Frame", nil, cd, BackdropTemplateMixin and 'BackdropTemplate')
 	f.glow:SetFrameLevel(cd:GetFrameLevel()+2)
 	f.glow:SetBackdrop({
 		edgeFile = "Interface\\ChatFrame\\ChatFrameBackground",
@@ -688,7 +689,7 @@ function ns:AddStatusBar(spellid, parent)
 	
 	statusbar:GetStatusBarTexture():SetDrawLayer("ARTWORK", 1)
 	
-	statusbar.backdrop = CreateFrame("Frame", nil, statusbar)
+	statusbar.backdrop = CreateFrame("Frame", nil, statusbar, BackdropTemplateMixin and 'BackdropTemplate')
 	statusbar.backdrop:SetFrameStrata("LOW")
 	
 	statusbar.bg = statusbar.backdrop:CreateTexture(nil, "BACKGROUND")
@@ -1215,7 +1216,7 @@ function ns:UpdateCooldownStyleOpts(o)
 		}
 		
 		o.args.swipe_alpha_test = {
-			order = 2.1, name = L["Оверлей перезарядки"],
+			order = 2.1, name = L["Текстура перезарядки"],
 			type = "slider", min = 0, max = 1, step = 0.1,
 			set = function(self, value)
 				ns.db.profile.cooldowns.swipe_alpha = value;

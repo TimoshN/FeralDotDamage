@@ -76,11 +76,14 @@ local SendAddonMessage = C_ChatInfo and C_ChatInfo.SendAddonMessage or SendAddon
 ]==]
 
 local libOwner = ...
-local C = _G['AleaGUI_PrototypeLib']
+local ns = _G['AleaGUI_PrototypeLib']
+
+_G['AleaUI_GUI'] = ns
+
 local options
 local scan
 local default = {}
-local version = 77
+local version = 83
 local debugging = false
 
 local cvarSettings = 'AleaGUI_enablePerSpecProfile'
@@ -128,14 +131,14 @@ local function addDefaultOptions(t1, t2)
 	end
 end
 
-C.addDefaultOptions = addDefaultOptions
+ns.addDefaultOptions = addDefaultOptions
 
 
 do
 	local temp = {}
-	for k,v in pairs(C.prototypes) do
+	for k,v in pairs(ns.prototypes) do
 		for i=1, 10 do
-			temp[i] = C[v](C)
+			temp[i] = ns[v](ns)
 			temp[i].free = false
 		end
 		for i=1, 10 do
@@ -187,7 +190,7 @@ do
 		return app._mtt
 	end
 	
-	C.GetTranslate = function(addon, locale, default)
+	ns.GetTranslate = function(addon, locale, default)
 	
 		local gameLocale = GAME_LOCALE or gameLocale
 
@@ -202,12 +205,12 @@ do
 		return locales[addon]
 	end
 	
-	C.GetLocale = function(addon)
+	ns.GetLocale = function(addon)
 		return locales[addon]
 	end
 	
 	
-	C.ExtractLovelArgs = function(addon, db)
+	ns.ExtractLovelArgs = function(addon, db)
 	
 		for k,v in pairs(missings[addon]) do
 			
@@ -240,7 +243,7 @@ do
 		_G[slashtag..slashName..db[slashName]] = command	
 	end
 	
-	C.SlashCommand = Slash
+	ns.SlashCommand = Slash
 end
 
 do
@@ -404,7 +407,7 @@ do
 		return button
 	end
 	
-	C.MinimapButton = function(addon, data, settings)
+	ns.MinimapButton = function(addon, data, settings)
 	
 		if not minimapsbuttons[addon] then
 			minimapsbuttons[addon] = MinimapButtonCreate(data.texture, addon)
@@ -416,11 +419,10 @@ do
 		minimapsbuttons[addon]:Update()		
 	end
 	
-	C.GetMinimapButton = function(addon)	
+	ns.GetMinimapButton = function(addon)	
 		return minimapsbuttons[addon]
 	end
 end
-AleaUI_GUI = C
 
 local MAX_NUM_SPECS = 2
 local separator = " - "
@@ -565,23 +567,23 @@ do
 			_G[variable].profileKeys[profileOwner] = {}
 
 			if usedefault then
-				for i=1, C.isClassic and 1 or GetNumSpecializations() do
+				for i=1, ns.isClassic and 1 or GetNumSpecializations() do
 					_G[variable].profileKeys[profileOwner][i] = DEFAULT_NAME
 				end
 			else
-				for i=1, C.isClassic and 1 or GetNumSpecializations() do
+				for i=1, ns.isClassic and 1 or GetNumSpecializations() do
 					_G[variable].profileKeys[profileOwner][i] = profileOwner		
 				end
 			end
 		else	
 			if usedefault then
-				for i=1, C.isClassic and 1 or GetNumSpecializations() do
+				for i=1, ns.isClassic and 1 or GetNumSpecializations() do
 					if not _G[variable].profileKeys[profileOwner][i] then
 						_G[variable].profileKeys[profileOwner][i] = DEFAULT_NAME
 					end
 				end
 			else
-				for i=1, C.isClassic and 1 or GetNumSpecializations() do
+				for i=1, ns.isClassic and 1 or GetNumSpecializations() do
 					if not _G[variable].profileKeys[profileOwner][i] then
 						_G[variable].profileKeys[profileOwner][i] = profileOwner		
 					end
@@ -618,7 +620,7 @@ do
 			
 			_G[variable].profileKeys[profileOwner] = {}
 			
-			for i=1, C.isClassic and 1 or GetNumSpecializations() do
+			for i=1, ns.isClassic and 1 or GetNumSpecializations() do
 				_G[variable].profileKeys[profileOwner][i] = oldprofile		
 			end	
 		end
@@ -626,7 +628,7 @@ do
 		local activespec
 		local instance
 		
-		activespec = C.isClassic and 1 or ( GetSpecialization() and GetSpecialization() > 0 ) and GetSpecialization() or 1
+		activespec = ns.isClassic and 1 or ( GetSpecialization() and GetSpecialization() > 0 ) and GetSpecialization() or 1
 		
 		if not _G[variable].profileKeys[profileOwner][_G[variable][cvarSettings] and activespec or 1] then		
 			_G[variable].profileKeys[profileOwner][_G[variable][cvarSettings] and activespec or 1] = DEFAULT_NAME
@@ -648,9 +650,9 @@ do
 end
 
 local h = CreateFrame("Frame")
-if ( not C.isClassic ) then
+if ( not ns.isClassic ) then
 	h:RegisterEvent("PLAYER_TALENT_UPDATE")
-	print('RegisterEvent("PLAYER_TALENT_UPDATE")', C.IsLegion )
+	print('RegisterEvent("PLAYER_TALENT_UPDATE")', ns.IsLegion )
 end
 h:SetScript("OnEvent", function(self, event)
 	self[event](self, event)
@@ -1159,7 +1161,7 @@ function ALEAUI_GetProfileOptions(db, singleSpec)
 	}
 	
 	
-	if C.IsLegion then	
+	if ns.IsLegion then	
 		f.args.enableMultiSpecProfile = {
 			name = L_ENABLED,
 			desc = L_ENABLED_DESC,
@@ -1490,7 +1492,7 @@ do
 		return frames[#frames]
 	end
 	
-	C.ShowPopUp = function(addon, message, leftbutton, rightbutton)
+	ns.ShowPopUp = function(addon, message, leftbutton, rightbutton)
 		
 		local f = GetFrame()
 		f.free = false
@@ -1522,7 +1524,7 @@ do
 	local addon = 'ALEAGUIINFO'
 	local command = '/aleaguiinfo'
 	local elemets = { 'mainFrames', 'treeGroupFrames', 'treeGroupFramesElements', 'toggleBorders', 'executeFrames', 'toggleFrames', 'colorFrames', 'toggleDropdowns', 'editboxFrames', 'fontFrames', 'groupFrames','sliderFrames', 'soundFrames', 'toggleStatusBars', 'stringFrames' }
-	local prots = C.prototypes
+	local prots = ns.prototypes
 	
 	local func = function()
 		old_print('--------------------------')
@@ -1532,13 +1534,13 @@ do
 		old_print('--------------------------')
 		old_print('Usade in:')
 		local i=1
-		for addon in pairs(C.RegisteredAddons) do
+		for addon in pairs(ns.RegisteredAddons) do
 			old_print('  #'..i..". "..addon)
 			i = i + 1
 		end
 		old_print('Amount elements:')
 		for i, elem in pairs(elemets) do
-			old_print('  #'..i..". "..elem..": "..#C[elem])
+			old_print('  #'..i..". "..elem..": "..#ns[elem])
 		end
 		old_print('Registered Prototypes:')
 		i=1
@@ -1548,5 +1550,5 @@ do
 		end
 	end
 	
-	C.SlashCommand(addon, command, func)
+	ns.SlashCommand(addon, command, func)
 end

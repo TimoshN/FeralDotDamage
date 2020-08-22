@@ -1,7 +1,7 @@
 if AleaUI_GUI then return end
-local C = _G['AleaGUI_PrototypeLib']
+local ns = _G['AleaGUI_PrototypeLib']
 
-C.executeFrames = {}
+ns.executeFrames = {}
 
 local function Update(self, panel, opts)
 	self.free = false
@@ -62,10 +62,10 @@ local function CreateCoreButton(parent)
 	f:SetFrameLevel(parent:GetFrameLevel() + 2)
 
 	f:SetScript("OnEnter", function(self)	
-		C.Tooltip(self, self._rname, self.desc, "show")
+		ns.Tooltip(self, self._rname, self.desc, "show")
 	end)
 	f:SetScript("OnLeave", function(self)
-		C.Tooltip(self, self._rname, self.desc, "hide")
+		ns.Tooltip(self, self._rname, self.desc, "hide")
 	end)
 	
 	f:SetScript("OnMouseUp", function(self)
@@ -82,7 +82,7 @@ local function CreateCoreButton(parent)
 		PlaySound(SOUNDKIT and SOUNDKIT.IG_MAINMENU_OPTION or "igMainMenuOption");
 		
 		self._OnClick()
-		C:GetRealParent(self):RefreshData()
+		ns:GetRealParent(self):RefreshData()
 	end)
 
 	local text = f:CreateFontString(nil, 'OVERLAY', "GameFontHighlight")
@@ -97,15 +97,15 @@ local function CreateCoreButton(parent)
 	return f
 end
 
-function C:CreateExecuteButton()
+function ns:CreateExecuteButton()
 	
-	for i=1, #C.executeFrames do
-		if C.executeFrames[i].free then
-			return C.executeFrames[i]
+	for i=1, #ns.executeFrames do
+		if ns.executeFrames[i].free then
+			return ns.executeFrames[i]
 		end
 	end
 	
-	local f = CreateFrame("Frame", 'AleaUIGUI-ExecuteButton'..#C.executeFrames+1, UIParent)
+	local f = CreateFrame("Frame", 'AleaUIGUI-ExecuteButton'..#ns.executeFrames+1, UIParent)
 	f:SetSize(180, 35)
 	f.free = true
 	
@@ -124,9 +124,9 @@ function C:CreateExecuteButton()
 	f.SetDescription = SetDescription
 	f.UpdateSize = UpdateSize
 	
-	C.executeFrames[#C.executeFrames+1] = f
+	ns.executeFrames[#ns.executeFrames+1] = f
 	
 	return f
 end
 	
-C.prototypes["execute"] = "CreateExecuteButton"
+ns.prototypes["execute"] = "CreateExecuteButton"

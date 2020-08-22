@@ -1,9 +1,9 @@
 ﻿if AleaUI_GUI then return end
-local C = _G['AleaGUI_PrototypeLib']
+local ns = _G['AleaGUI_PrototypeLib']
 
-C.DD = {}
+ns.DD = {}
 
-local DD = C.DD
+local DD = ns.DD
 
 local NUM_BUTTONS = 10
 local BUTTON_HEIGHT = 20
@@ -21,7 +21,7 @@ local wipe = table.wipe
 local buttons = {}
 local _
 local table_sort = table.sort
-local statearrow = C.statearrow
+local statearrow = ns.statearrow
 
 function DD.buildList(t)
 
@@ -128,7 +128,7 @@ DD.dropdown = CreateFrame("Frame")
 DD.dropdown:SetSize(300, 200)
 DD.dropdown.bg = DD.dropdown:CreateTexture()
 DD.dropdown.bg:SetAllPoints()
-if C.IsLegion then 
+if ns.IsLegion then 
 	DD.dropdown.bg:SetColorTexture(0, 0,0, 0.8)
 else
 	DD.dropdown.bg:SetTexture(0, 0,0, 0.8)
@@ -171,7 +171,7 @@ DD.dropdown.HideBorder = function(self)
 end
 
 local spacing = -5
-DD.scrollFrame = CreateFrame("ScrollFrame", "AleaUIGUINormalScrollingFrame"..C:GetNumFrames(), DD.dropdown, "FauxScrollFrameTemplate")
+DD.scrollFrame = CreateFrame("ScrollFrame", "AleaUIGUINormalScrollingFrame"..ns:GetNumFrames(), DD.dropdown, "FauxScrollFrameTemplate")
 DD.scrollFrame:SetWidth(BUTTON_WIDTH)
 DD.scrollFrame:SetFrameLevel(DD.dropdown:GetFrameLevel()+1)
 DD.scrollFrame:SetPoint("TOPRIGHT",DD.dropdown, "TOPRIGHT", -spacing, 0)
@@ -194,7 +194,7 @@ DD.scrollFrame.ScrollBar:GetThumbTexture():SetDrawLayer("OVERLAY", 1)
 DD.scrollFrame.ScrollBar:SetFrameLevel(DD.scrollFrame:GetFrameLevel()+2)
 DD.scrollFrame.ScrollBar.bg = DD.scrollFrame.ScrollBar:CreateTexture(nil, "OVERLAY")
 DD.scrollFrame.ScrollBar.bg:SetAllPoints()
-if C.IsLegion then 
+if ns.IsLegion then 
 DD.scrollFrame.ScrollBar.bg:SetColorTexture(0, 0, 0, 0.6)
 else
 DD.scrollFrame.ScrollBar.bg:SetTexture(0, 0, 0, 0.6)
@@ -279,7 +279,7 @@ for i = 1, NUM_BUTTONS do
 		--	print('T1', DD.dropdown.parent)
 			
 			if DD.dropdown.parent then
-				C:GetRealParent(DD.dropdown.parent):RefreshData()	
+				ns:GetRealParent(DD.dropdown.parent):RefreshData()	
 			end
 		end)
 		
@@ -287,15 +287,15 @@ for i = 1, NUM_BUTTONS do
 			self.mouseup:Show()		
 	
 			if self.showSpellTooltip and self.key and tonumber(self.key) and GetSpellInfo(self.key) then
-				C.Tooltip(DD.dropdown.parent, self._name, self.desc, "show", "spell:"..self.key, string.match(self._name,"|T(.-):"))
+				ns.Tooltip(DD.dropdown.parent, self._name, self.desc, "show", "spell:"..self.key, string.match(self._name,"|T(.-):"))
 			elseif self.showSpellTooltip then
 				local mtch = string.match(self._name, "#(%d+)")
 				
 				if mtch and tonumber(mtch) and GetSpellInfo(tonumber(mtch)) then
-					C.Tooltip(DD.dropdown.parent, self._name, self.desc, "show", "spell:"..tonumber(mtch), string.match(self._name,"|T(.-):"))
+					ns.Tooltip(DD.dropdown.parent, self._name, self.desc, "show", "spell:"..tonumber(mtch), string.match(self._name,"|T(.-):"))
 				end
 			elseif not self.border and not self.statusbar then
-				C.Tooltip(DD.dropdown.parent, self._name, self.desc, "show")
+				ns.Tooltip(DD.dropdown.parent, self._name, self.desc, "show")
 			end
 
 			if self.border then
@@ -307,7 +307,7 @@ for i = 1, NUM_BUTTONS do
 		button:SetScript("OnLeave", function(self, ...)
 			self.mouseup:Hide()
 			
-			C.Tooltip(DD.dropdown, self._name, self.desc, "hide")
+			ns.Tooltip(DD.dropdown, self._name, self.desc, "hide")
 			
 			if self.border then
 				DD.dropdown:updateBorder(self.border)
@@ -339,7 +339,7 @@ local function UpdateDD(f,key)
 	if DD.dropdown.parent then
 		DD.dropdown.parent.arrow.text:SetText(statearrow[2])
 	end
-	local realparent = C:GetRealParent(f)
+	local realparent = ns:GetRealParent(f)
 	DD.dropdown:SetParent(realparent)
 	
 	DD.dropdown:ClearAllPoints()
@@ -376,10 +376,10 @@ end
 
 function DD.Show(f,key)
 	
-	C:FreeDropDowns(DD)
+	ns:FreeDropDowns(DD)
 	
---	C.DDFonts.HideFonts()
---	C.DDSounds.HideFonts()
+--	ns.DDFonts.HideFonts()
+--	ns.DDSounds.HideFonts()
 
 	if DD.dropdown.parent and DD.dropdown.parent ~= f then
 		UpdateDD(f,key)

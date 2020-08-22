@@ -266,3 +266,5 @@ L["цвет КП"] = "CP color"
 L["Ширина"] = "Width"
 L["Отступ Фона"] = "Background gap"
 L["Пандемия"] = "Pandemic"
+L["Текстура перезарядки"] = 'Coondown texture'
+L["Индикатор расстояния"] = 'Distance indicator'

@@ -29,7 +29,7 @@ local function GetIcon()
 	icon:SetAllPoints()
 	icon:SetTexCoord(0.08, 0.92, 0.08, 0.92)
 
-	f.backdrop = CreateFrame("Frame", nil, f)
+	f.backdrop = CreateFrame("Frame", nil, f, BackdropTemplateMixin and 'BackdropTemplate')
 	f.backdrop:SetFrameStrata("LOW")
 	
 	f.bg = f.backdrop:CreateTexture(nil, "BACKGROUND", nil, -2)
@@ -283,7 +283,7 @@ local function GetStatusbar()
 	icon:SetSize(20, 20)
 	icon:SetTexCoord(0.08, 0.92, 0.08, 0.92)
 
-	f.icon_backdrop = CreateFrame("Frame", nil, f)
+	f.icon_backdrop = CreateFrame("Frame", nil, f, BackdropTemplateMixin and 'BackdropTemplate')
 	f.icon_backdrop:SetFrameStrata("LOW")
 	
 	f.icon_bg = f.icon_backdrop:CreateTexture(nil, "BACKGROUND", nil, -2)

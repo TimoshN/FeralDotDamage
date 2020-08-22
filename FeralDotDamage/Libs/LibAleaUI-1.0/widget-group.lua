@@ -1,7 +1,7 @@
 if AleaUI_GUI then return end
-local C = _G['AleaGUI_PrototypeLib']
+local ns = _G['AleaGUI_PrototypeLib']
 
-C.groupFrames = {}
+ns.groupFrames = {}
 
 local function Update(self, panel, opts, parent, datapath)
 	
@@ -19,7 +19,7 @@ end
 
 local function UpdateSize(self, panel, opts, parent, datapath)
 	if parent then
-		local step = C.GetNumInGroups(self) - 2
+		local step = ns.GetNumInGroups(self) - 2
 		
 		if step == 1 then
 			self:SetWidth( parent:GetWidth()- 18 )
@@ -39,8 +39,8 @@ end
 local function Remove(self)
 	self.free = true
 	
-	C:FreeAllElements(self)
-	C:FreeAllChilds(self)
+	ns:FreeAllElements(self)
+	ns:FreeAllChilds(self)
 	
 	self:Hide()
 	self:ClearAllPoints()
@@ -67,8 +67,8 @@ end
 
 local function UpdateState(self, panel, args, arg1, datapath)
 	
-	C:FreeAllElements(self, 'group')
-	C:FreeAllChilds(self, 'group')
+	ns:FreeAllElements(self, 'group')
+	ns:FreeAllChilds(self, 'group')
 	
 	local panel_width = self:GetWidth()+10
 	local elements_row = floor(panel_width/180)
@@ -78,7 +78,7 @@ local function UpdateState(self, panel, args, arg1, datapath)
 		s[#s+1] = { name = name, order = data1.order }
 	end
 	
-	C:SortTree(s)
+	ns:SortTree(s)
 	
 	local frames = 0
 	local index = 0
@@ -95,7 +95,7 @@ local function UpdateState(self, panel, args, arg1, datapath)
 		if prototype ~= "group" then
 			index = index + 1
 			if not self.elements[index] then
-				self.elements[index] = C:GetPrototype(prototype)
+				self.elements[index] = ns:GetPrototype(prototype)
 				self.elements[index]:Update(panel, opts, self, datapath)
 			end
 			if self.elements[index].UpdateSize then
@@ -159,7 +159,7 @@ local function UpdateState(self, panel, args, arg1, datapath)
 		elseif prototype == "group" and opts.embend == true then
 			index = index + 1		
 			if not self.elements[index] then
-				self.elements[index] = C:GetPrototype(prototype)
+				self.elements[index] = ns:GetPrototype(prototype)
 				self.elements[index]:Update(panel, opts, self, datapath)
 			end
 			if self.elements[index].UpdateSize then
@@ -191,15 +191,15 @@ local function UpdateState(self, panel, args, arg1, datapath)
 	self:SetHeight(totalheight+10)
 end
 
-function C:CreateGroup()
+function ns:CreateGroup()
 	
-	for i=1, #C.groupFrames do
-		if C.groupFrames[i].free then
-			return C.groupFrames[i]
+	for i=1, #ns.groupFrames do
+		if ns.groupFrames[i].free then
+			return ns.groupFrames[i]
 		end
 	end
 	
-	local f = CreateFrame("Frame", 'AleaUIGUI-GroupFrame'..#C.groupFrames+1, UIParent)
+	local f = CreateFrame("Frame", 'AleaUIGUI-GroupFrame'..#ns.groupFrames+1, UIParent)
 	f:SetSize(200, 200)
 	f.free = true
 	f.elements = {}
@@ -218,7 +218,7 @@ function C:CreateGroup()
 --		insets = {top = 0, left = 0, bottom = 0, right = 0},
 --		})
 --	bg:SetBackdropColor(0, 0, 0, 0.4) --���� ����
---	bg:SetBackdropBorderColor(unpack(C.button_border_color_ondown)) --���� �����
+--	bg:SetBackdropBorderColor(unpack(ns.button_border_color_ondown)) --���� �����
 	
 	bg:SetPoint("TOPLEFT", f.main, "TOPLEFT", 0, -5)
 	bg:SetPoint("BOTTOM", f, "BOTTOM", 0, 0)
@@ -246,7 +246,7 @@ function C:CreateGroup()
 	text:SetPoint("BOTTOMLEFT", f.main, "TOPLEFT", 3 , -2)
 --	text:SetFont(STANDARD_TEXT_FONT, 12, "OUTLINE")
 	text:SetText("TEST")
-	text:SetTextColor(C.fontNormal[1],C.fontNormal[2],C.fontNormal[3],C.fontNormal[4])
+	text:SetTextColor(ns.fontNormal[1],ns.fontNormal[2],ns.fontNormal[3],ns.fontNormal[4])
 	text:SetJustifyH("LEFT")
 	text:SetWordWrap(false)
 	
@@ -263,9 +263,9 @@ function C:CreateGroup()
 	f.SetElementPosition = SetElementPosition
 	f.UpdateSize = UpdateSize
 	
-	C.groupFrames[#C.groupFrames+1] = f
+	ns.groupFrames[#ns.groupFrames+1] = f
 	
 	return f
 end
 	
-C.prototypes["group"] = "CreateGroup"
+ns.prototypes["group"] = "CreateGroup"

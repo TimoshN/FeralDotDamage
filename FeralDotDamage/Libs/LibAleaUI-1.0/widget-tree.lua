@@ -1,26 +1,26 @@
 if AleaUI_GUI then return end
-local C = _G['AleaGUI_PrototypeLib']
+local ns = _G['AleaGUI_PrototypeLib']
 
-C.treeGroupFrames = {}
-C.treeGroupFramesElements = {}
+ns.treeGroupFrames = {}
+ns.treeGroupFramesElements = {}
 
 local string_height = 16
 
 local function PrintSubElements(self, datas, maintree)
 
 	if datas.subelement then
-		C:SortTree(datas.subelement)
+		ns:SortTree(datas.subelement)
 		for i, data in pairs(datas.subelement) do
 			if data.show then
 				self.id = self.id + 1
-				C:GetTreeGroupElement(self, maintree..";"..data.name):UpdatePoint(self, data.realname, self.id, data.hidden and 0 or ( data.subelement and #data.subelement or 0), data.toggle)
+				ns:GetTreeGroupElement(self, maintree..";"..data.name):UpdatePoint(self, data.realname, self.id, data.hidden and 0 or ( data.subelement and #data.subelement or 0), data.toggle)
 				PrintSubElements(self, data, maintree..";"..data.name)
 			end
 		end
 	end
 end
 	
-function C:GetTreeGroupElement(parent, main)
+function ns:GetTreeGroupElement(parent, main)
 	for i=1, #self.treeGroupFramesElements do		
 		if self.treeGroupFramesElements[i].free then
 			self.treeGroupFramesElements[i].main = main	
@@ -28,7 +28,7 @@ function C:GetTreeGroupElement(parent, main)
 		end
 	end
 	
-	local f = CreateFrame("Button", 'AleaUIGUI-TreeElement'..#C.treeGroupFramesElements+1, parent.buttonParent)
+	local f = CreateFrame("Button", 'AleaUIGUI-TreeElement'..#ns.treeGroupFramesElements+1, parent.buttonParent)
 	f:SetSize(200, string_height)	
 	f:SetParent(parent.buttonParent)
 	f:Show()
@@ -39,7 +39,7 @@ function C:GetTreeGroupElement(parent, main)
 		self:GetParent():GetParent():GetParent():GetParent().datapath = self.main	
 		
 	--	print("T", self.main)
-		C.openedmainFrames[self:GetParent():GetParent():GetParent():GetParent().addon]:Update(self:GetParent():GetParent():GetParent():GetParent().addon)
+		ns.openedmainFrames[self:GetParent():GetParent():GetParent():GetParent().addon]:Update(self:GetParent():GetParent():GetParent():GetParent().addon)
 		
 		PlaySound(SOUNDKIT and SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_ON or "igMainMenuOptionCheckBoxOn")
 	end)
@@ -60,12 +60,12 @@ function C:GetTreeGroupElement(parent, main)
 		
 		for i=1, select("#", strsplit(";", self:GetParent().main)) do
 			local arg = select(i, strsplit(";", self:GetParent().main))
-			datas = datas or C.RegisteredAddons[self:GetParent():GetParent():GetParent():GetParent():GetParent().addon]
+			datas = datas or ns.RegisteredAddons[self:GetParent():GetParent():GetParent():GetParent():GetParent().addon]
 			
 			datas = datas.args[arg]
 		end
 	
-		datas = datas or C.RegisteredAddons[self:GetParent():GetParent():GetParent():GetParent():GetParent().addon].args[self:GetParent():GetParent():GetParent().main]
+		datas = datas or ns.RegisteredAddons[self:GetParent():GetParent():GetParent():GetParent():GetParent().addon].args[self:GetParent():GetParent():GetParent().main]
 			
 		if datas._expand == nil and datas.expand == true then
 			datas._expand = false
@@ -73,12 +73,12 @@ function C:GetTreeGroupElement(parent, main)
 			datas._expand = not datas._expand
 		end
 			
-		C.openedmainFrames[self:GetParent():GetParent():GetParent():GetParent():GetParent().addon]:Update(self:GetParent():GetParent():GetParent():GetParent():GetParent().addon)
+		ns.openedmainFrames[self:GetParent():GetParent():GetParent():GetParent():GetParent().addon]:Update(self:GetParent():GetParent():GetParent():GetParent():GetParent().addon)
 	end)
 	--[==[
 	f.exp.bg = f.exp:CreateTexture(nil, "ARTWORK")
 	f.exp.bg:SetAllPoints()
-	if C.IsLegion then
+	if ns.IsLegion then
 		f.exp.bg:SetColorTexture(1,0,0,1)
 	else
 		f.exp.bg:SetTexture(1,0,0,1)
@@ -116,14 +116,14 @@ function C:GetTreeGroupElement(parent, main)
 	f.mouseup:SetVertexColor(1,1, 1, 0.5)
 	f:SetScript("OnEnter", function(self, ...)
 		if self.changetextcolor then
-			self.text:SetTextColor(C.fontOnMouse[1],C.fontOnMouse[2],C.fontOnMouse[3],C.fontOnMouse[4])
+			self.text:SetTextColor(ns.fontOnMouse[1],ns.fontOnMouse[2],ns.fontOnMouse[3],ns.fontOnMouse[4])
 		end
 
 		self.mouseup:Show()
 		
 		if self.choosen then
 		--	self.mouseup:SetVertexColor(1, 1, 0, 0.7)
-			self.text:SetTextColor(C.fontOnMouse[1],C.fontOnMouse[2],C.fontOnMouse[3],C.fontOnMouse[4])
+			self.text:SetTextColor(ns.fontOnMouse[1],ns.fontOnMouse[2],ns.fontOnMouse[3],ns.fontOnMouse[4])
 		else
 		--	self.mouseup:SetVertexColor(0.5,0.8, 1, 0.7)
 		end
@@ -138,13 +138,13 @@ function C:GetTreeGroupElement(parent, main)
 	
 	f:SetScript("OnLeave", function(self, ...)
 		if self.changetextcolor then
-			self.text:SetTextColor(C.fontNormal[1],C.fontNormal[2],C.fontNormal[3],C.fontNormal[4])
+			self.text:SetTextColor(ns.fontNormal[1],ns.fontNormal[2],ns.fontNormal[3],ns.fontNormal[4])
 		end
 		
 		if self.choosen then
 			self.mouseup:Show()
 		--	self.mouseup:SetVertexColor(1, 1, 0, 0.7)
-			self.text:SetTextColor(C.fontOnMouse[1],C.fontOnMouse[2],C.fontOnMouse[3],C.fontOnMouse[4])
+			self.text:SetTextColor(ns.fontOnMouse[1],ns.fontOnMouse[2],ns.fontOnMouse[3],ns.fontOnMouse[4])
 		else
 			self.mouseup:Hide()
 		end
@@ -201,10 +201,10 @@ function C:GetTreeGroupElement(parent, main)
 		
 		if substep == 0 then
 			self.text:SetFontObject('GameFontNormal')
-			self.text:SetTextColor(C.fontNormal[1],C.fontNormal[2],C.fontNormal[3],C.fontNormal[4])
+			self.text:SetTextColor(ns.fontNormal[1],ns.fontNormal[2],ns.fontNormal[3],ns.fontNormal[4])
 		else
 			self.text:SetFontObject('GameFontNormalSmall')
-			self.text:SetTextColor(C.fontOnMouse[1],C.fontOnMouse[2],C.fontOnMouse[3],C.fontOnMouse[4])
+			self.text:SetTextColor(ns.fontOnMouse[1],ns.fontOnMouse[2],ns.fontOnMouse[3],ns.fontOnMouse[4])
 			self.changetextcolor = nil
 		end
 		
@@ -214,7 +214,7 @@ function C:GetTreeGroupElement(parent, main)
 		if self:GetParent():GetParent():GetParent():GetParent().datapath == self.main then	
 			self.choosen = true
 			self.mouseup:Show()
-			self.text:SetTextColor(C.fontOnMouse[1],C.fontOnMouse[2],C.fontOnMouse[3],C.fontOnMouse[4])
+			self.text:SetTextColor(ns.fontOnMouse[1],ns.fontOnMouse[2],ns.fontOnMouse[3],ns.fontOnMouse[4])
 		--	self.mouseup:SetVertexColor(1, 1, 0, 0.7)
 		end
 	end
@@ -223,7 +223,7 @@ function C:GetTreeGroupElement(parent, main)
 	return f
 end
 	
-function C:GetTreeGroupFramesFrame(parent)
+function ns:GetTreeGroupFramesFrame(parent)
 	for i=1, #self.treeGroupFrames do		
 		if self.treeGroupFrames[i].free then
 			self.treeGroupFrames[i]:SetParent(parent)
@@ -360,7 +360,7 @@ function C:GetTreeGroupFramesFrame(parent)
 			end
 		end
 		
-		C:SortTree(s)
+		ns:SortTree(s)
 	
 		for i,data in pairs(s) do
 			
@@ -372,7 +372,7 @@ function C:GetTreeGroupFramesFrame(parent)
 				self:GetParent():GetParent().datapath = data.name		
 			end
 			
-			C:GetTreeGroupElement(self, data.name):UpdatePoint(self,data.realname, self.id, data.hidden and 0 or ( data.subelement and #data.subelement or 0) , data.toggle)
+			ns:GetTreeGroupElement(self, data.name):UpdatePoint(self,data.realname, self.id, data.hidden and 0 or ( data.subelement and #data.subelement or 0) , data.toggle)
 					
 			if data.show then
 				PrintSubElements(self, data, data.name)

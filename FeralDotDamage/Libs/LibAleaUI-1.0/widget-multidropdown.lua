@@ -1,8 +1,8 @@
 if AleaUI_GUI then return end
-local C = _G['AleaGUI_PrototypeLib']
+local ns = _G['AleaGUI_PrototypeLib']
 
-C.multiSelect = {}
-
+ns.multiSelect = {}
+local _
 local BuildDropDown, UpdateDropdownButtons, ResetDropdowns
 local ResetNextDropdowns
 
@@ -79,7 +79,7 @@ local function EndCheckForHide()
 	chekcerForHide:Hide()
 end
 	
-function C:HideMultiDropdown()
+function ns:HideMultiDropdown()
 	ResetDropdowns(true)
 	EndCheckForHide()
 end
@@ -170,7 +170,7 @@ local function createNewButton()
 		--	print('Click', 'Value', self.step, self.value, dropdowns[1].parent)
 			
 			dropdowns[1].parent._OnClick(_, self.value)
-			C:GetRealParent(dropdowns[1].parent):RefreshData()
+			ns:GetRealParent(dropdowns[1].parent):RefreshData()
 		end
 		
 		ResetDropdowns(true)
@@ -178,7 +178,7 @@ local function createNewButton()
 	end)
 	
 	frame:SetScript('OnEnter', function(self)
-		C.Tooltip(self:GetParent().tooltipParent, self.text:GetText(),  nil, "show")
+		ns.Tooltip(self:GetParent().tooltipParent, self.text:GetText(),  nil, "show")
 		
 		self.highlight:Show()
 		
@@ -187,7 +187,7 @@ local function createNewButton()
 			ResetNextDropdowns(self.step+2)
 			
 			local dropdown = BuildDropDown(self.values, self.step+1, self.key)
-			local realparent = C:GetRealParent(self)
+			local realparent = ns:GetRealParent(self)
 			dropdown:Show()
 			dropdown.parent = self
 			dropdown:SetParent(realparent)
@@ -208,7 +208,7 @@ local function createNewButton()
 	end)
 	
 	frame:SetScript('OnLeave', function(self)
-		C.Tooltip(self:GetParent().tooltipParent, self.text:GetText(),  nil, "hide")
+		ns.Tooltip(self:GetParent().tooltipParent, self.text:GetText(),  nil, "hide")
 
 		self.highlight:Hide()
 		
@@ -295,7 +295,7 @@ local function createDropdownPanel(index)
 	frame.sliderIndicator = frame:CreateTexture(nil, 'OVERLAY')
 	frame.sliderIndicator.parent = frame
 	frame.sliderIndicator:SetSize(2, 100)
-	if C.IsLegion then
+	if ns.IsLegion then
 		frame.sliderIndicator:SetColorTexture(0.5,0.5,0.5,1)
 	else
 		frame.sliderIndicator:SetTexture(0.5,0.5,0.5,1)
@@ -426,7 +426,7 @@ end
 local function ShowDropdown(self, list, key)
 	ResetDropdowns(false)
 	
-	C:FreeDropDowns('multiDropDown')
+	ns:FreeDropDowns('multiDropDown')
 	
 	local dropdown = BuildDropDown(list, 1, key)
 	
@@ -434,7 +434,7 @@ local function ShowDropdown(self, list, key)
 
 	if show then
 	
-		local realparent = C:GetRealParent(self)
+		local realparent = ns:GetRealParent(self)
 	
 		dropdown:Show()
 		dropdown.parent = self
@@ -572,7 +572,7 @@ local function CreateCoreDropDown(parent)
 	f.arrow.text = f.arrow:CreateFontString(nil, "OVERLAY")
 	f.arrow.text:SetFont("Fonts\\ARIALN.TTF", 1, "OUTLINE")
 	f.arrow.text:SetPoint("CENTER")
-	f.arrow.text:SetText(C.statearrow[2])
+	f.arrow.text:SetText(ns.statearrow[2])
 	f.arrow.text:Hide()
 	f.arrow.text:SetWordWrap(false)
 	
@@ -585,10 +585,10 @@ local function CreateCoreDropDown(parent)
 	f.arrow:SetHighlightTexture("Interface\\Buttons\\UI-Common-MouseHilight", "ADD")
 	
 	f.arrow:SetScript("OnEnter", function(self)	
-		C.Tooltip(self, f._rname, f.desc, "show")
+		ns.Tooltip(self, f._rname, f.desc, "show")
 	end)
 	f.arrow:SetScript("OnLeave", function(self)
-		C.Tooltip(self, f._rname, f.desc, "hide")
+		ns.Tooltip(self, f._rname, f.desc, "hide")
 	end)
 
 	f.arrow:SetScript("OnClick", function(self)
@@ -621,10 +621,10 @@ local function CreateCoreDropDown(parent)
 	f.mouseover:SetPoint("TOPLEFT", value, "TOPLEFT", -3, 3)
 	f.mouseover:SetPoint("BOTTOMRIGHT", value, "BOTTOMRIGHT", 3, -3)
 	f.mouseover:SetScript("OnEnter", function(self)	
-		C.Tooltip(self, self:GetParent()._rname,  self:GetParent().desc, "show")
+		ns.Tooltip(self, self:GetParent()._rname,  self:GetParent().desc, "show")
 	end)
 	f.mouseover:SetScript("OnLeave", function(self)
-		C.Tooltip(self, self:GetParent()._rname, self:GetParent().desc, "hide")
+		ns.Tooltip(self, self:GetParent()._rname, self:GetParent().desc, "hide")
 	end)
 	
 	f.text = text
@@ -633,11 +633,11 @@ local function CreateCoreDropDown(parent)
 	return f
 end
 
-function C:CreateMultiSelect()
+function ns:CreateMultiSelect()
 	
-	for i=1, #C.multiSelect do
-		if C.multiSelect[i].free then
-			return C.multiSelect[i]
+	for i=1, #ns.multiSelect do
+		if ns.multiSelect[i].free then
+			return ns.multiSelect[i]
 		end
 	end
 	
@@ -657,9 +657,9 @@ function C:CreateMultiSelect()
 	f.SetDisabledState = SetDisabledState
 	f.UpdateSize = UpdateSize
 	
-	C.multiSelect[#C.multiSelect+1] = f
+	ns.multiSelect[#ns.multiSelect+1] = f
 	
 	return f
 end
 	
-C.prototypes["multiselect"] = "CreateMultiSelect"
+ns.prototypes["multiselect"] = "CreateMultiSelect"

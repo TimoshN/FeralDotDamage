@@ -1,7 +1,7 @@
 if AleaUI_GUI then return end
-local C = _G['AleaGUI_PrototypeLib']
+local ns = _G['AleaGUI_PrototypeLib']
 
-C.toggleFrames = {}
+ns.toggleFrames = {}
 
 local function Update(self, panel, opts)
 	self.free = false
@@ -81,10 +81,10 @@ local function CreateCoreButton(parent)
 	button:SetDisabledCheckedTexture("Interface\\Buttons\\UI-CheckBox-Check-Disabled")
 
 	button:SetScript("OnEnter", function(self)	
-		C.Tooltip(self, f._rname, f.desc, "show")
+		ns.Tooltip(self, f._rname, f.desc, "show")
 	end)
 	button:SetScript("OnLeave", function(self)
-		C.Tooltip(self, f._rname, f.desc, "hide")
+		ns.Tooltip(self, f._rname, f.desc, "hide")
 	end)
 
 	button:SetScript("OnClick", function(self)
@@ -97,7 +97,7 @@ local function CreateCoreButton(parent)
 			PlaySound(SOUNDKIT and SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_OFF or "igMainMenuOptionCheckBoxOff")
 		end
 		
-		C:GetRealParent(self):RefreshData()
+		ns:GetRealParent(self):RefreshData()
 	end)
 
 	local text = f:CreateFontString(nil, 'OVERLAY', "GameFontHighlight")
@@ -128,10 +128,10 @@ local function CreateCoreButton(parent)
 	f.mouseover:SetPoint("TOPLEFT", text, "TOPLEFT", -3, 3)
 	f.mouseover:SetPoint("BOTTOMRIGHT", text, "BOTTOMRIGHT", 3, -3)
 	f.mouseover:SetScript("OnEnter", function(self)		
-		C.Tooltip(self, f._rname, f.desc, "show")
+		ns.Tooltip(self, f._rname, f.desc, "show")
 	end)
 	f.mouseover:SetScript("OnLeave", function(self)
-		C.Tooltip(self, f._rname, f.desc, "hide")
+		ns.Tooltip(self, f._rname, f.desc, "hide")
 	end)
 	f.mouseover:SetScript("OnMouseUp", function(self)	
 		if self.disabled then return end
@@ -148,7 +148,7 @@ local function CreateCoreButton(parent)
 			PlaySound(SOUNDKIT and SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_OFF or "igMainMenuOptionCheckBoxOff")
 		end
 		
-		C:GetRealParent(self.f):RefreshData()
+		ns:GetRealParent(self.f):RefreshData()
 	end)	
 	f.mouseover:SetScript("OnMouseDown", function(self)
 		if self.disabled then return end
@@ -162,15 +162,15 @@ local function CreateCoreButton(parent)
 	return f
 end
 
-function C:CreateToggle()
+function ns:CreateToggle()
 	
-	for i=1, #C.toggleFrames do
-		if C.toggleFrames[i].free then
-			return C.toggleFrames[i]
+	for i=1, #ns.toggleFrames do
+		if ns.toggleFrames[i].free then
+			return ns.toggleFrames[i]
 		end
 	end
 	
-	local f = CreateFrame("Frame", 'AleaUIGUI-ToggleButton'..#C.toggleFrames+1, UIParent)
+	local f = CreateFrame("Frame", 'AleaUIGUI-ToggleButton'..#ns.toggleFrames+1, UIParent)
 	f:SetSize(180, 35)
 	f.free = true
 	
@@ -190,9 +190,9 @@ function C:CreateToggle()
 	f.SetDisabledState = SetDisabledState
 	f.UpdateSize = UpdateSize
 	
-	C.toggleFrames[#C.toggleFrames+1] = f
+	ns.toggleFrames[#ns.toggleFrames+1] = f
 	
 	return f
 end
 	
-C.prototypes["toggle"] = "CreateToggle"
+ns.prototypes["toggle"] = "CreateToggle"

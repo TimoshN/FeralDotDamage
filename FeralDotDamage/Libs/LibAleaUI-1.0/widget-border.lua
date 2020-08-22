@@ -1,7 +1,7 @@
 if AleaUI_GUI then return end
-local C = _G['AleaGUI_PrototypeLib']
+local ns = _G['AleaGUI_PrototypeLib']
 
-C.toggleBorders = {}
+ns.toggleBorders = {}
 
 local function Update(self, panel, opts)
 	assert(opts.values, "No Values is set on "..opts.name)
@@ -102,21 +102,21 @@ local function CreateCoreDropDown(parent)
 	f.arrow.text = f.arrow:CreateFontString(nil, "OVERLAY")
 	f.arrow.text:SetFont("Fonts\\ARIALN.TTF", 10, "OUTLINE")
 	f.arrow.text:SetPoint("CENTER")
-	f.arrow.text:SetText(C.statearrow[2])
+	f.arrow.text:SetText(ns.statearrow[2])
 	f.arrow.text:Hide()
 	f.arrow.text:SetJustifyH("CENTER")
 	f.arrow.text:SetJustifyV("CENTER")
 	f.arrow.text:SetWordWrap(false)
 	
 	f.arrow:SetScript("OnEnter", function(self)	
-		C.Tooltip(self, f._rname, f.desc, "show")
+		ns.Tooltip(self, f._rname, f.desc, "show")
 	end)
 	f.arrow:SetScript("OnLeave", function(self)
-		C.Tooltip(self, f._rname, f.desc, "hide")
+		ns.Tooltip(self, f._rname, f.desc, "hide")
 	end)	
 	
 	f.arrow:SetScript("OnClick", function(self)
-		C.DD.Show(self:GetParent(), self:GetParent()._OnShow())
+		ns.DD.Show(self:GetParent(), self:GetParent()._OnShow())
 	end)
 
 	local text = f:CreateFontString(nil, 'OVERLAY', "GameFontHighlightSmall")
@@ -158,10 +158,10 @@ local function CreateCoreDropDown(parent)
 	f.mouseover:SetPoint("TOPLEFT", value, "TOPLEFT", -3, 3)
 	f.mouseover:SetPoint("BOTTOMRIGHT", value, "BOTTOMRIGHT", 3, -3)
 	f.mouseover:SetScript("OnEnter", function(self)
-		C.Tooltip(self, self:GetParent().desc, "show")
+		ns.Tooltip(self, self:GetParent().desc, "show")
 	end)
 	f.mouseover:SetScript("OnLeave", function(self)
-		C.Tooltip(self, self:GetParent().desc, "hide")
+		ns.Tooltip(self, self:GetParent().desc, "hide")
 	end)
 	
 	f.text = text
@@ -171,11 +171,11 @@ local function CreateCoreDropDown(parent)
 	return f
 end
 
-function C:CreateDropDownBorder()
+function ns:CreateDropDownBorder()
 	
-	for i=1, #C.toggleBorders do
-		if C.toggleBorders[i].free then
-			return C.toggleBorders[i]
+	for i=1, #ns.toggleBorders do
+		if ns.toggleBorders[i].free then
+			return ns.toggleBorders[i]
 		end
 	end
 	
@@ -193,9 +193,9 @@ function C:CreateDropDownBorder()
 	f.SetDescription = SetDescription
 	f.UpdateSize = UpdateSize
 	
-	C.toggleBorders[#C.toggleBorders+1] = f
+	ns.toggleBorders[#ns.toggleBorders+1] = f
 	
 	return f
 end
 	
-C.prototypes["border"] = "CreateDropDownBorder"
+ns.prototypes["border"] = "CreateDropDownBorder"

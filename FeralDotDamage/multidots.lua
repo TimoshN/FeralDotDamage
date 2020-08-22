@@ -41,7 +41,7 @@ for i=1, 10 do
 	f:SetScale(1)
 	
 	for k=1, num_auras do
-		local backdrop = CreateFrame("Frame", 'FDDGroup'..i..'Icon'..k, f)
+		local backdrop = CreateFrame("Frame", 'FDDGroup'..i..'Icon'..k, f, BackdropTemplateMixin and 'BackdropTemplate')
 		local s = backdrop:CreateTexture(nil, "ARTWORK")
 		s:SetTexCoord(0.08, 0.92, 0.08, 0.92)
 		s:SetTexture(textures[k])

@@ -1,7 +1,7 @@
 if AleaUI_GUI then return end
-local C = _G['AleaGUI_PrototypeLib']
+local ns = _G['AleaGUI_PrototypeLib']
 
-C.tabgroupFrames = {}
+ns.tabgroupFrames = {}
 
 local dim_frame_st = -30
 
@@ -55,8 +55,8 @@ local function Remove(self)
 	self.free = true
 	self.args = nil
 	
-	C:FreeAllElements(self)
-	C:FreeAllChilds(self)
+	ns:FreeAllElements(self)
+	ns:FreeAllChilds(self)
 	
 	self:Hide()
 	self:ClearAllPoints()
@@ -90,7 +90,7 @@ local function UpdateTabPanelSize(self, panel, largs, arg1, datapath)
 		end
 	end
 	
-	C:SortTree(s)
+	ns:SortTree(s)
 	
 	if self.selectedTab then
 		for i=1, #s do
@@ -135,7 +135,7 @@ local function UpdateTabPanelSize(self, panel, largs, arg1, datapath)
 		if prototype == "group" then
 			index = index + 1
 			if not self.elements[index] then
-				self.elements[index] = C:GetPrototype(prototype)
+				self.elements[index] = ns:GetPrototype(prototype)
 				self.elements[index]:Update(panel, opts, self)
 			end
 			if self.elements[index].UpdateSize then
@@ -171,8 +171,8 @@ end
 
 local function UpdateState(self, panel, args, arg1, datapath)
 	
-	C:FreeAllElements(self)
-	C:FreeAllChilds(self)
+	ns:FreeAllElements(self)
+	ns:FreeAllChilds(self)
 	
 	self:UpdateTabPanelSize(panel, args, nil, datapath)
 end
@@ -193,7 +193,7 @@ local function AddTab(self, name)
 		tab:SetScript('OnClick', function(me)
 			if tab.selected then return end
 			self.selectedTab = me.arg
-			C:GetRealParent(self):RefreshData()
+			ns:GetRealParent(self):RefreshData()
 			PlaySound(SOUNDKIT and SOUNDKIT.IG_CHARACTER_INFO_TAB or "igCharacterInfoTab");
 		end)
 		tab.free = true
@@ -270,7 +270,7 @@ local function AddTab(self, name)
 		text:SetPoint("CENTER", tab, 'CENTER', 0, 0)
 	--	text:SetFont(STANDARD_TEXT_FONT, 12, "OUTLINE")
 		text:SetText("TEST")
-		text:SetTextColor(C.fontNormal[1],C.fontNormal[2],C.fontNormal[3],C.fontNormal[4])
+		text:SetTextColor(ns.fontNormal[1],ns.fontNormal[2],ns.fontNormal[3],ns.fontNormal[4])
 		text:SetJustifyH("CENTER")
 		text:SetWordWrap(false)
 		text:Show()
@@ -328,7 +328,7 @@ local function SetSelected(self, index)
 			tab.Left:Show()
 			tab.Right:Show()
 			
-			tab.text:SetTextColor(C.fontNormal[1],C.fontNormal[2],C.fontNormal[3],C.fontNormal[4])
+			tab.text:SetTextColor(ns.fontNormal[1],ns.fontNormal[2],ns.fontNormal[3],ns.fontNormal[4])
 			
 			tab.selected = false
 			tab.Highlight:Hide()
@@ -338,7 +338,7 @@ end
 
 local StringWidth = CreateFrame('Frame', nil, UIParent):CreateFontString(nil, 'OVERLAY', "GameFontHighlight")
 	StringWidth:SetPoint("CENTER")
-	StringWidth:SetTextColor(C.fontNormal[1],C.fontNormal[2],C.fontNormal[3],C.fontNormal[4])
+	StringWidth:SetTextColor(ns.fontNormal[1],ns.fontNormal[2],ns.fontNormal[3],ns.fontNormal[4])
 	StringWidth:SetJustifyH("LEFT")
 	StringWidth:SetWordWrap(false)
 	StringWidth:Show()
@@ -408,15 +408,15 @@ local function SetTabs(self, args)
 	return width1
 end
 
-function C:CreateTabGroup()
+function ns:CreateTabGroup()
 	
-	for i=1, #C.tabgroupFrames do
-		if C.tabgroupFrames[i].free then
-			return C.tabgroupFrames[i]
+	for i=1, #ns.tabgroupFrames do
+		if ns.tabgroupFrames[i].free then
+			return ns.tabgroupFrames[i]
 		end
 	end
 	
-	local f = CreateFrame("Frame", 'AleaUIGUI-TabGroupFrame'..#C.tabgroupFrames+1, UIParent)
+	local f = CreateFrame("Frame", 'AleaUIGUI-TabGroupFrame'..#ns.tabgroupFrames+1, UIParent)
 	f:SetSize(200, 200)
 	f.free = true
 	f.elements = {}
@@ -463,7 +463,7 @@ function C:CreateTabGroup()
 	text:SetPoint("BOTTOMLEFT", f.main, "TOPLEFT", 3 , -1)
 --	text:SetFont(STANDARD_TEXT_FONT, 12, "OUTLINE")
 	text:SetText("TEST")
-	text:SetTextColor(C.fontNormal[1],C.fontNormal[2],C.fontNormal[3],C.fontNormal[4])
+	text:SetTextColor(ns.fontNormal[1],ns.fontNormal[2],ns.fontNormal[3],ns.fontNormal[4])
 	text:SetJustifyH("LEFT")
 	text:SetWordWrap(false)
 	text:Hide()
@@ -487,9 +487,9 @@ function C:CreateTabGroup()
 	f.UpdateSize = UpdateSize
 	f.UpdateTabPanelSize = UpdateTabPanelSize
 	
-	C.tabgroupFrames[#C.tabgroupFrames+1] = f
+	ns.tabgroupFrames[#ns.tabgroupFrames+1] = f
 	
 	return f
 end
 	
-C.prototypes["tabgroup"] = "CreateTabGroup"
+ns.prototypes["tabgroup"] = "CreateTabGroup"

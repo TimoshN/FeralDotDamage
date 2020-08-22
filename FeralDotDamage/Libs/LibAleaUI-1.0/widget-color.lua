@@ -1,8 +1,9 @@
 if AleaUI_GUI then return end
-local C = _G['AleaGUI_PrototypeLib']
+local ns = _G['AleaGUI_PrototypeLib']
 
-C.colorFrames = {}
+ns.colorFrames = {}
 
+local _
 local current
 
 local customColorPicker = _G['AleaUIGUI-ColorPickerFrame'] or CreateFrame('Frame', 'AleaUIGUI-ColorPickerFrame', UIParent, BackdropTemplateMixin and 'BackdropTemplate')
@@ -24,7 +25,7 @@ customColorPicker:SetBackdropColor(0, 0, 0, 0.7)
 customColorPicker:SetBackdropBorderColor(1, 1, 1, 1)
 customColorPicker:Hide()
 
-C.customColorPicker = customColorPicker
+ns.customColorPicker = customColorPicker
 
 local dimension = 96
 local withalpha = true
@@ -89,7 +90,7 @@ okeybutton:SetScript('OnClick', function()
 	current._OnClick(_, newR, newG, newB,newA)
 	current:SetBackdropColor(newR, newG, newB,newA or 1) --���� ����
 	
-	C:GetRealParent(current):RefreshData()
+	ns:GetRealParent(current):RefreshData()
 	
 	
 	current = nil
@@ -407,7 +408,7 @@ local function ShowColorPicker(r,g,b,a,showalpha, f)
 		
 		editBoxHex:SetText(format("%02x%02x%02x%02x", a and a*255 or 255, r*255, g*255, b*255))
 	
-		local realparent = C:GetRealParent(f)
+		local realparent = ns:GetRealParent(f)
 		customColorPicker:SetParent(realparent)
 		customColorPicker:SetFrameLevel(realparent:GetFrameLevel()+10)
 		
@@ -497,7 +498,7 @@ local function UpdateColor(self, opts)
 	g = g or 1
 	b = b or 1
 	
-	if C.IsLegion then
+	if ns.IsLegion then
 		self.main.texture:SetColorTexture(r,g,b, self.main.hasAlpha and ( a or 1 ) or 1)
 	else
 		self.main.texture:SetTexture(r,g,b, self.main.hasAlpha and ( a or 1 ) or 1)
@@ -519,7 +520,7 @@ local function CreateCoreButton(parent)
 	local texture = f:CreateTexture(nil, "BACKGROUND", 0)
 	texture:SetWidth(13)
 	texture:SetHeight(13)
-	if C.IsLegion then
+	if ns.IsLegion then
 		texture:SetColorTexture(1, 1, 1)
 	else
 		texture:SetTexture(1, 1, 1)
@@ -543,15 +544,15 @@ local function CreateCoreButton(parent)
 		edgeSize = 2,
 		insets = {top = 0, left = 0, bottom = 0, right = 0},
 		})
-	f:SetBackdropBorderColor(unpack(C.button_border_color_ondown)) --���� �����
+	f:SetBackdropBorderColor(unpack(ns.button_border_color_ondown)) --���� �����
 	
 	f:SetScript("OnEnter", function(self)
-		self:SetBackdropBorderColor(unpack(C.button_border_color_onup)) --���� �����		
-		C.Tooltip(self, self._rname, self.desc, "show")
+		self:SetBackdropBorderColor(unpack(ns.button_border_color_onup)) --���� �����		
+		ns.Tooltip(self, self._rname, self.desc, "show")
 	end)
 	f:SetScript("OnLeave", function(self)
-		self:SetBackdropBorderColor(unpack(C.button_border_color_ondown)) --���� �����
-		C.Tooltip(self, self._rname, self.desc, "hide")
+		self:SetBackdropBorderColor(unpack(ns.button_border_color_ondown)) --���� �����
+		ns.Tooltip(self, self._rname, self.desc, "hide")
 	end)
 	
 	
@@ -577,13 +578,13 @@ local function CreateCoreButton(parent)
 	f.mouseover:SetPoint("TOPLEFT", text, "TOPLEFT", -3, 3)
 	f.mouseover:SetPoint("BOTTOMRIGHT", text, "BOTTOMRIGHT", 3, -3)
 	f.mouseover:SetScript("OnEnter", function(self)
---		self:GetParent():SetBackdropBorderColor(unpack(C.button_border_color_onup)) --���� �����		
-		C.Tooltip(self, self:GetParent()._rname, self:GetParent().desc, "show")
+--		self:GetParent():SetBackdropBorderColor(unpack(ns.button_border_color_onup)) --���� �����		
+		ns.Tooltip(self, self:GetParent()._rname, self:GetParent().desc, "show")
 	end)
 	f.mouseover:SetScript("OnLeave", function(self)
---		self:GetParent():SetBackdropBorderColor(unpack(C.button_border_color_ondown)) --���� �����
+--		self:GetParent():SetBackdropBorderColor(unpack(ns.button_border_color_ondown)) --���� �����
 	
-		C.Tooltip(self, self:GetParent()._rname, self:GetParent().desc, "hide")
+		ns.Tooltip(self, self:GetParent()._rname, self:GetParent().desc, "hide")
 	end)
 	
 	f.text = text
@@ -592,15 +593,15 @@ local function CreateCoreButton(parent)
 	return f
 end
 
-function C:CreateColorFrame()
+function ns:CreateColorFrame()
 	
-	for i=1, #C.colorFrames do
-		if C.colorFrames[i].free then
-			return C.colorFrames[i]
+	for i=1, #ns.colorFrames do
+		if ns.colorFrames[i].free then
+			return ns.colorFrames[i]
 		end
 	end
 	
-	local f = CreateFrame("Frame", 'AleaUIGUI-ColorButton'..#C.colorFrames+1, UIParent)
+	local f = CreateFrame("Frame", 'AleaUIGUI-ColorButton'..#ns.colorFrames+1, UIParent)
 	f:SetSize(180, 45)
 	f.free = true
 	
@@ -619,9 +620,9 @@ function C:CreateColorFrame()
 	f.UpdateColor = UpdateColor
 	f.UpdateSize = UpdateSize
 	
-	C.colorFrames[#C.colorFrames+1] = f
+	ns.colorFrames[#ns.colorFrames+1] = f
 	
 	return f
 end
 	
-C.prototypes["color"] = "CreateColorFrame"
+ns.prototypes["color"] = "CreateColorFrame"

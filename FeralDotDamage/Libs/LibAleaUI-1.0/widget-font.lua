@@ -1,10 +1,10 @@
 ﻿if AleaUI_GUI then return end
-local C = _G['AleaGUI_PrototypeLib']
+local ns = _G['AleaGUI_PrototypeLib']
 
-C.DDFonts = {}
-C.fontFrames = {}
+ns.DDFonts = {}
+ns.fontFrames = {}
 
-local DD = C.DDFonts
+local DD = ns.DDFonts
 
 local NUM_BUTTONS = 4
 local BUTTON_HEIGHT = 60
@@ -22,7 +22,7 @@ local wipe = table.wipe
 local buttons = {}
 local _
 local table_sort = table.sort
-local statearrow = C.statearrow
+local statearrow = ns.statearrow
 local dropdownFrame
 local update 
 
@@ -98,11 +98,11 @@ function update(self, checkedkey)
 end
 
 
-dropdownFrame = CreateFrame("Frame",  "AleaUIGUIFontDropDownFrame"..C:GetNumFrames())
+dropdownFrame = CreateFrame("Frame",  "AleaUIGUIFontDropDownFrame"..ns:GetNumFrames())
 dropdownFrame:SetSize(300, 200)
 dropdownFrame.bg = dropdownFrame:CreateTexture()
 dropdownFrame.bg:SetAllPoints()
-if C.IsLegion then
+if ns.IsLegion then
 	dropdownFrame.bg:SetColorTexture(0, 0,0, 0.8)
 else
 	dropdownFrame.bg:SetTexture(0, 0,0, 0.8)
@@ -127,7 +127,7 @@ dropdownFrame.border1:SetBackdrop({
 dropdownFrame.border1:SetBackdropColor(0, 0, 0, 1)
 dropdownFrame.border1:SetBackdropBorderColor(1, 1, 1, 1)
 
-dropdownFrame.scrollFrame = CreateFrame("ScrollFrame", "AleaUIGUIFontScrollingFrame"..C:GetNumFrames() , dropdownFrame, "FauxScrollFrameTemplate")
+dropdownFrame.scrollFrame = CreateFrame("ScrollFrame", "AleaUIGUIFontScrollingFrame"..ns:GetNumFrames() , dropdownFrame, "FauxScrollFrameTemplate")
 
 dropdownFrame.scrollFrame:SetWidth(BUTTON_WIDTH)
 dropdownFrame.scrollFrame:SetFrameLevel(dropdownFrame:GetFrameLevel()+1)
@@ -217,7 +217,7 @@ for i = 1, NUM_BUTTONS do
 
 		button:SetScript("OnClick", function(self, ...)
 			dropdownFrame.parent._OnClick(_, self.key)
-			C:GetRealParent(dropdownFrame.parent):RefreshData()
+			ns:GetRealParent(dropdownFrame.parent):RefreshData()
 		end)
 		
 		button:SetScript("OnEnter", function(self, ...)
@@ -248,7 +248,7 @@ local function UpdateDD(f,key)
 	if dropdownFrame.parent then
 		dropdownFrame.parent.arrow.text:SetText(statearrow[2])
 	end
-	local realparent = C:GetRealParent(f)
+	local realparent = ns:GetRealParent(f)
 	dropdownFrame:SetParent(realparent)
 	dropdownFrame:SetPoint("TOPRIGHT", f, "BOTTOMRIGHT", 0, -7)
 	dropdownFrame:SetFrameLevel(realparent:GetFrameLevel()+10)
@@ -273,10 +273,10 @@ function DD.HideFonts()
 end
 
 function DD.ShowFonts(f,key)
---	C.DD.Hide()
---	C.DDSounds.HideFonts()
+--	ns.DD.Hide()
+--	ns.DDSounds.HideFonts()
 	
-	C:FreeDropDowns(DD)
+	ns:FreeDropDowns(DD)
 	
 	if dropdownFrame.parent and dropdownFrame.parent ~= f then
 		UpdateDD(f,key)
@@ -396,7 +396,7 @@ local function CreateCoreDropDown(parent)
 	f.arrow.text = f.arrow:CreateFontString(nil, "OVERLAY")
 	f.arrow.text:SetFont("Fonts\\ARIALN.TTF", 10, "OUTLINE")
 	f.arrow.text:SetPoint("CENTER")
-	f.arrow.text:SetText(C.statearrow[2])
+	f.arrow.text:SetText(ns.statearrow[2])
 	f.arrow.text:Hide()
 	f.arrow.text:SetJustifyH("CENTER")
 	f.arrow.text:SetJustifyV("CENTER")
@@ -404,10 +404,10 @@ local function CreateCoreDropDown(parent)
 	
 	
 	f.arrow:SetScript("OnEnter", function(self)
-		C.Tooltip(self, f._rname, f.desc, "show")
+		ns.Tooltip(self, f._rname, f.desc, "show")
 	end)
 	f.arrow:SetScript("OnLeave", function(self)
-		C.Tooltip(self, f._rname, f.desc, "hide")
+		ns.Tooltip(self, f._rname, f.desc, "hide")
 	end)
 	
 	
@@ -441,10 +441,10 @@ local function CreateCoreDropDown(parent)
 	f.mouseover:SetPoint("TOPLEFT", value, "TOPLEFT", -3, 3)
 	f.mouseover:SetPoint("BOTTOMRIGHT", value, "BOTTOMRIGHT", 3, -3)
 	f.mouseover:SetScript("OnEnter", function(self)	
-		C.Tooltip(self, self:GetParent()._rname, self:GetParent().desc, "show")
+		ns.Tooltip(self, self:GetParent()._rname, self:GetParent().desc, "show")
 	end)
 	f.mouseover:SetScript("OnLeave", function(self)
-		C.Tooltip(self, self:GetParent()._rname, self:GetParent().desc, "hide")
+		ns.Tooltip(self, self:GetParent()._rname, self:GetParent().desc, "hide")
 	end)
 	
 	f.text = text
@@ -453,15 +453,15 @@ local function CreateCoreDropDown(parent)
 	return f
 end
 
-function C:CreateFontDD()
+function ns:CreateFontDD()
 	
-	for i=1, #C.fontFrames do
-		if C.fontFrames[i].free then
-			return C.fontFrames[i]
+	for i=1, #ns.fontFrames do
+		if ns.fontFrames[i].free then
+			return ns.fontFrames[i]
 		end
 	end
 	
-	local f = CreateFrame("Frame", 'AleaUIGUI-FontsFrame'..#C.fontFrames+1, UIParent)
+	local f = CreateFrame("Frame", 'AleaUIGUI-FontsFrame'..#ns.fontFrames+1, UIParent)
 	f:SetSize(180, 45)
 	f.free = true
 	
@@ -475,9 +475,9 @@ function C:CreateFontDD()
 	f.SetDescription = SetDescription
 	f.UpdateSize = UpdateSize
 	
-	C.fontFrames[#C.fontFrames+1] = f
+	ns.fontFrames[#ns.fontFrames+1] = f
 	
 	return f
 end
 	
-C.prototypes["font"] = "CreateFontDD"
+ns.prototypes["font"] = "CreateFontDD"

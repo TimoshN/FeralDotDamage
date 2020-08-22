@@ -1,7 +1,7 @@
 ﻿if AleaUI_GUI then return end
 local addon = ...
 
-local C = CreateFrame("Frame", "AleaGUI_PrototypeLib")
+local ns = CreateFrame("Frame", "AleaGUI_PrototypeLib")
 
 local table_insert, table_remove = table.insert, table.remove
 local table_wipe = table.wipe
@@ -10,36 +10,36 @@ local format = format
 
 local versionStr, internalVersion, dateofpatch, uiVersion = GetBuildInfo(); internalVersion = tonumber(internalVersion)
 
-C.wowbuild = internalVersion
-C.uibuild	= tonumber(uiVersion)
+ns.wowbuild = internalVersion
+ns.uibuild	= tonumber(uiVersion)
 
-C.IsLegion	= C.uibuild >= 70000
-C.isClassic = C.uibuild < 20000
+ns.IsLegion	= ns.uibuild >= 70000
+ns.isClassic = ns.uibuild < 20000
 
-C.mainFrames = {}
-C.openedmainFrames = {}
-C.RegisteredAddons = {}
-C.prototypes = {}
-C.OnButtonPanelSizeChanged = {}
+ns.mainFrames = {}
+ns.openedmainFrames = {}
+ns.RegisteredAddons = {}
+ns.prototypes = {}
+ns.OnButtonPanelSizeChanged = {}
 
-C.fontOnMouse = { 1, 1, 1, 1 }
-C.fontNormal = { 1, 0.8, 0, 1 }
-C.statearrow = { " ▲", " ▼","◄", "►" }
+ns.fontOnMouse = { 1, 1, 1, 1 }
+ns.fontNormal = { 1, 0.8, 0, 1 }
+ns.statearrow = { " ▲", " ▼","◄", "►" }
 
-C.main_bg_color = {18/255 , 18/255 , 18/255 , 0.6}
-C.main_border_color = {0, 0, 0 , 1}
-C.main_bg_left_right_side_color = {18/255 , 18/255 , 18/255 , 0.1}
+ns.main_bg_color = {18/255 , 18/255 , 18/255 , 0.6}
+ns.main_border_color = {0, 0, 0 , 1}
+ns.main_bg_left_right_side_color = {18/255 , 18/255 , 18/255 , 0.1}
 
-C.alt_border_color = { 23/256, 131/256, 209/256 , 0.6 }
-C.alt_bg_color = { 0 , 0 , 0 , 0.9 }
-C.button_border_color_onup = {0 , 0.85 , 1 , 0.8}
-C.button_border_color_ondown = {153/255, 153/255, 153/255 , 0.5 }
-C.button_bg_color = { 5/255 , 5/255 , 5/255 , 0.9 }
+ns.alt_border_color = { 23/256, 131/256, 209/256 , 0.6 }
+ns.alt_bg_color = { 0 , 0 , 0 , 0.9 }
+ns.button_border_color_onup = {0 , 0.85 , 1 , 0.8}
+ns.button_border_color_ondown = {153/255, 153/255, 153/255 , 0.5 }
+ns.button_bg_color = { 5/255 , 5/255 , 5/255 , 0.9 }
 
 
 local numFrames = 0
 
-function C:GetNumFrames()
+function ns:GetNumFrames()
 	numFrames = numFrames + 1
 	return numFrames
 end
@@ -52,8 +52,8 @@ do
 --		edgeSize = 1,
 --		insets = {top = 0, left = 0, bottom = 0, right = 0},
 --		})
---	gametooltip:SetBackdropColor(unpack(C.button_bg_color))
---	gametooltip:SetBackdropBorderColor(unpack(C.button_border_color_ondown))
+--	gametooltip:SetBackdropColor(unpack(ns.button_bg_color))
+--	gametooltip:SetBackdropBorderColor(unpack(ns.button_border_color_ondown))
 --	gametooltip:SetWidth(250)
 	gametooltip:Show()
 	gametooltip:Hide()
@@ -67,7 +67,7 @@ do
 	spellIcon:SetSize(60, 60)
 	spellIcon:Hide()
 	
-	function C.Tooltip(self, name, desc, state, hyper, texture)
+	function ns.Tooltip(self, name, desc, state, hyper, texture)
 		gametooltip:Hide()
 		if state == "show" then
 			gametooltip:SetOwner(self, "ANCHOR_TOPRIGHT")			
@@ -149,18 +149,18 @@ end
 
 ALEAUI_GUI_SORT = sorting_menu2
 ]]
-function C:SortTree(t)
+function ns:SortTree(t)
 	table_sort(t, sorting_menu)
 end
 
 local sizes = {}
 
-function C:RegisterMainFrame(addonName, guiTable, curwidth,curheight, minwidth, minheight)
-	assert(addonName, 'Usage C:RegisterMainFrame("addonName") - addonName is nil')
+function ns:RegisterMainFrame(addonName, guiTable, curwidth,curheight, minwidth, minheight)
+	assert(addonName, 'Usage ns:RegisterMainFrame("addonName") - addonName is nil')
 --	assert(not self.RegisteredAddons[addonName], addonName..' already registered.')
 	
 	
-	C.RegisteredAddons[addonName] = guiTable
+	ns.RegisteredAddons[addonName] = guiTable
 	
 	sizes[addonName] = sizes[addonName] or {}
 	sizes[addonName].minwidth = minwidth or 500
@@ -169,8 +169,8 @@ function C:RegisterMainFrame(addonName, guiTable, curwidth,curheight, minwidth, 
 	sizes[addonName].curheight = curheight	or 400
 end
 
-function C:SelectGroup(addonName, ...)
-	assert(addonName, 'Usage C:SelectGroup("addonName", groups) - addonName is nil')
+function ns:SelectGroup(addonName, ...)
+	assert(addonName, 'Usage ns:SelectGroup("addonName", groups) - addonName is nil')
 	assert(self.RegisteredAddons[addonName], addonName..'not registered.')
 	
 	if not self.openedmainFrames[addonName] then
@@ -178,7 +178,7 @@ function C:SelectGroup(addonName, ...)
 	end
 	
 	local curpath = ""
-	local prev = C.RegisteredAddons[addonName]
+	local prev = ns.RegisteredAddons[addonName]
 	
 	for i=1, select("#", ...) do
 		local group = select(i, ...)
@@ -206,8 +206,8 @@ function C:SelectGroup(addonName, ...)
 
 end
 
-function C:Open(addonName)
-	assert(addonName, 'Usage C:Open("addonName") - addonName is nil')
+function ns:Open(addonName)
+	assert(addonName, 'Usage ns:Open("addonName") - addonName is nil')
 	assert(self.RegisteredAddons[addonName], addonName..'not registered.')
 	
 	if not self.openedmainFrames[addonName] then
@@ -220,8 +220,8 @@ function C:Open(addonName)
 	end
 end
 
-function C:Close(addonName)
-	assert(addonName, 'Usage C:Close("addonName") - addonName is nil')
+function ns:Close(addonName)
+	assert(addonName, 'Usage ns:Close("addonName") - addonName is nil')
 	assert(self.RegisteredAddons[addonName], addonName..' not registered.')
 	
 	if self.openedmainFrames[addonName] then
@@ -235,27 +235,27 @@ function C:Close(addonName)
 	end	
 end
 
-function C:IsOpened(addonName)
+function ns:IsOpened(addonName)
 	return self.openedmainFrames[addonName]
 end
 
-function C:Deactivate(from, addonName)
-	C[from][self.addon or addonName] = nil
+function ns:Deactivate(from, addonName)
+	ns[from][self.addon or addonName] = nil
 	self.tree:Remove()
 	self:Remove()
 end
 
 
-function C:Remove()
+function ns:Remove()
 	self:Hide()
 	self.free = true
 	self.datapath = nil
 	self.addon = nil
 end
 
-function C:Update(addonName)
+function ns:Update(addonName)
 
-	local o = C.RegisteredAddons[addonName]
+	local o = ns.RegisteredAddons[addonName]
 	
 	self.addon = addonName
 	self.free = false
@@ -275,7 +275,7 @@ function C:Update(addonName)
 	
 	self.tree:UpdateElements(o)
 
-	C:GetRightGroupFramesFrame(self, o)
+	ns:GetRightGroupFramesFrame(self, o)
 
 	if ( self.__border ) then 
 		self.__border:SetBackdrop({
@@ -297,16 +297,16 @@ function C:Update(addonName)
 
 end
 
-function C:RefreshData()
-	if not C:IsOpened(self.addon) then return end
+function ns:RefreshData()
+	if not ns:IsOpened(self.addon) then return end
 	
-	self.tree:UpdateElements(C.RegisteredAddons[self.addon])
+	self.tree:UpdateElements(ns.RegisteredAddons[self.addon])
 	
-	C:GetRightGroupFramesFrame(self, C.RegisteredAddons[self.addon])
+	ns:GetRightGroupFramesFrame(self, ns.RegisteredAddons[self.addon])
 end
 
 local function MoveSeparator(self)
-	if C.IsLegion then
+	if ns.IsLegion then
 		self.bg:SetColorTexture(0.4, 0.4, 0.4, 1)
 	else
 		self.bg:SetTexture(0.4, 0.4, 0.4, 1)
@@ -339,9 +339,9 @@ local function UpdateRightSide(self)
 	self.last_elements_num = elements_num
 	self.last_elements_row = elements_row
 	
---	C:GetRightGroupFramesFrame(self:GetParent(), C.RegisteredAddons[self:GetParent().addon])
+--	ns:GetRightGroupFramesFrame(self:GetParent(), ns.RegisteredAddons[self:GetParent().addon])
 	
---	C:GetRealParent(self):RefreshData()	
+--	ns:GetRealParent(self):RefreshData()	
 	self:GetParent():SetElementPosition()
 end
 
@@ -352,12 +352,12 @@ local function UpdateLeftSide(self)
 end
 
 local function OnButtonParentSizeChanged(self, ...)	
-	for i=1, #C.OnButtonPanelSizeChanged do		
-		C.OnButtonPanelSizeChanged[i](self, ...)
+	for i=1, #ns.OnButtonPanelSizeChanged do		
+		ns.OnButtonPanelSizeChanged[i](self, ...)
 	end
 end
 
-function C:GetRealParent(f)
+function ns:GetRealParent(f)
 	local ff = f
 	
 	if f and f.docked then
@@ -373,7 +373,7 @@ function C:GetRealParent(f)
 	end
 end
 
-function C.GetNumInGroups(f)
+function ns.GetNumInGroups(f)
 	local ff = f
 	local num = 0
 	
@@ -448,7 +448,7 @@ local function SetElementPosition(self)
 			index = index + 1
 			
 			if not panel.elements[index] then
-				panel.elements[index] = C:GetPrototype(prototype)
+				panel.elements[index] = ns:GetPrototype(prototype)
 				panel.elements[index]:Update(panel.buttonParent, opts, nil, datapath)
 			end
 			if panel.elements[index].UpdateSize then
@@ -512,7 +512,7 @@ local function SetElementPosition(self)
 		elseif prototype == "group" and opts.embend == true then
 			index = index + 1		
 			if not panel.elements[index] then
-				panel.elements[index] = C:GetPrototype(prototype)
+				panel.elements[index] = ns:GetPrototype(prototype)
 				panel.elements[index]:Update(panel.buttonParent, opts, nil, datapath)
 			end
 			if panel.elements[index].UpdateSize then
@@ -553,7 +553,7 @@ local function SetElementPosition(self)
 	return totalheight
 end
 
-function C:GetMainFrame()
+function ns:GetMainFrame()
 	for i=1, #self.mainFrames do		
 		if self.mainFrames[i].free then
 			return self.mainFrames[i]
@@ -577,7 +577,7 @@ function C:GetMainFrame()
 	f:SetDontSavePosition(true)
 	
 	f:SetScript("OnHide", function(self)
-		if self.addon then C:Close(self.addon) end
+		if self.addon then ns:Close(self.addon) end
 	end)
 	
 	f.ListElements = {}
@@ -590,10 +590,10 @@ function C:GetMainFrame()
 	bg:SetPoint("TOPLEFT", f, "TOPLEFT", -10, 10)
 	bg:SetPoint("BOTTOMRIGHT", f, "BOTTOMRIGHT", 10, -30)
 	
-	if C.IsLegion then
-		bg:SetColorTexture(C.main_bg_color[1],C.main_bg_color[2],C.main_bg_color[3],C.main_bg_color[4])
+	if ns.IsLegion then
+		bg:SetColorTexture(ns.main_bg_color[1],ns.main_bg_color[2],ns.main_bg_color[3],ns.main_bg_color[4])
 	else
-		bg:SetTexture(C.main_bg_color[1],C.main_bg_color[2],C.main_bg_color[3],C.main_bg_color[4])
+		bg:SetTexture(ns.main_bg_color[1],ns.main_bg_color[2],ns.main_bg_color[3],ns.main_bg_color[4])
 	end
 	
 	local f_border = CreateFrame("Frame", nil, f,BackdropTemplateMixin and 'BackdropTemplate')
@@ -663,7 +663,7 @@ function C:GetMainFrame()
 		
 		local addonName = self:GetParent().addon
 		
-		local width, height = C.openedmainFrames[addonName]:GetSize()
+		local width, height = ns.openedmainFrames[addonName]:GetSize()
 		
 		sizes[addonName].curwidth = width
 		sizes[addonName].curheight = height
@@ -718,7 +718,7 @@ function C:GetMainFrame()
 	--	self:SetScript("OnUpdate", MoveSeparator)
 	end)
 	separator:SetScript("OnDragStop", function(self)
-		if C.IsLegion then
+		if ns.IsLegion then
 			self.bg:SetColorTexture(0.4, 0.4, 0.4, 0)
 		else
 			self.bg:SetTexture(0.4, 0.4, 0.4, 0)
@@ -729,21 +729,21 @@ function C:GetMainFrame()
 		self:GetParent():RefreshData()	
 	end)
 	separator:SetScript("OnEnter", function(self)
-		if C.IsLegion then
+		if ns.IsLegion then
 			self.bg:SetColorTexture(0.4, 0.4, 0.4, 0.8)
 		else
 			self.bg:SetTexture(0.4, 0.4, 0.4, 0.8)
 		end
 	end)
 	separator:SetScript("OnLeave", function(self)
-		if C.IsLegion then
+		if ns.IsLegion then
 			self.bg:SetColorTexture(0.4, 0.4, 0.4, 0)
 		else
 			self.bg:SetTexture(0.4, 0.4, 0.4, 0)
 		end
 	end)
 	separator:SetScript("OnMouseUp", function(self)
-		if C.IsLegion then
+		if ns.IsLegion then
 			self.bg:SetColorTexture(0.4, 0.4, 0.4, 1)
 		else
 			self.bg:SetTexture(0.4, 0.4, 0.4, 1)
@@ -751,7 +751,7 @@ function C:GetMainFrame()
 		self:SetScript("OnUpdate", nil)
 	end)
 	separator:SetScript("OnMouseDown", function(self)
-		if C.IsLegion then
+		if ns.IsLegion then
 			self.bg:SetColorTexture(0.4, 0.4, 0.4, 0.8)
 		else
 			self.bg:SetTexture(0.4, 0.4, 0.4, 0.8)
@@ -773,7 +773,7 @@ function C:GetMainFrame()
 	
 	separator.bg  = separator:CreateTexture(nil, "BACKGROUND", nil, 0)
 	separator.bg:SetAllPoints()
-	if C.IsLegion then
+	if ns.IsLegion then
 		separator.bg:SetColorTexture(0.4, 0.4, 0.4, 0)
 	else
 		separator.bg:SetTexture(0.4, 0.4, 0.4, 0)
@@ -788,7 +788,7 @@ function C:GetMainFrame()
 	
 --	local leftSide_bg = leftSide:CreateTexture(nil, "BACKGROUND", nil, 1)
 --	leftSide_bg:SetAllPoints()
---	leftSide_bg:SetTexture(C.main_bg_left_right_side_color[1], C.main_bg_left_right_side_color[2], C.main_bg_left_right_side_color[3], C.main_bg_left_right_side_color[4])	
+--	leftSide_bg:SetTexture(ns.main_bg_left_right_side_color[1], ns.main_bg_left_right_side_color[2], ns.main_bg_left_right_side_color[3], ns.main_bg_left_right_side_color[4])	
 	
 --	AddBorders(leftSide, leftSide_bg)
 	
@@ -857,10 +857,10 @@ function C:GetMainFrame()
 	local rightSide_bg = rightSide:CreateTexture(nil, "BACKGROUND", nil, 1)
 	rightSide_bg:SetAllPoints()
 	
-	if C.IsLegion then
-		rightSide_bg:SetColorTexture(C.main_bg_left_right_side_color[1], C.main_bg_left_right_side_color[2], C.main_bg_left_right_side_color[3], C.main_bg_left_right_side_color[4])	
+	if ns.IsLegion then
+		rightSide_bg:SetColorTexture(ns.main_bg_left_right_side_color[1], ns.main_bg_left_right_side_color[2], ns.main_bg_left_right_side_color[3], ns.main_bg_left_right_side_color[4])	
 	else
-		rightSide_bg:SetTexture(C.main_bg_left_right_side_color[1], C.main_bg_left_right_side_color[2], C.main_bg_left_right_side_color[3], C.main_bg_left_right_side_color[4])	
+		rightSide_bg:SetTexture(ns.main_bg_left_right_side_color[1], ns.main_bg_left_right_side_color[2], ns.main_bg_left_right_side_color[3], ns.main_bg_left_right_side_color[4])	
 	end
 	
 --	AddBorders(rightSide, rightSide_bg)
@@ -884,7 +884,7 @@ function C:GetMainFrame()
 	f.__close:EnableMouse(true)
 	f.__close:SetPoint("BOTTOMRIGHT", bg, "BOTTOMRIGHT", -20, 10)
 	f.__close:SetScript("OnClick", function(self)
-		C:Close(f.addon)
+		ns:Close(f.addon)
 	end)
 	
 --	AddBorders(f.__close, f.__close, { 0.3, 0.3, 0.3, 1 } )
@@ -913,7 +913,7 @@ function C:GetMainFrame()
 		close_text:SetPoint("RIGHT", self, "RIGHT", -4 ,-1)
 	end)
 	
-	f.tree = C:GetTreeGroupFramesFrame(f)
+	f.tree = ns:GetTreeGroupFramesFrame(f)
 	
 	--[[
 	f.__close:SetScript("OnEnter", function(self)
@@ -929,34 +929,34 @@ function C:GetMainFrame()
 end
 
 local freeDropDownList = {}
-function C:FreeDropDowns(me)
-	if me ~= C.DD then C.DD.Hide() end
-	if me ~= C.DDFonts then C.DDFonts.HideFonts() end
-	if me ~= C.DDSounds then C.DDSounds.HideFonts() end
-	if me ~= C.customColorPicker then C.customColorPicker:Hide() end
-	if me ~= 'multiDropDown' then C:HideMultiDropdown(me) end
+function ns:FreeDropDowns(me)
+	if me ~= ns.DD then ns.DD.Hide() end
+	if me ~= ns.DDFonts then ns.DDFonts.HideFonts() end
+	if me ~= ns.DDSounds then ns.DDSounds.HideFonts() end
+	if me ~= ns.customColorPicker then ns.customColorPicker:Hide() end
+	if me ~= 'multiDropDown' then ns:HideMultiDropdown(me) end
 	
 	for k,v in pairs(freeDropDownList) do
 		if k ~= me then v(me) end		
 	end
 end
 
-function C:AddToFreeDropDown(frame, func)
+function ns:AddToFreeDropDown(frame, func)
 	freeDropDownList[frame] = func
 end
 
-function C:FreeAllElements(panel, source)
+function ns:FreeAllElements(panel, source)
 	for i=1, #panel.elements do
 		panel.elements[i]:Remove()
 	end
 
 	panel.elements ={}
 end
-function C:FreeAllChilds(panel)
+function ns:FreeAllChilds(panel)
 
 end
 
-function C:GetRightGroupFramesFrame(self, o)
+function ns:GetRightGroupFramesFrame(self, o)
 	
 	local datapath = self.datapath	
 	local panel = self.rightSide
@@ -970,7 +970,7 @@ function C:GetRightGroupFramesFrame(self, o)
 		updatescroll = true
 	end
 	
-	C:FreeDropDowns(me)
+	ns:FreeDropDowns(me)
 	
 	--self.last_elements_row = elements_row
 	
@@ -983,10 +983,10 @@ function C:GetRightGroupFramesFrame(self, o)
 		end
 	end
 
-	C:FreeAllElements(panel)
-	C:FreeAllChilds(panel)
+	ns:FreeAllElements(panel)
+	ns:FreeAllChilds(panel)
 	
-	wipe(C.OnButtonPanelSizeChanged)
+	wipe(ns.OnButtonPanelSizeChanged)
 	
 	local s = {}
 	
@@ -994,7 +994,7 @@ function C:GetRightGroupFramesFrame(self, o)
 		s[#s+1] = { name = name, order = data1.order }	
 	end
 	
-	C:SortTree(s)
+	ns:SortTree(s)
 	
 	self.ListElements = s
 	
@@ -1007,9 +1007,9 @@ function C:GetRightGroupFramesFrame(self, o)
 end
 
 
-function C:GetPrototype(prototype)
+function ns:GetPrototype(prototype)
 	assert(prototype, "Invalid prototype - "..tostring(prototype))
-	assert(C.prototypes[prototype], "Invalid prototype - "..tostring(prototype))
+	assert(ns.prototypes[prototype], "Invalid prototype - "..tostring(prototype))
 	
-	return C[C.prototypes[prototype]](C)
+	return ns[ns.prototypes[prototype]](ns)
 end

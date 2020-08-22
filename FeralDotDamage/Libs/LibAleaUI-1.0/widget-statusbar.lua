@@ -1,7 +1,7 @@
 if AleaUI_GUI then return end
-local C = _G['AleaGUI_PrototypeLib']
+local ns = _G['AleaGUI_PrototypeLib']
 
-C.toggleStatusBars = {}
+ns.toggleStatusBars = {}
 
 local function Update(self, panel, opts)
 	assert(opts.values, "No Values is set on "..opts.name)
@@ -108,7 +108,7 @@ local function CreateCoreDropDown(parent)
 	f.arrow.text = f.arrow:CreateFontString(nil, "OVERLAY")
 	f.arrow.text:SetFont("Fonts\\ARIALN.TTF", 10, "OUTLINE")
 	f.arrow.text:SetPoint("CENTER")
-	f.arrow.text:SetText(C.statearrow[2])
+	f.arrow.text:SetText(ns.statearrow[2])
 	f.arrow.text:SetWordWrap(false)
 	
 	f.arrow.text:SetJustifyH("CENTER")
@@ -116,17 +116,17 @@ local function CreateCoreDropDown(parent)
 	f.arrow.text:Hide()
 
 	f.arrow:SetScript("OnEnter", function(self)
-		C.Tooltip(self, f._rname, f.desc, "show")
+		ns.Tooltip(self, f._rname, f.desc, "show")
 	end)
 	f.arrow:SetScript("OnLeave", function(self)
-		C.Tooltip(self, f._rname, f.desc, "hide")
+		ns.Tooltip(self, f._rname, f.desc, "hide")
 	end)
 	
 	
 	f.arrow:SetScript("OnClick", function(self)
 		PlaySound(SOUNDKIT and SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_ON or "igMainMenuOptionCheckBoxOn")
 		
-		C.DD.Show(self:GetParent(), self:GetParent()._OnShow())
+		ns.DD.Show(self:GetParent(), self:GetParent()._OnShow())
 	end)
 
 	local text = f:CreateFontString(nil, 'OVERLAY', "GameFontHighlight")
@@ -161,10 +161,10 @@ local function CreateCoreDropDown(parent)
 	f.mouseover:SetPoint("TOPLEFT", value, "TOPLEFT", -3, 3)
 	f.mouseover:SetPoint("BOTTOMRIGHT", value, "BOTTOMRIGHT", 3, -3)
 	f.mouseover:SetScript("OnEnter", function(self)
-		C.Tooltip(self, self:GetParent()._rname, self:GetParent().desc, "show")
+		ns.Tooltip(self, self:GetParent()._rname, self:GetParent().desc, "show")
 	end)
 	f.mouseover:SetScript("OnLeave", function(self)
-		C.Tooltip(self, self:GetParent()._rname, self:GetParent().desc, "hide")
+		ns.Tooltip(self, self:GetParent()._rname, self:GetParent().desc, "hide")
 	end)
 	
 	f.text = text
@@ -174,15 +174,15 @@ local function CreateCoreDropDown(parent)
 	return f
 end
 
-function C:CreateDropDownStatusBar()
+function ns:CreateDropDownStatusBar()
 	
-	for i=1, #C.toggleStatusBars do
-		if C.toggleStatusBars[i].free then
-			return C.toggleStatusBars[i]
+	for i=1, #ns.toggleStatusBars do
+		if ns.toggleStatusBars[i].free then
+			return ns.toggleStatusBars[i]
 		end
 	end
 	
-	local f = CreateFrame("Frame", 'AleaUIGUI-StatusBarFrame'..#C.toggleStatusBars+1, UIParent)
+	local f = CreateFrame("Frame", 'AleaUIGUI-StatusBarFrame'..#ns.toggleStatusBars+1, UIParent)
 	f:SetSize(180, 45)
 	f.free = true
 	
@@ -196,9 +196,9 @@ function C:CreateDropDownStatusBar()
 	f.SetDescription = SetDescription
 	f.UpdateSize = UpdateSize
 	
-	C.toggleStatusBars[#C.toggleStatusBars+1] = f
+	ns.toggleStatusBars[#ns.toggleStatusBars+1] = f
 	
 	return f
 end
 	
-C.prototypes["statusbar"] = "CreateDropDownStatusBar"
+ns.prototypes["statusbar"] = "CreateDropDownStatusBar"

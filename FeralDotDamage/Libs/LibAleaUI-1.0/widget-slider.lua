@@ -1,8 +1,8 @@
 if AleaUI_GUI then return end
-local C = _G['AleaGUI_PrototypeLib']
+local ns = _G['AleaGUI_PrototypeLib']
 
-C.sliderFrames = {}
-
+ns.sliderFrames = {}
+local _
 local hidenframe = CreateFrame('Frame')
 hidenframe:Hide()
 
@@ -162,7 +162,7 @@ local function CreateCoreButton(parent)
 	local f = CreateFrame('Slider', parent:GetName()..'Handler', parent, 'OptionsSliderTemplate')
 	f:SetFrameLevel(parent:GetFrameLevel() + 1)
 	f:HookScript("OnMouseUp", function(self)
-		C:GetRealParent(self):RefreshData()
+		ns:GetRealParent(self):RefreshData()
 	--	print("OnMouseUp") 
 	end)
 --	f:HookScript("OnDragStop", function(self) print("OnDragStop") end)
@@ -279,7 +279,7 @@ local function CreateCoreButton(parent)
 		PlaySound(SOUNDKIT and SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_ON or "igMainMenuOptionCheckBoxOn")
 		
 		self:GetParent()._OnValueChanged(_, newVal)		
-		C:GetRealParent(self):RefreshData()
+		ns:GetRealParent(self):RefreshData()
 	end)
 	--f._plus.text:SetWordWrap(false)
 	
@@ -317,7 +317,7 @@ local function CreateCoreButton(parent)
 		PlaySound(SOUNDKIT and SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_OFF or "igMainMenuOptionCheckBoxOff")
 		
 		self:GetParent()._OnValueChanged(_, newVal)		
-		C:GetRealParent(self):RefreshData()
+		ns:GetRealParent(self):RefreshData()
 	end)
 --	f._minus.text:SetWordWrap(false)
 	
@@ -327,26 +327,26 @@ local function CreateCoreButton(parent)
 	f.mouseover:SetPoint("TOPLEFT", f.text, "TOPLEFT", -3, 3)
 	f.mouseover:SetPoint("BOTTOMRIGHT", f.text, "BOTTOMRIGHT", 3, -3)
 	f.mouseover:SetScript("OnEnter", function(self)
-	--	self:GetParent():SetBackdropBorderColor(unpack(C.button_border_color_onup)) --цвет краев		
-		C.Tooltip(self, self:GetParent()._rname, self:GetParent().desc, "show")
+	--	self:GetParent():SetBackdropBorderColor(unpack(ns.button_border_color_onup)) --цвет краев		
+		ns.Tooltip(self, self:GetParent()._rname, self:GetParent().desc, "show")
 	end)
 	f.mouseover:SetScript("OnLeave", function(self)
-	--	self:GetParent():SetBackdropBorderColor(unpack(C.button_border_color_ondown)) --цвет краев	
-		C.Tooltip(self, self:GetParent()._rname, self:GetParent().desc, "hide")
+	--	self:GetParent():SetBackdropBorderColor(unpack(ns.button_border_color_ondown)) --цвет краев	
+		ns.Tooltip(self, self:GetParent()._rname, self:GetParent().desc, "hide")
 	end)
 
 	return f
 end
 
-function C:CreateSlider()
+function ns:CreateSlider()
 	
-	for i=1, #C.sliderFrames do
-		if C.sliderFrames[i].free then
-			return C.sliderFrames[i]
+	for i=1, #ns.sliderFrames do
+		if ns.sliderFrames[i].free then
+			return ns.sliderFrames[i]
 		end
 	end
 	
-	local f = CreateFrame("Frame", 'AleaUIGUI-SliderFrame'..#C.sliderFrames+1, UIParent)
+	local f = CreateFrame("Frame", 'AleaUIGUI-SliderFrame'..#ns.sliderFrames+1, UIParent)
 	f:SetSize(180, 55)
 	f.free = true
 	
@@ -365,9 +365,9 @@ function C:CreateSlider()
 	f.SetMinMaxStep = SetMinMaxStep
 	f.UpdateSize = UpdateSize
 	
-	C.sliderFrames[#C.sliderFrames+1] = f
+	ns.sliderFrames[#ns.sliderFrames+1] = f
 	
 	return f
 end
 	
-C.prototypes["slider"] = "CreateSlider"
+ns.prototypes["slider"] = "CreateSlider"

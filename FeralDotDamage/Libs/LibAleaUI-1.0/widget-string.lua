@@ -1,7 +1,7 @@
 if AleaUI_GUI then return end
-local C = _G['AleaGUI_PrototypeLib']
+local ns = _G['AleaGUI_PrototypeLib']
 
-C.stringFrames = {}
+ns.stringFrames = {}
 
 local function Update(self, panel, opts)
 	
@@ -91,12 +91,12 @@ local function CreateCore(parent)
 	f.mouseover:SetPoint("BOTTOMRIGHT", text, "BOTTOMRIGHT", 3, -3)
 	f.mouseover:SetScript("OnEnter", function(self)	
 	]]
-	--	C.Tooltip(self, self:GetParent()._rname, self:GetParent().desc, "show")
+	--	ns.Tooltip(self, self:GetParent()._rname, self:GetParent().desc, "show")
 	--[[
 	end)
 	f.mouseover:SetScript("OnLeave", function(self)
 	]]
-	--	C.Tooltip(self, self:GetParent()._rname, self:GetParent().desc, "hide")
+	--	ns.Tooltip(self, self:GetParent()._rname, self:GetParent().desc, "hide")
 --	end)
 	
 	
@@ -106,15 +106,15 @@ local function CreateCore(parent)
 	return f
 end
 
-function C:CreateString()
+function ns:CreateString()
 	
-	for i=1, #C.stringFrames do
-		if C.stringFrames[i].free then
-			return C.stringFrames[i]
+	for i=1, #ns.stringFrames do
+		if ns.stringFrames[i].free then
+			return ns.stringFrames[i]
 		end
 	end
 	
-	local f = CreateFrame("Frame", 'AleaUIGUI-StringFrame'..#C.stringFrames+1, UIParent)
+	local f = CreateFrame("Frame", 'AleaUIGUI-StringFrame'..#ns.stringFrames+1, UIParent)
 	f:SetSize(180, 30)
 	f.free = true
 	
@@ -134,9 +134,9 @@ function C:CreateString()
 	f.SetDescription = SetDescription
 	f.UpdateSize = UpdateSize
 	
-	C.stringFrames[#C.stringFrames+1] = f
+	ns.stringFrames[#ns.stringFrames+1] = f
 	
 	return f
 end
 	
-C.prototypes["string"] = "CreateString"
+ns.prototypes["string"] = "CreateString"
