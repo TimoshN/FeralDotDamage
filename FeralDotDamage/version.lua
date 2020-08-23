@@ -4,23 +4,20 @@ local remindMeagain = true
 local name
 local string_match = string.match
 local format = format
-local IsAddonMessagePrefixRegistered = C_ChatInfo and C_ChatInfo.IsAddonMessagePrefixRegistered or IsAddonMessagePrefixRegistered
-local SendAddonMessage = C_ChatInfo and C_ChatInfo.SendAddonMessage or SendAddonMessage
-local RegisterAddonMessagePrefix = C_ChatInfo and C_ChatInfo.RegisterAddonMessagePrefix or RegisterAddonMessagePrefix
 
 local tonumber = tonumber
 local sendmessagethottle = 20
 local versioncheck = 0
 local versioncheck_guild = 0
 
-if not IsAddonMessagePrefixRegistered(addonChannel) then
-	RegisterAddonMessagePrefix(addonChannel)
+if not C_ChatInfo.IsAddonMessagePrefixRegistered(addonChannel) then
+	C_ChatInfo.RegisterAddonMessagePrefix(addonChannel)
 end
 
 function ns:AddonMessage(msg, channel)
 
 	if channel == "GUILD" and IsInGuild() then
-		SendAddonMessage(addonChannel, msg, "GUILD")
+		C_ChatInfo.SendAddonMessage(addonChannel, msg, "GUILD")
 	else
 		local chatType = "PRINT"
 		if IsInGroup(LE_PARTY_CATEGORY_INSTANCE) or IsInRaid(LE_PARTY_CATEGORY_INSTANCE) then
@@ -34,7 +31,7 @@ function ns:AddonMessage(msg, channel)
 		if chatType == "PRINT" then
 			
 		else
-			SendAddonMessage(addonChannel, msg, chatType)
+			C_ChatInfo.SendAddonMessage(addonChannel, msg, chatType)
 		end
 	end
 end
