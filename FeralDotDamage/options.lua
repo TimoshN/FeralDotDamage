@@ -195,8 +195,6 @@ function ns:DefaultOptions()
 
 				disableIconSwap = false,
 				
-				enable4T21 = true,
-				
 				anchoring = 2,
 				
 				isvertical = 1,
@@ -519,19 +517,6 @@ function ns:DefaultOptions()
 	ns.db.profile = ALEAUI_NewDB("FeralDotDamageDB", default, true)
 end
 
-local donation = { 
-	"Je*** Hui*****(jfd**iz@xs4***.nl) @Curse.com",
-	"Mary Jo*** @PayPal",
-	"A**et***ve A**e @PayPal",
-	"Chere**** Anatoly @PatPal",
-}
-
-local sites = {
-	["twitter"]	  = { "Twitter", "TimoshN", false, nil },
-	["website"]	  = { "URL", "http://aleaaddons.ru", false, nil },
-	["anyhelp"]	  = { "Help", "http://www.aleaaddons.ru/p/support.html" , true, "full"},
-}
-
 local function GetSpellNameGUI(spellID)
 	local name, _, icon = GetSpellInfo(spellID)
 	
@@ -542,7 +527,6 @@ function ns:UpdateOptionTable()
 	if ns.db.profile.icons.isvertical == 2 then
 		
 	else
-	
 	
 	end
 end
@@ -1923,19 +1907,6 @@ function ns:OptionsTable()
 			end,
 			get =function(info)
 				return ns.db.profile.icons.disableIconSwap
-			end,
-		}
-		
-		o.args.icons_.args.style.args.enable4T21 = {
-			name = L["Подсвечивать иконку при проке"]..' '..GetSpellNameGUI(252752), disabled = false,
-			desc = GetSpellDescription(252752),
-			type = "toggle", order	= 1.4, width = 'full',
-			set = function(info,val) 
-				ns.db.profile.icons.enable4T21 = not ns.db.profile.icons.enable4T21
-				ns:UpdateFramesStyle();
-			end,
-			get = function(info)
-				return ns.db.profile.icons.enable4T21
 			end,
 		}
 		
@@ -3487,39 +3458,7 @@ function ns:OptionsTable()
 	}
 	
 	local order_1 = 1
-	--[==[
-	for k,v in pairs(sites) do
 	
-		o.args.about.args[k] =  {
-			type = "editbox",	order = order_1,
-			name = v[1],
-			width = v[4],
-			set = function(info,val) end,						
-			get = function(info) return v[2] end
-		}
-		order_1 = order_1 + 1
-	
-	end
-	
-	local don_text = "Donations:\n"
-	
-	for k,v in ipairs(donation) do
-		don_text = don_text..format("%d. %s\n", k, v)	
-	end
-	
-	o.args.about.args.donations  = {
-		order = order_1,
-		width = "full",
-		type = "string",
-		name = don_text,
-		set = function()
-	
-		end,
-		get = function()
-			return don_text
-		end,
-	}
-	]==]
 	o.args.anonses = ns:GetAnonseOptions()
 	
 	o.args.aurawidgets = ns:AddAuraWatcherGUI()

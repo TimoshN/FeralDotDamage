@@ -64,9 +64,11 @@ RegisterSound("Sound\\Spells\\SimonGame_Visual_LevelStart.ogg","Simon Level Star
 local rakeDamage = 0.80
 local rakeDamagePog = 0.2
 local shadowmeldDebug = false
+local prevPrimalWrathSpell = -1
+
 local movingFrame = CreateFrame("Frame", AddOn.."MainFrame", UIParent)
-movingFrame.elements = {}
-ns.movingFrame = movingFrame
+	movingFrame.elements = {}
+	ns.movingFrame = movingFrame
 
 local order_spell = {}
 
@@ -101,11 +103,6 @@ ns.dikiyrev_spid = 52610
 ns.dikiyrev_name = GetSpellInfo(ns.dikiyrev_spid)
 local dikiyrev_spid = ns.dikiyrev_spid
 local dikiyrev_name = ns.dikiyrev_name
-
-ns.dikiyrev_glyph_spid = 174544
-ns.dikiyrev_glyph_name = GetSpellInfo(ns.dikiyrev_glyph_spid)
-local dikiyrev_glyph_spid = ns.dikiyrev_glyph_spid
-local dikiyrev_glyph_name = ns.dikiyrev_glyph_name
 
 ns.krovaviekogti_spid = 145152
 ns.krovaviekogti_name = GetSpellInfo(ns.krovaviekogti_spid)
@@ -194,29 +191,27 @@ local detectrakeBonus = false
 
 ns.dot_store = dot_store
 
+-- TODO Rework duration
+
 local dots_info = {
-	
 	[glybokayrana_spid] 	= { 3, 15, 19.5 , 	glybokayrana_name,	4.5}, -- tick period, default duration, pandemia duration
-	[razorvat_spid] 		= { 2, 28, 28*1.3 , razorvat_name,		28*0.3},
+	[razorvat_spid] 		= { 2, 24, 24*1.3 , razorvat_name,		24*0.3, { 8, 12, 16, 20, 24 }, { 4, 6, 7, 10, 12 }},
 	[vzbuchka_spid] 		= { 3, 15, 15*1.3 , vzbuchka_name,		15*0.3},
 	[dikiyrev_spid] 		= { 0, 0, 0 ,	 	dikiyrev_name,		12.6},
-	[dikiyrev_glyph_spid] 	= { 0, 0, 0 , 		dikiyrev_name,		12.6},
 	[moonfire_spid] 		= { 2, 14, 18.2 , 	moonfire_name, 		4.2},
 	[339]					= { 0, 30, 30,		( GetSpellInfo(339) ), 0 },
 	[102359]				= { 0, 20, 20, 		( GetSpellInfo(102359) ), 0 },
-	[210705]				= { 2, 24, 24,  	( GetSpellInfo(210705) ), 0 },
 }
 
 local function GetAuras()
 	local tigrinie_neistvo = AuraUtil.FindAuraByName(tigrinoe_name, 'player', 'HELPFUL|PLAYER')	 -- 15%
 	--local dikiy_rev		   = AuraUtil.FindAuraByName(dikiyrev_name, 'player', 'HELPFUL|PLAYER')  -- 15%
-	local krovavie_kogti   = AuraUtil.FindAuraByName(krovaviekogti_name, 'player', 'HELPFUL|PLAYER') or ( hideauraTime2 > GetTime() ) -- 25%
-	local imprake		   = 
-								AuraUtil.FindAuraByName(stealth_name, 'player', 'HELPFUL|PLAYER') or 
-								( not incarnationFix and AuraUtil.FindAuraByName(incarnation_name, 'player', 'HELPFUL|PLAYER') ) or 
-								AuraUtil.FindAuraByName((GetSpellInfo(58984)), 'player', 'HELPFUL|PLAYER') or 
-								( detectrakeBonus and hideauraTime3 > GetTime() ) or 
-								( hideauraTime > GetTime() )-- 100%
+	local krovavie_kogti   = AuraUtil.FindAuraByName(krovaviekogti_name, 'player', 'HELPFUL|PLAYER') or ( hideauraTime2 > GetTime() ) -- 30%
+	local imprake		   = AuraUtil.FindAuraByName(stealth_name, 'player', 'HELPFUL|PLAYER') or 
+							 ( not incarnationFix and AuraUtil.FindAuraByName(incarnation_name, 'player', 'HELPFUL|PLAYER') ) or 
+							 AuraUtil.FindAuraByName((GetSpellInfo(58984)), 'player', 'HELPFUL|PLAYER') or 
+							 ( detectrakeBonus and hideauraTime3 > GetTime() ) or 
+							 ( hideauraTime > GetTime() )-- 100%
 
 	return tigrinie_neistvo, krovavie_kogti, imprake
 end
@@ -228,9 +223,14 @@ function ns:UpdateDamageMods(guid, spellid, dstName)
 	self:RegisterDot(guid, spellid)
 
 	dot_store[guid..spellid][9]  = tigrinie_neistvo and true or false
-	dot_store[guid..spellid][10] = dikiy_rev and true or false
-	dot_store[guid..spellid][11] = krovavie_kogti and true or false
-	
+	dot_store[guid..spellid][10] = false
+
+	if spellid == razorvat_spid then
+		dot_store[guid..spellid][11] = krovavie_kogti and true or false
+	else 
+		dot_store[guid..spellid][11] = false
+	end 
+
 	if spellid == glybokayrana_spid and imprived_rake_gained then
 		dot_store[guid..spellid][12] = imp_rake and true or false
 	else
@@ -262,26 +262,6 @@ end
 
 --local form_real = 0
 local function GetForm(update) -- 0 - human ; 1 - bear; 2 - cat
-	--[==[
-	if update then
-	
-		local catform = UnitAura("player", catform_name, nil, "PLAYER")	or UnitAura("player", cathumanform_name, nil, "PLAYER")
-		if catform then 
-			form_real = 2 
-			return form_real
-		end
-
-		local bearform = UnitAura("player", bearform_name, nil, "PLAYER")		
-		if bearform then 
-			form_real = 1 
-			return form_real
-		end
-
-		form_real = 0
-	end
-
-	return form_real
-	]==]
 	local form = GetShapeshiftFormID()
 	if form == CAT_FORM or form == BEAR_FORM then
 		return form
@@ -302,16 +282,16 @@ function ns:GetDotBuffValue(guid, spellid)
 	
 	if cur_tigrinie_neistvo then total_cur = total_cur * 1.15 end
 
-	if spellid ~= moonfire_spid then
-		if cur_krovavie_kogti then total_cur = total_cur * 1.25 end
+	if spellid == razorvat_spid then
+		if cur_krovavie_kogti then total_cur = total_cur * 1.3 end
 	end
 	
 	if imprived_rake_gained and cur_imp_rake and spellid == glybokayrana_spid then total_cur = total_cur * 2 end
 	
 	if tigrinie_neistvo then total = total * 1.15 end
 
-	if spellid ~= moonfire_spid then
-		if krovavie_kogti then total = total * 1.25 end
+	if spellid == razorvat_spid then
+		if krovavie_kogti then total = total * 1.3 end
 	end
 	
 	if imprived_rake_gained and impr_rake and spellid == glybokayrana_spid then total = total * 2 end
@@ -358,13 +338,19 @@ end
 local onupdate = CreateFrame("Frame")
 onupdate:SetScript("OnUpdate", OnUpdate)
 
-function ns:RegisterDot(guid, spellid, starttime, endtime, cp, destName)
+function ns:RegisterDot(guid, spellid, starttime, endtime, cp, destName, primalWratch)
 	
 	if not dot_store[guid..spellid] then
 		
 		dot_store[guid..spellid] = { nil, nil, nil, nil, nil, nil, nil, nil, nil, nil }
 		dot_store[guid..spellid][1] = starttime or GetTime()												-- starttime
-		dot_store[guid..spellid][2]	= endtime or dot_store[guid..spellid][1] + dots_info[spellid][2]		-- endtime
+		
+		if ( cp and spellid == razorvat_spid ) then
+			dot_store[guid..spellid][2]	= endtime or dot_store[guid..spellid][1] + ( primalWratch and dots_info[spellid][7][cp] or dots_info[spellid][6][cp] )		-- endtime
+		else
+			dot_store[guid..spellid][2]	= endtime or dot_store[guid..spellid][1] + dots_info[spellid][2]		-- endtime
+		end
+
 		dot_store[guid..spellid][3] = dots_info[spellid][2]/dots_info[spellid][1]							-- ticks amount
 		dot_store[guid..spellid][4] = dots_info[spellid][1]													-- ticks time
 		dot_store[guid..spellid][5] = dot_store[guid..spellid][1] + dots_info[spellid][1]					-- time to next tick
@@ -379,21 +365,13 @@ function ns:RegisterDot(guid, spellid, starttime, endtime, cp, destName)
 		dot_store[guid..spellid][17] = cp																	-- tick partiall coeff
 		dot_store[guid..spellid][18] = destName
 		
-		if spellid == 210705 then
-			if dot_store[guid..razorvat_spid] then
-				dot_store[guid..spellid][1] = dot_store[guid..razorvat_spid][1]
-				dot_store[guid..spellid][2] = dot_store[guid..razorvat_spid][2]
-				dot_store[guid..spellid][8] = dot_store[guid..razorvat_spid][8] 
-			end
-		end
-		
 		self:UpdateDamageMods(guid, spellid, destName)
 		
 		self:UpdateMultiDot()
 	end
 end
 
-function ns:RefreshRegisterDot(guid, spellid, cp, dstName)
+function ns:RefreshRegisterDot(guid, spellid, cp, dstName, primalWratch)
 	
 	if dot_store[guid..spellid] then
 		local starttime = GetTime()
@@ -419,15 +397,6 @@ function ns:RefreshRegisterDot(guid, spellid, cp, dstName)
 		
 		dot_store[guid..spellid][17] = cp	
 		
-		if spellid == 210705 then
-			if dot_store[guid..razorvat_spid] then
-				dot_store[guid..spellid][1] = dot_store[guid..razorvat_spid][1]
-				dot_store[guid..spellid][2] = dot_store[guid..razorvat_spid][2]
-				dot_store[guid..spellid][8] = dot_store[guid..razorvat_spid][8] 
-			end
-		end
-		
-		
 		self:UpdateDamageMods(guid, spellid, dstName)
 		
 		self:UpdateMultiDot()
@@ -442,57 +411,7 @@ function ns:UnregisterDot(guid, spellid)
 	end
 end
 
-local unitList = { "target", "focus", "boss1", "boss2", "boss3", "boss4", "boss5" }
-
-function ns:IsAshamaneBiteAvailible(guid)
-
---	print('IsAshamaneBiteAvailible:1', guid)
-	
-	if not ns.ashamaneBite then
-		return false
-	end
-	
---	print('IsAshamaneBiteAvailible:2', dot_store[guid..'210705'], dot_store[guid..'210705'] and ( dot_store[guid..'210705'][2] > GetTime() ) )
-	
-	if dot_store[guid..'210705'] then
-		if dot_store[guid..'210705'][2] > GetTime() then
-			return true
-		end
-	end
-	
-	local unit = nil
-	
-	for i=1, 7 do
-		if UnitGUID(unitList[i]) == guid then 
-			unit = unitList[i]
-			break
-		end
-	end
-	
-	if not unit then
-		for i=1, 30 do
-			if UnitGUID('nameplate'..i) == guid then 
-				unit = 'nameplate'..i
-				break
-			end
-		end
-	end
-	
---	print('IsAshamaneBiteAvailible:3', unit)
-	
-	if unit then
-		local name, _, _, _, duration, expires = AuraUtil.FindAuraByName((GetSpellInfo(210705)), unit, 'HARMFUL|PLAYER') -- UnitDebuff(unit, (GetSpellInfo(210705)), nil, 'PLAYER')
-		
---		print('IsAshamaneBiteAvailible:4', name, duration, expires)
-		if name then
-			ns:RegisterDot(guid, 210705, expires-duration, expires)
-			
-			return true
-		end
-	end
-	
-	return false
-end
+--local unitList = { "target", "focus", "boss1", "boss2", "boss3", "boss4", "boss5" }
 
 function ns:GetMaxCurrentTime(guid, spellid)
 	local maxtime, current = 0, 0
@@ -597,6 +516,7 @@ function ns:DoAnonce(event, spellID, target, source, extraSpellID, text)
 end
 
 local kickqueue = CreateFrame("Frame")
+kickqueue:Hide()
 kickqueue.elapsed = 0
 kickqueue:SetScript("OnUpdate", function(self, elapsed)
 	self.elapsed = self.elapsed + elapsed
@@ -637,41 +557,6 @@ local missType = {
 	["RESIST"] = false,
 }
 
-local function GetRakeDamage(critical)
-	local tigrinie_neistvo = AuraUtil.FindAuraByName(tigrinoe_name, 'player', 'HELPFUL') 	 -- 15%
-	local dikiy_rev		   = AuraUtil.FindAuraByName(dikiyrev_name, 'player', 'HELPFUL') 	 -- 15%
-	local krovavie_kogti   = AuraUtil.FindAuraByName(krovaviekogti_name, 'player', 'HELPFUL') or ( hideauraTime2 > GetTime() ) -- 25%
-	
-	local versality = 1 + ( GetCombatRatingBonus(CR_VERSATILITY_DAMAGE_DONE) * 0.01 )
-	local mastery = 1 + ( GetMastery()*2 * 0.01 ) -- 3.13 for WoD
-	local dmg = rakeDamage*UnitAttackPower('player')
-	local crit = 1
-	local dmg_buff = 1
-	local artifact = 1 
-	
-	if ns.rakeBonusDamage > 0 then
-		artifact = ns.rakeBonusDamage * 1.07
-	end
-	
-	dmg_buff = dmg_buff * artifact
-	
-	if critical then
-		crit = 2
-	end
-	
-	if tigrinie_neistvo then 
-		dmg_buff = dmg_buff * 1.15
-	end
-
-	if krovavie_kogti then 
-		dmg_buff = dmg_buff * 1.25
-	end
-	
-	local tdmg = ceil(dmg*versality*mastery*2*crit*dmg_buff)
-	local pogresh = tdmg*rakeDamagePog
-	return tdmg, tdmg+pogresh, tdmg-pogresh
-end
-
 local soundTrottle = 0
 
 local legendaryRingProc = {
@@ -695,7 +580,7 @@ function ns:COMBAT_LOG_EVENT_UNFILTERED(event, ...)
 			dstGUID, dstName, dstFlags, dstFlags2,
 			spellID, spellName, spellSchool, auraType, amount, extraSchool, extraType, blocked,absorbed,critical,glancing,crushing, isOffHand = ...
 
-	if srcGUID ~= UnitGUID('player') then
+	if srcGUID ~= ns.myGUID then
 		return
 	end
 
@@ -707,13 +592,10 @@ function ns:COMBAT_LOG_EVENT_UNFILTERED(event, ...)
 				detectrakeBonus = false
 			end
 		elseif spellID == razorvat_spid then
-			ns:RegisterDot(dstGUID, spellID, nil, nil, cp_bycast, dstName)
+			ns:RegisterDot(dstGUID, spellID, nil, nil, cp_bycast, dstName, GetTime()-prevPrimalWrathSpell < 1 )
 		elseif moonfire_spid == spellID then
 			ns:RegisterDot(dstGUID, spellID, nil, nil, nil, dstName)
-		elseif spellID == 339 or spellID == 102359 then
-
-			ns:RegisterDot(dstGUID, spellID, nil, nil, nil, dstName)
-		elseif spellID == 210705 then
+		elseif spellID == 339 or spellID == 102359 then -- roots
 			ns:RegisterDot(dstGUID, spellID, nil, nil, nil, dstName)
 		elseif dikiyrev_spid == spellID then
 			SR_COMBO_POINTS = UnitPower('player', 4)
@@ -721,6 +603,9 @@ function ns:COMBAT_LOG_EVENT_UNFILTERED(event, ...)
 	elseif eventType == "SPELL_CAST_SUCCESS" then
 		if spellID == 106839 then
 			DelayCastKick(93985, dstName, srcName)
+		elseif spellID == 285381 then 
+			print('Primal Wrath casted', GetTime())
+			prevPrimalWrathSpell = GetTime()
 		elseif spellID ~= 20484 then
 			ns:DoAnonce(eventType, spellID, dstName, srcName)
 		end
@@ -732,18 +617,16 @@ function ns:COMBAT_LOG_EVENT_UNFILTERED(event, ...)
 		
 	elseif eventType == "SPELL_AURA_REFRESH" then		
 		if spellID == glybokayrana_spid or spellID == vzbuchka_spid then
-			ns:RefreshRegisterDot(dstGUID, spellID,nil, dstName)
+			ns:RefreshRegisterDot(dstGUID, spellID, nil, dstName)
 
 			if spellID == glybokayrana_spid then
 				detectrakeBonus = false
 			end
 		elseif spellID == razorvat_spid then
-			ns:RefreshRegisterDot(dstGUID, spellID, cp_bycast, dstName)
+			ns:RefreshRegisterDot(dstGUID, spellID, cp_bycast, dstName, GetTime()-prevPrimalWrathSpell < 1 )
 		elseif moonfire_spid == spellID then
 			ns:RefreshRegisterDot(dstGUID, spellID,nil, dstName)
 		elseif spellID == 339 or spellID == 102359 then		
-			ns:RefreshRegisterDot(dstGUID, spellID, nil, dstName)
-		elseif spellID == 210705 then
 			ns:RefreshRegisterDot(dstGUID, spellID, nil, dstName)
 		end
 	elseif eventType == "SPELL_AURA_REMOVED" then
@@ -752,8 +635,6 @@ function ns:COMBAT_LOG_EVENT_UNFILTERED(event, ...)
 		elseif moonfire_spid == spellID then
 			ns:UnregisterDot(dstGUID, spellID)
 		elseif spellID == 339 or spellID == 102359 then
-			ns:UnregisterDot(dstGUID, spellID)
-		elseif spellID == 210705 then
 			ns:UnregisterDot(dstGUID, spellID)
 		elseif spellID == stealth_spid or spellID == 102547 then		
 			hideauraTime = GetTime()+trottle1
@@ -951,28 +832,6 @@ function ns:UpdateVisible(unit)
 				local combopoints = UnitPower("player", 4)
 				local haveProc = false
 				
-				if ( ns.db.profile.icons.enable4T21 ) then
-					if AuraUtil.FindAuraByName((GetSpellInfo(252752)), 'player', 'HELPFUL') then --UnitBuff('player', (GetSpellInfo(252752))) then
-						haveProc = true
-						
-						if not frame._enable4T2Highlight then
-							frame._enable4T2Highlight = true
-							
-							FeralDotDamage.ShowOverlayGlow(frame)
-						end
-					elseif frame._enable4T2Highlight then
-						frame._enable4T2Highlight = false
-						
-						FeralDotDamage.HideOverlayGlow(frame)
-					end
-				else	
-					if frame._enable4T2Highlight then
-						frame._enable4T2Highlight = false
-						
-						FeralDotDamage.HideOverlayGlow(frame)
-					end
-				end
-				
 				if combopoints > 0 or haveProc then
 					frame.guid = guid
 					frame.shown = true
@@ -1000,10 +859,6 @@ function ns:UpdateVisible(unit)
 					end
 					
 					if duration and duration > 0 and expirationTime and expirationTime > GetTime() then				
-						if spellId == 210705 then
-							ns:RegisterDot(guid, 210705, expirationTime-duration, expirationTime)
-						end
-						
 						if spellId == frame.spellID then
 							local spellid = frame.spellID
 							
@@ -1309,8 +1164,6 @@ local function IconOnUpdateHandler(self, elapsed)
 		
 		if parent.shown and not ns.db.profile.icons.disableIconSwap and ns.impFerBite then
 			parent.icon:SetTexture(fb_texture)
-		elseif parent.shown and not ns.db.profile.icons.disableIconSwap and ns:IsAshamaneBiteAvailible(guid) then		
-			parent.icon:SetTexture(ns.customAshamaneBiteTexture)
 		else
 			parent.icon:SetTexture(razorvat_texture)
 		end
@@ -1388,8 +1241,6 @@ local function StatusBarOnUpdateHandler(self, elapsed)
 
 		if ns.impFerBite and parent.shown then
 			parent.icon:SetTexture(fb_texture)
-		elseif parent.shown and ns:IsAshamaneBiteAvailible(guid) then		
-			parent.icon:SetTexture(ns.customAshamaneBiteTexture)
 		else
 			parent.icon:SetTexture(razorvat_texture)
 		end
@@ -3116,12 +2967,6 @@ function ns:UNIT_POWER_FREQUENT(event, unit)
 end
 
 function ns:UPDATE_SHAPESHIFT_FORM()
-	
---	local form = GetForm(true)
-	
-	self.myGUID = UnitGUID("player")
---	print('UPDATE_SHAPESHIFT_FORM', self.myGUID)
-	
 	self:UNIT_POWER_FREQUENT(event, "player")
 	
 	ns:UpdateMainFrameVisability()
@@ -3163,7 +3008,7 @@ local function ShowHideUI()
 	end
 end
 
-ns:RegisterEvent("PLAYER_LOGIN")
+ns:RegisterEvent('PLAYER_LOGIN')
 
 function ns:PLAYER_LOGIN()
 	
@@ -3281,56 +3126,24 @@ do
 	function ns:UpdateTalentsAndPercs(event)	
 		initUpdate = true
 		
-		imprived_rake_gained = true --IsSpellKnown(157276)
-		moonfire_talent 	 = IsTalentKnown(155580)-- IsSpellKnown(155580)
+		imprived_rake_gained = true
+		moonfire_talent 	 = IsTalentKnown(155580)
 		savage_roar_talent 	 = IsTalentKnown(52610)
-		--ns.rakeBonusDamage	 = ns:GetAtrifactPercInfo(210593)
-		--ns.ashamaneBite		 = ns:GetAtrifactPercInfo(210702) == 1 and true or false
 		ns.brutalSlash		 = IsTalentKnown(202028)
 		ns.moonkinForm		 = IsTalentKnown(197488)
 		ns.impFerBite		 = IsTalentKnown(202031)
-		
-	--	print('T', 'ashamaneBite', ns.ashamaneBite)
-	--	print('T', 'rakeBonusDamage', ns.rakeBonusDamage)
-		
-	--	print('T', 'savage_roar_talent', savage_roar_talent)
-	--	print('T', self, event, moonfire_talent, IsTalentKnown(155580))
-	--	print('T', IsSpellKnown(52610))
-	--	print('T', IsTalentKnown(155672))
-	
-	--	[vzbuchka_spid] 		= { 3, 18, 18*1.3 , vzbuchka_name,		18*0.3},
-		
-	--	print('T', (GetSpellInfo(202032)), IsTalentKnown(202032))
-		
-		if IsTalentKnown(202032) then
-			local modValue = 0.80
-			
-			dots_info[glybokayrana_spid] 	= { 3*modValue, 15*modValue, 15*1.3*modValue , 	glybokayrana_name,	15*0.3*modValue} -- tick period, default duration, pandemia duration
-			dots_info[razorvat_spid] 		= { 2*modValue, 28*modValue, 28*1.3*modValue , 	razorvat_name,		28*0.3*modValue}
-			dots_info[vzbuchka_spid] 		= { 3*modValue, 15*modValue, 15*1.3*modValue , 	vzbuchka_name,		15*0.3*modValue}
-		else		
-			dots_info[glybokayrana_spid] 	= { 3, 15, 15*1.3 , 	glybokayrana_name,	15*0.3} -- tick period, default duration, pandemia duration
-			dots_info[razorvat_spid] 		= { 2, 28, 28*1.3   , 	razorvat_name,		28*0.3}
-			dots_info[vzbuchka_spid] 		= { 3, 15, 15*1.3 , 	vzbuchka_name,	15*0.3}
-		end
-		
+
 		ns:UpdateOrders()
 		ns:UpdateCooldownOrders()
-		-- ns:UpdateBuffCheckStatus()
-		-- ns:UpdateBuffCheckOverlay()
-		
+
 		local currentSpec = GetSpecialization()
 		local currentSpecID = currentSpec and GetSpecializationInfo(currentSpec)
-		
-		
-		
+	
 		ns:RegisterEvent("UNIT_POWER_FREQUENT")
 		ns:RegisterEvent("UPDATE_SHAPESHIFT_FORM")
 		ns:RegisterEvent("UNIT_HEALTH")
 		
 		ns.powerWhileGuardianDruid = ns.db.profile.show_for_guardian_spec and currentSpecID == guardian_spec or false
-		
-	--	print('T', 'powerWhileGuardianDruid', ns.powerWhileGuardianDruid)
 		
 		local isCatImpForm = ns.db.profile.show_for_non_feral_spec and ( feraldd_spec ~= currentSpecID ) and ( IsTalentKnown(197490) or IsTalentKnown(202157) or IsTalentKnown(202155) ) or false
 
@@ -3410,416 +3223,10 @@ do
 
 		if initUpdate then
 			initUpdate = false
-			C_Timer.After(0.5, CTimer_AfterUpdate)
+			C_Timer.After(0.3, CTimer_AfterUpdate)
 		end
 	end
 end
-
--- do
-
--- 	local table_concat = table.concat
-	
--- 	local lastTimeCheck = 0
--- 	local header = '|cFFFFFF00'..AddOn..' '..L['Проверка баффов']..':|r'
-	
--- 	local buffList = {
--- 		['110'] = {
--- 			flask = 188033,
--- 			food = 188534,
--- 			rune = 224001,
--- 			runeItem = 0,
--- 		},
--- 		['100'] = {
--- 			flask = 156064,
--- 			food = 188534,
--- 			rune = 175456,
--- 			runeItem = 118630,		
--- 		},
-	
--- 	}
-
--- 	local function GetBuff(typo)			
--- 		local dir = ( UnitLevel('player') == 110 ) and '110' or '100'
-		
--- 		return ( GetSpellInfo(buffList[dir][typo]) )
--- 	end
-	
--- 	local function GetBuffLink(typo)
--- 		local dir = ( UnitLevel('player') == 110 ) and '110' or '100'
-		
--- 		local link
-		
--- 		if typo == 'rune' then
--- 			local name, linkItem = GetItemInfo(buffList[dir]['runeItem'])
-			
--- 			link = linkItem or GetSpellLink(buffList[dir][typo])
--- 		else
--- 			link = GetSpellLink(buffList[dir][typo])
--- 		end
-		
--- 		return link
--- 	end
-	
--- 	local function GetBuffTexture(typo)
--- 		local dir = ( UnitLevel('player') == 110 ) and '110' or '100'
-		
--- 		return ( GetSpellTexture(buffList[dir][typo]) )
--- 	end
-	
--- 	local function GetAuraIcon()
-	
--- 		local f = CreateFrame('Frame')
--- 		f:SetSize(26, 26)
--- 		f.icon = f:CreateTexture()
--- 		f.icon:SetDrawLayer('ARTWORK', 1)
--- 		f.icon:SetAllPoints()
--- 		f.icon:SetTexture(GetSpellTexture(aginFlask_id))
--- 		f.icon:SetTexCoord(0.07, 0.93, 0.07, 0.93)	
-		
--- 		f.cooldown = CreateFrame('Cooldown', nil, f, "CooldownFrameTemplate")
--- 		f.cooldown:SetAllPoints()
--- 		f.cooldown:SetDrawEdge(true)
--- 		f.cooldown:SetSwipeColor(0, 0, 0, 0.6)	
--- 		f.cooldown:SetBlingTexture("")	
-		
--- 		f.text = f:CreateFontString()
--- 		f.text:SetFont(STANDARD_TEXT_FONT, 14, 'OUTLINE')
--- 		f.text:SetPoint('LEFT', f, 'RIGHT', 2, 0)
--- 		f.text:SetTextColor(1, 1, 1)
--- 		f.text:Hide()
-		
--- 		return f
--- 	end
-	
--- 	local buffFrame = CreateFrame('Frame', nil, UIParent)
--- 	buffFrame:SetSize(110, 133)
--- 	buffFrame:SetPoint('LEFT', UIParent, 'LEFT', 300, 0)
-	
--- 	buffFrame:Hide()
--- 	--[[
--- 	buffFrame.bg = buffFrame:CreateTexture()
--- 	buffFrame.bg:SetAllPoints()
--- 	buffFrame.bg:SetTexture(0, 0, 0, 0.5)
--- 	]]
--- 	buffFrame.flask = GetAuraIcon()
--- 	buffFrame.flask:SetParent(buffFrame)
--- 	buffFrame.flask.icon:SetTexture(GetBuffTexture('flask'))
-	
--- 	buffFrame.rune = GetAuraIcon()
--- 	buffFrame.rune:SetParent(buffFrame)
--- 	buffFrame.rune.icon:SetTexture(GetBuffTexture('rune'))
-	
--- 	buffFrame.food = GetAuraIcon()
--- 	buffFrame.food:SetParent(buffFrame)
--- 	buffFrame.food.icon:SetTexture(GetBuffTexture('food'))
-
--- 	local setDesaturated = false
-	
-	
--- 	buffFrame.Handler = function(self, event)
-		
--- 		if not IsInRaid() and not IsInGroup() then 
--- 			self:Hide()
--- 			return 
--- 		end
--- 		if not InCombatLockdown() then 
--- 		--	self:Hide()
--- 		--	return 
--- 		end
-		
--- 		local show = false
-		
--- 		if ns.disable_addon then return end
-
--- 		local name, icon, count, dispelType, duration, expires = AuraUtil.FindAuraByName(GetBuff('flask'), 'player', 'HELPFUL')	
--- 		if name and ns.db.profile.others.flashCheck then
--- 			self.flask.cooldown:SetCooldown(expires-duration, duration)
--- 			self.flask.icon:SetDesaturated(false)
--- 			if expires - GetTime() < 60*10 then
-
--- 				self.flask:Show() 
--- 				FeralDotDamage.ShowOverlayGlow(self.flask)	
-
--- 				if show == false then show = true end
--- 			else
--- 				self.flask:Hide() 
--- 				FeralDotDamage.HideOverlayGlow(self.flask)
--- 			end
--- 		else
--- 			self.flask:Show() 
--- 			FeralDotDamage.ShowOverlayGlow(self.flask)
-
--- 			self.flask.icon:SetDesaturated(setDesaturated)
--- 			self.flask.cooldown:SetCooldown(0, 0)
--- 			self.flask.cooldown:Clear()
--- 			if show == false then show = true end
--- 		end
-		
--- 		self.flask.icon:SetTexture(GetBuffTexture('flask'))
-		
--- 		local name, icon, count, dispelType, duration, expires = AuraUtil.FindAuraByName(GetBuff('rune'), 'player', 'HELPFUL')		
--- 		if name and ns.db.profile.others.runeCheck then
--- 			self.rune.cooldown:SetCooldown(expires-duration, duration)
--- 			self.rune.icon:SetDesaturated(false)
--- 			if expires - GetTime() < 60*10 then
--- 				self.rune:Show() 
--- 				FeralDotDamage.ShowOverlayGlow(self.rune)
-
--- 				if show == false then show = true end
--- 			else
--- 				self.rune:Hide()
--- 				FeralDotDamage.HideOverlayGlow(self.rune)
--- 			end
--- 		else
--- 			self.rune.icon:SetDesaturated(setDesaturated)
--- 			self.rune.cooldown:SetCooldown(0, 0)
--- 			self.rune.cooldown:Clear()
--- 			self.rune:Show() 
--- 			FeralDotDamage.ShowOverlayGlow(self.rune)
-			
--- 			if show == false then show = true end
--- 		end
-
--- 		self.rune.icon:SetTexture(GetBuffTexture('rune'))
-		
--- 		local name, icon, count, dispelType, duration, expires = AuraUtil.FindAuraByName(GetBuff('food'), 'player', 'HELPFUL')			
--- 		if name and ns.db.profile.others.foodCheck then
--- 			self.food.cooldown:SetCooldown(expires-duration, duration)
--- 			self.food.icon:SetDesaturated(false)
--- 			if expires - GetTime() < 60*10 then
-
--- 				self.food:Show()
--- 				FeralDotDamage.ShowOverlayGlow(self.food)
-				
-				
--- 				if show == false then show = true end
--- 			else
--- 				FeralDotDamage.HideOverlayGlow(self.food)
--- 				self.food:Hide()
--- 			end
--- 		else
--- 			self.food.icon:SetDesaturated(setDesaturated)
--- 			self.food.cooldown:SetCooldown(0, 0)
--- 			self.food.cooldown:Clear()
--- 			self.food:Show()
--- 			FeralDotDamage.ShowOverlayGlow(self.food)
-			
--- 			if show == false then show = true end
--- 		end
-		
--- 		self.food.icon:SetTexture(GetBuffTexture('food'))
-		
--- 		if show then
--- 			self:Show()
--- 		else
--- 			self:Hide()
--- 		end
-		
--- 	end
-	
--- 	buffFrame:SetScript('OnEvent', buffFrame.Handler)
-	
-	
--- 	local function CheckBuffs()
--- 		local msg1 = nil
--- 		local msg2 = nil
--- 		local msg3 = nil
-
--- 		if ns.disable_addon then return end
--- 		if ns.partial_disable_addon then return end
-		
--- 		if ns.db.profile.others.flashCheck then
-			
--- 			local name, icon, count, dispelType, duration, expires = AuraUtil.FindAuraByName(GetBuff('flask'), 'player', 'HELPFUL')		
-			
--- 			if name then
--- 				if expires - GetTime() < 60*10 then
--- 					msg1 = L['Скоро закончится!']
--- 				end
--- 			else			
--- 				msg1 = L['Отутствует']
--- 			end
-			
--- 		end
-		
--- 		if ns.db.profile.others.runeCheck then
-			
--- 			local name, icon, count, dispelType, duration, expires = AuraUtil.FindAuraByName(GetBuff('rune'), 'player', 'HELPFUL')		
-			
--- 			if name then
--- 				if expires - GetTime() < 60*10 then
--- 					msg2 = L['Скоро закончится!']
--- 				end
--- 			else			
--- 				msg2 = L['Отутствует']
--- 			end
-			
--- 		end
-		
--- 		if ns.db.profile.others.foodCheck then
-			
--- 			local name, icon, count, dispelType, duration, expires = AuraUtil.FindAuraByName(GetBuff('food'), 'player', 'HELPFUL')		
-			
--- 			if name then
--- 				if expires - GetTime() < 60*10 then
--- 					msg3 = L['Скоро закончится!']
--- 				end
--- 			else			
--- 				msg3 = L['Отутствует']
--- 			end
-			
--- 		end
-
--- 		if msg1 or msg2 or msg3 or ( msg4 and msg4:len() > 0 ) then
--- 			DEFAULT_CHAT_FRAME:AddMessage('------------')
--- 			DEFAULT_CHAT_FRAME:AddMessage(header)
-			
--- 			if  ( GetTime() > lastTimeCheck ) then
--- 				lastTimeCheck = GetTime() + 20		
--- 				local willplay, handler = PlaySoundFile(ns.SharedMedia:Fetch("sound", ns.db.profile.others.checkBuffsSoundFile), "MASTER")	
--- 			end
-		
--- 		end
-	
--- 		if msg1 then			
--- 			DEFAULT_CHAT_FRAME:AddMessage('|cFFFFFF00'..GetBuffLink('flask')..'|r|cFFFF0000: '..msg1)
--- 		end
--- 		if msg2 then	
--- 			DEFAULT_CHAT_FRAME:AddMessage('|cFFFFFF00'.. GetBuffLink('rune')..'|r|cFFFF0000: '..msg2)
--- 		end
--- 		if msg3 then
--- 			DEFAULT_CHAT_FRAME:AddMessage('|cFFFFFF00'..L['Еда']..'|r|cFFFF0000: '..msg3)
--- 		end
-
--- 		if msg1 or msg2 or msg3 then		
--- 			DEFAULT_CHAT_FRAME:AddMessage('------------')
--- 		end
--- 	end
-	
--- 	local eventframe = CreateFrame("Frame")
--- 	eventframe:SetScript("OnEvent", CheckBuffs)
-	
-	
--- 	function ns:UpdateBuffCheckOverlay()
-		
-			
--- 		ns:Mover(buffFrame, "BuffCheckFrames")
-		
--- 		local icon2size = ns.db.profile.others.overlay_minorIconSize or 18
--- 		local iconsize = ns.db.profile.others.overlay_mainIconSize or 26
-		
--- 	--	print('T', 'UpdateBuffCheckOverlay')
-		
--- 		if ns.db.profile.others.horizontal_overlay then
-			
--- 			buffFrame:SetSize(110, 133)
-			
--- 			buffFrame.flask:ClearAllPoints()
--- 			buffFrame.flask:SetSize(iconsize, iconsize)
--- 			buffFrame.flask:SetPoint('TOP', buffFrame, 'TOP', 0, 0)
--- 			if buffFrame.flask:IsShown() then
--- 				FeralDotDamage.ShowOverlayGlow(buffFrame.flask)
--- 			else
--- 				FeralDotDamage.HideOverlayGlow(buffFrame.flask)
--- 			end
--- 			buffFrame.rune:ClearAllPoints()
--- 			buffFrame.rune:SetSize(iconsize, iconsize)
--- 			buffFrame.rune:SetPoint('LEFT', buffFrame.flask, 'RIGHT', 5, 0)
--- 			if buffFrame.rune:IsShown() then
--- 				FeralDotDamage.ShowOverlayGlow(buffFrame.rune)
--- 			else
--- 				FeralDotDamage.HideOverlayGlow(buffFrame.rune)
--- 			end
-			
--- 			buffFrame.food:ClearAllPoints()
--- 			buffFrame.food:SetSize(iconsize, iconsize)
--- 			buffFrame.food:SetPoint('RIGHT', buffFrame.flask, 'LEFT', -5, 0)
--- 			if buffFrame.food:IsShown() then
--- 				FeralDotDamage.ShowOverlayGlow(buffFrame.food)
--- 			else
--- 				FeralDotDamage.HideOverlayGlow(buffFrame.food)
--- 			end
-			
--- 		else
-		
--- 			buffFrame:SetSize(110, 133)
-			
--- 			buffFrame.flask:ClearAllPoints()
--- 			buffFrame.flask:SetSize(iconsize, iconsize)
--- 			buffFrame.flask:SetPoint('LEFT', buffFrame, 'LEFT', 0, 0)		
--- 			if buffFrame.flask:IsShown() then
--- 				FeralDotDamage.ShowOverlayGlow(buffFrame.flask)
--- 			else
--- 				FeralDotDamage.HideOverlayGlow(buffFrame.flask)
--- 			end
-			
--- 			buffFrame.rune:ClearAllPoints()
--- 			buffFrame.rune:SetSize(iconsize, iconsize)
--- 			buffFrame.rune:SetPoint('TOP', buffFrame.flask, 'BOTTOM', 0, -5)
--- 			if buffFrame.rune:IsShown() then
--- 				FeralDotDamage.ShowOverlayGlow(buffFrame.rune)
--- 			else
--- 				FeralDotDamage.HideOverlayGlow(buffFrame.rune)
--- 			end
-			
--- 			buffFrame.food:ClearAllPoints()
--- 			buffFrame.food:SetSize(iconsize, iconsize)
--- 			buffFrame.food:SetPoint('BOTTOM', buffFrame.flask, 'TOP', 0, 5)
--- 			if buffFrame.food:IsShown() then
--- 				FeralDotDamage.ShowOverlayGlow(buffFrame.food)
--- 			else
--- 				FeralDotDamage.HideOverlayGlow(buffFrame.food)
--- 			end
-
--- 		end
-		
--- 		if ns.db.profile.others.overlay then
--- 			buffFrame:RegisterUnitEvent('UNIT_AURA', 'player', '')
-		
--- 			local events = ns.db.profile.others.checkOnEvent or 5
-		
--- 			if events == 5 or events == 3 then	
--- 				buffFrame:RegisterEvent('ENCOUNTER_START')
--- 			end
--- 			if events == 1 or events == 4 or events == 5 then
--- 				buffFrame:RegisterEvent('READY_CHECK')
--- 			end
--- 			if events == 2 or events == 4 then
--- 				buffFrame:RegisterEvent('PLAYER_REGEN_DISABLED')
--- 			end
-			
--- 		else
--- 			buffFrame:UnregisterAllEvents()
--- 			buffFrame:Hide()
--- 		end
--- 	end
-	
-	
--- 	function ns:UpdateBuffCheckStatus()
--- 		eventframe:UnregisterAllEvents()
-
--- 		if(not ns.db.profile.others.flashCheck and 
--- 		   not ns.db.profile.others.runeCheck and
--- 		   not ns.db.profile.others.foodCheck ) or not ns.db.profile.others.buffCheck then
-		   
--- 		   return
--- 		end
-		   
--- 		local events = ns.db.profile.others.checkOnEvent or 5
-		
--- 		if events == 5 or events == 3 then	
--- 			eventframe:RegisterEvent('ENCOUNTER_START')
--- 		end
--- 		if events == 1 or events == 4 or events == 5 then
--- 			eventframe:RegisterEvent('READY_CHECK')
--- 		end
--- 		if events == 2 or events == 4 then
--- 			eventframe:RegisterEvent('PLAYER_REGEN_DISABLED')
--- 		end
-		
-		
--- 	end
--- end
 
 do
 
@@ -4283,203 +3690,6 @@ do
 	SLASH_FERALDOTDAMAGEMOVEFRAMES1 = "/fddmovers"
 
 end
-
---------автоинвайт-------------------------------
--- do
--- 	local keyword = { ["инв"] = true, ["inv"] = true, }
--- 	local InviteUnit = InviteUnit
--- 	local GetNumGuildMembers = GetNumGuildMembers
--- 	local GetGuildRosterInfo = GetGuildRosterInfo
--- 	local BNInviteFriend = BNInviteFriend
--- 	local BNSendWhisper = BNSendWhisper
--- 	local GetNumGroupMembers = GetNumGroupMembers
--- 	local UnitFactionGroup = UnitFactionGroup
--- 	local strsplit = strsplit
-	
--- 	local Custom_BNGetToonInfo = BNGetToonInfo or BNGetGameAccountInfo
-	
-	
--- 	local function ConvertToRaidOrNot()		
--- 		if not UnitIsGroupLeader("player") and not UnitIsGroupAssistant("player") then return end
-		
-		
--- 		if GetNumGroupMembers() > 4 then
--- 			ConvertToRaid()
--- 		else
--- 			ConvertToParty()
--- 		end
-		
--- 	--	print("T4", "ConvertToRaidOrNot", IsInRaid(), IsInGroup(), GetNumGroupMembers())
--- 	end
-
--- 	local trottleInviteUnit = {}
-	
--- 	local function StripServer(nameserver)	
--- 		local name, server = strsplit("-", nameserver)		
--- 		local player, plserver = UnitFullName("player")		
-		
--- 	--	print("T", server, plserver, nameserver)
-		
--- 		if plserver == server then
--- 			return name
--- 		end
--- 		return nameserver
--- 	end
-	
--- 	local function InviteTrottle(self, elapsed)
--- 		self.elapsed = self.elapsed + elapsed
-		
--- 		if self.elapsed < 0.3 then return end
--- 			self.elapsed = 0
-
--- 		local i2 = 0
-		
--- 		for name, invtype in pairs(trottleInviteUnit) do
--- 			if invtype == "normal" then			
--- 				InviteUnit(name)
--- 				trottleInviteUnit[name] = false
-				
--- 			--	print("Invite unit by normal")
-				
--- 				ConvertToRaidOrNot()	
-
--- 				i2 = i2 + 1
-				
--- 				break; 
--- 			elseif invtype == "btnet" then
--- 				BNInviteFriend(name)
--- 				trottleInviteUnit[name] = false
-				
--- 			--	print("Invite unit by brnet")		
-				
--- 				ConvertToRaidOrNot()
-				
--- 				i2 = i2 + 1
-				
--- 				break;
--- 			end
--- 		end
-		
--- 		if i2 == 0 then 
--- 			self:Hide() 
-			
--- 		--	print("Stop trottle")
--- 		end
--- 	end
-	
--- 	local trottle =  CreateFrame("Frame")
--- 	trottle.elapsed = 0
--- 	trottle:SetScript("OnUpdate", InviteTrottle)
-	
--- 	local function AddToInvite(name, invtype)	
--- 		if invtype == "normal" then	
--- 			trottleInviteUnit[StripServer(name)] = invtype
--- 		else
--- 			trottleInviteUnit[name] = invtype
--- 		end
-		
--- 	--	print("T2", trottle:IsShown(), name, invtype)
-		
--- 		if not trottle:IsShown() then
--- 			trottle.elapsed = 0
--- 			trottle:Show()
--- 		end
--- 	end
-	
--- 	local function NotInRaid(name)
-		
--- 		if UnitInRaid(StripServer(name)) then return false end
--- 		if UnitInParty(StripServer(name)) then return false end
-	
--- 		return true
--- 	end
-	
-	
--- 	function ns:InviteWhisper(event, msg, author, ...)
-	
--- 		if not ns.db.profile.others.AutoInv then return end
-
--- 		if keyword[msg] and NotInRaid(author) then
--- 			if ns.db.profile.others.AutoInvGuildOnly then
--- 				for i = 1, GetNumGuildMembers() do
--- 					local name = GetGuildRosterInfo(i)
--- 					if name == author then						
-				
--- 						if GetNumGroupMembers() == 40 then
--- 							SendChatMessage("Я не могу Вас пригласить так как рейд полон", "WHISPER", nil, author)
--- 						else						
--- 							AddToInvite(author, "normal")
--- 						end
--- 						break
--- 					end
--- 				end
--- 			else
--- 				if GetNumGroupMembers() == 40 then					
--- 					SendChatMessage("Я не могу Вас пригласить так как рейд полон", "WHISPER", nil, author)
--- 				else
--- 					AddToInvite(author, "normal")
--- 				end
--- 			end
--- 		end
--- 	end
-
--- 	function ns:BNInviteWhisper(event, msg, author, ...)
--- 		local arg9 = select(9, ...)	
--- 		local arg10 = select(11, ...)
-	
--- 		if not ns.db then return end
--- 		if not ns.db.profile.others.AutoInv then return end
--- 		--BNInviteFriend(286)
-		
--- 		local _, toonName, client, realmName, realmID, faction, _, _, _, _, level,_,_,_, _, _ = Custom_BNGetToonInfo(arg10)
-
--- 		if keyword[msg] and NotInRaid(toonName) and client == BNET_CLIENT_WOW then
--- 			if ns.db.profile.others.AutoInvGuildOnly then
-				
--- 				local toonName2 = format("%s-%s", toonName, gsub(realmName," ", ''))
-				
--- 				for i = 1, GetNumGuildMembers() do
--- 					local name = GetGuildRosterInfo(i)
-					
--- 					if name == toonName2 then
--- 						if GetNumGroupMembers() == 40 then
--- 							BNSendWhisper(arg10, "Я не могу Вас пригласить так как рейд полон")
--- 						else
--- 							AddToInvite(arg10, "btnet")
--- 						end
--- 						break
--- 					end
--- 				end
--- 			else
--- 				if client == BNET_CLIENT_WOW then
--- 					if faction == UnitFactionGroup("player") then
--- 						if GetNumGroupMembers() == 40 then
--- 							BNSendWhisper(arg10, "Я не могу Вас пригласить так как рейд полон")
--- 						else
--- 							AddToInvite(arg10, "btnet")
--- 						end
--- 					else
--- 						BNSendWhisper(arg10, "Я не могу Вас пригласить так как вы принадлежите к другой фракции")
--- 					end
--- 				else
--- 					-- "Нет клиента вов"
--- 					--	BNSendWhisper(arg10, "Вы должны иметь")
--- 				end
--- 			end
--- 		end
--- 	end
-	
--- 	local events = CreateFrame("Frame")	
--- 	events:RegisterEvent("CHAT_MSG_WHISPER")
--- 	events:RegisterEvent("CHAT_MSG_BN_WHISPER")
--- 	events:SetScript("OnEvent", function(self, event, ...)	
--- 		if event == "CHAT_MSG_BN_WHISPER" then
--- 			ns:BNInviteWhisper(event, ...)
--- 		elseif event == "CHAT_MSG_WHISPER" then
--- 			ns:InviteWhisper(event, ...)
--- 		end
--- 	end)
--- end
 
 do
 	-- Copy from LibButtonGlow-1.0

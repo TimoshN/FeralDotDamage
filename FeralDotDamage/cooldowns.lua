@@ -248,7 +248,6 @@ perSpellMethids = {
 }
 
 local placeholder = {
-	[ns.dikiyrev_glyph_spid] = ns.dikiyrev_spid,
 	[279526] = ns.berserk_spid,
 	[108291] = 319454,
 }

@@ -408,11 +408,7 @@ function ns:UpdateMultiDot()
 					frames[index].spells[index2]._spellID = spellID
 					
 					if spellID == ns.razorvat_spid then
-						if ns:IsAshamaneBiteAvailible(guid) then
-							frames[index].spells[index2]:SetTexture(ns.customAshamaneBiteTexture)
-						else
-							frames[index].spells[index2]:SetTexture(GetSpellTexture(spellID))
-						end
+						frames[index].spells[index2]:SetTexture(GetSpellTexture(spellID))
 					else
 						frames[index].spells[index2]:SetTexture(GetSpellTexture(spellID))
 					end
@@ -476,11 +472,7 @@ function ns:UpdateMultiDot()
 					frames[index].spells[index3]._spellID = spellID
 					
 					if spellID == ns.razorvat_spid then
-						if ns:IsAshamaneBiteAvailible(guid) then
-							frames[index].spells[index3]:SetTexture(ns.customAshamaneBiteTexture)
-						else
-							frames[index].spells[index3]:SetTexture(GetSpellTexture(spellID))
-						end
+						frames[index].spells[index3]:SetTexture(GetSpellTexture(spellID))
 					else						
 						frames[index].spells[index3]:SetTexture(GetSpellTexture(spellID))
 					end
