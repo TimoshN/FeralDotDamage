@@ -143,8 +143,6 @@ function ns:DefaultOptions()
 				bg_inset = 0,
 			},
 			others = {
-				AutoInv = false,
-				AutoInvGuildOnly = true,
 				playSoundFile = "Simon Error",
 				playSound = false,
 				anonceDDLMG = false,
@@ -3532,29 +3530,29 @@ function ns:OptionsTable()
 		order = 11,name = L["Разное"],type = "group", embend = false,
 		args={
 			
-			AutoInv = {
-				name = L["Автоинвайт"], disabled = false, desc = "inv, инв",
-				type = "toggle",
-				order	= 1,
-				set = function(info,val) 
-					ns.db.profile.others.AutoInv = not ns.db.profile.others.AutoInv
-				end,
-				get =function(info)
-					return ns.db.profile.others.AutoInv
-				end,
-			},
+			-- AutoInv = {
+			-- 	name = L["Автоинвайт"], disabled = false, desc = "inv, инв",
+			-- 	type = "toggle",
+			-- 	order	= 1,
+			-- 	set = function(info,val) 
+			-- 		ns.db.profile.others.AutoInv = not ns.db.profile.others.AutoInv
+			-- 	end,
+			-- 	get =function(info)
+			-- 		return ns.db.profile.others.AutoInv
+			-- 	end,
+			-- },
 			
-			AutoInvGuildOnly = {
-				name = L["Приглашать только членов гильдии"], disabled = false,
-				type = "toggle",
-				order	= 2,
-				set = function(info,val) 
-					ns.db.profile.others.AutoInvGuildOnly = not ns.db.profile.others.AutoInvGuildOnly
-				end,
-				get =function(info)
-					return ns.db.profile.others.AutoInvGuildOnly
-				end,
-			},
+			-- AutoInvGuildOnly = {
+			-- 	name = L["Приглашать только членов гильдии"], disabled = false,
+			-- 	type = "toggle",
+			-- 	order	= 2,
+			-- 	set = function(info,val) 
+			-- 		ns.db.profile.others.AutoInvGuildOnly = not ns.db.profile.others.AutoInvGuildOnly
+			-- 	end,
+			-- 	get =function(info)
+			-- 		return ns.db.profile.others.AutoInvGuildOnly
+			-- 	end,
+			-- },
 			
 			rangeIndicator = {
 				name = L["Индикатор расстояния"],
@@ -3641,178 +3639,164 @@ function ns:OptionsTable()
 				end,
 			},
 			]==]
-			buff_allert = {
-				order = 9,name = L["Проверка положительных баффов"],type = "group", embend = true,
-				args={	
+			-- buff_allert = {
+			-- 	order = 9,name = L["Проверка положительных баффов"],type = "group", embend = true,
+			-- 	args={	
 					
-					enable = {
-						name = L["Включить"],
-						type = "toggle",
-						order	= 1,
-						set = function(info,val) 
-							ns.db.profile.others.buffCheck = not ns.db.profile.others.buffCheck
-							ns:UpdateBuffCheckStatus()
-						end,
-						get =function(info)
-							return ns.db.profile.others.buffCheck
-						end,			
-					},
+			-- 		enable = {
+			-- 			name = L["Включить"],
+			-- 			type = "toggle",
+			-- 			order	= 1,
+			-- 			set = function(info,val) 
+			-- 				ns.db.profile.others.buffCheck = not ns.db.profile.others.buffCheck
+			-- 				ns:UpdateBuffCheckStatus()
+			-- 			end,
+			-- 			get =function(info)
+			-- 				return ns.db.profile.others.buffCheck
+			-- 			end,			
+			-- 		},
 					
-					checkOnEvent = {
-						name = L["Событие для проверки"],
-						desc = L['Если выбрано "']..L['Проверка готовности или бой начат']..L['" или "']..L['Проверка готовности или бой c боссом начат']..L['" то игрок получит только одно уведомление в течениe 20 секунд.'],
-						type = "dropdown",
-						values = {
-							L['Проверка готовности'],
-							L['Бой начат'],
-							L['Бой с боссом начат'],
-							L['Проверка готовности или бой начат'],
-							L['Проверка готовности или бой c боссом начат'],
-						},
-						order = 2,
-						set = function(info,val) 
-							ns.db.profile.others.checkOnEvent = val
-							ns:UpdateBuffCheckStatus()
-						end,
-						get =function(info)
-							return ns.db.profile.others.checkOnEvent
-						end,			
-					},
+			-- 		checkOnEvent = {
+			-- 			name = L["Событие для проверки"],
+			-- 			desc = L['Если выбрано "']..L['Проверка готовности или бой начат']..L['" или "']..L['Проверка готовности или бой c боссом начат']..L['" то игрок получит только одно уведомление в течениe 20 секунд.'],
+			-- 			type = "dropdown",
+			-- 			values = {
+			-- 				L['Проверка готовности'],
+			-- 				L['Бой начат'],
+			-- 				L['Бой с боссом начат'],
+			-- 				L['Проверка готовности или бой начат'],
+			-- 				L['Проверка готовности или бой c боссом начат'],
+			-- 			},
+			-- 			order = 2,
+			-- 			set = function(info,val) 
+			-- 				ns.db.profile.others.checkOnEvent = val
+			-- 				ns:UpdateBuffCheckStatus()
+			-- 			end,
+			-- 			get =function(info)
+			-- 				return ns.db.profile.others.checkOnEvent
+			-- 			end,			
+			-- 		},
 			
-					checkBuffsSoundFile = {
-						name = L["Звуковое уведомление"],
-						type = "sound",
-						values = ns.SharedMedia:HashTable("sound"),
-						order = 2.1,
-						set = function(info,val) 
-							ns.db.profile.others.checkBuffsSoundFile = val
-							ns:UpdateBuffCheckStatus()
-						end,
-						get =function(info)
-							return ns.db.profile.others.checkBuffsSoundFile
-						end,			
-					},
+			-- 		checkBuffsSoundFile = {
+			-- 			name = L["Звуковое уведомление"],
+			-- 			type = "sound",
+			-- 			values = ns.SharedMedia:HashTable("sound"),
+			-- 			order = 2.1,
+			-- 			set = function(info,val) 
+			-- 				ns.db.profile.others.checkBuffsSoundFile = val
+			-- 				ns:UpdateBuffCheckStatus()
+			-- 			end,
+			-- 			get =function(info)
+			-- 				return ns.db.profile.others.checkBuffsSoundFile
+			-- 			end,			
+			-- 		},
 					
-					flashCheck = {
-						name = L["Проверять настой"], disabled = false,
-						type = "toggle",
-						order	= 3,
-						set = function(info,val) 
-							ns.db.profile.others.flashCheck = not ns.db.profile.others.flashCheck
-							ns:UpdateBuffCheckStatus()
-						end,
-						get =function(info)
-							return ns.db.profile.others.flashCheck
-						end,
-					},
-					runeCheck = {
-						name = L["Проверять руну"], disabled = false,
-						type = "toggle",
-						order	= 4,
-						set = function(info,val) 
-							ns.db.profile.others.runeCheck = not ns.db.profile.others.runeCheck
-							ns:UpdateBuffCheckStatus()
-						end,
-						get =function(info)
-							return ns.db.profile.others.runeCheck
-						end,
-					},
-					foodCheck = {
-						name = L["Проверять еду"], disabled = false,
-						type = "toggle",
-						order	= 5,
-						set = function(info,val) 
-							ns.db.profile.others.foodCheck = not ns.db.profile.others.foodCheck
-							ns:UpdateBuffCheckStatus()
-						end,
-						get =function(info)
-							return ns.db.profile.others.foodCheck
-						end,
-					},
-					--[==[
-					raidBuffsCheck = {
-						name = L["Проверять рейдовые баффы"], disabled = false,
-						type = "toggle",
-						order	= 6,
-						set = function(info,val) 
-							ns.db.profile.others.raidBuffsCheck = not ns.db.profile.others.raidBuffsCheck
-							ns:UpdateBuffCheckStatus()
-						end,
-						get =function(info)
-							return ns.db.profile.others.raidBuffsCheck
-						end,
-					},
-					]==]
-					overlay = {
-						order = -1,name = L["Окно проверки"],type = "group", embend = true,
-						args={	
-							overlay = {
-								name = L["Включить"], disabled = false,
-								type = "toggle", width = 'full',
-								order	= 1,
-								set = function(info,val) 
-									ns.db.profile.others.overlay = not ns.db.profile.others.overlay
-									ns:UpdateBuffCheckOverlay()
-								end,
-								get =function(info)
-									return ns.db.profile.others.overlay
-								end,
-							},
+			-- 		flashCheck = {
+			-- 			name = L["Проверять настой"], disabled = false,
+			-- 			type = "toggle",
+			-- 			order	= 3,
+			-- 			set = function(info,val) 
+			-- 				ns.db.profile.others.flashCheck = not ns.db.profile.others.flashCheck
+			-- 				ns:UpdateBuffCheckStatus()
+			-- 			end,
+			-- 			get =function(info)
+			-- 				return ns.db.profile.others.flashCheck
+			-- 			end,
+			-- 		},
+			-- 		runeCheck = {
+			-- 			name = L["Проверять руну"], disabled = false,
+			-- 			type = "toggle",
+			-- 			order	= 4,
+			-- 			set = function(info,val) 
+			-- 				ns.db.profile.others.runeCheck = not ns.db.profile.others.runeCheck
+			-- 				ns:UpdateBuffCheckStatus()
+			-- 			end,
+			-- 			get =function(info)
+			-- 				return ns.db.profile.others.runeCheck
+			-- 			end,
+			-- 		},
+			-- 		foodCheck = {
+			-- 			name = L["Проверять еду"], disabled = false,
+			-- 			type = "toggle",
+			-- 			order	= 5,
+			-- 			set = function(info,val) 
+			-- 				ns.db.profile.others.foodCheck = not ns.db.profile.others.foodCheck
+			-- 				ns:UpdateBuffCheckStatus()
+			-- 			end,
+			-- 			get =function(info)
+			-- 				return ns.db.profile.others.foodCheck
+			-- 			end,
+			-- 		},
+			-- 		overlay = {
+			-- 			order = -1,name = L["Окно проверки"],type = "group", embend = true,
+			-- 			args={	
+			-- 				overlay = {
+			-- 					name = L["Включить"], disabled = false,
+			-- 					type = "toggle", width = 'full',
+			-- 					order	= 1,
+			-- 					set = function(info,val) 
+			-- 						ns.db.profile.others.overlay = not ns.db.profile.others.overlay
+			-- 						ns:UpdateBuffCheckOverlay()
+			-- 					end,
+			-- 					get =function(info)
+			-- 						return ns.db.profile.others.overlay
+			-- 					end,
+			-- 				},
 							
-							horizontal_overlay = {
-								name = L["Горизонтально"], disabled = false,
-								type = "toggle",
-								order	= 2,
-								set = function(info,val) 
-									ns.db.profile.others.horizontal_overlay = not ns.db.profile.others.horizontal_overlay
-									ns:UpdateBuffCheckOverlay()
-								end,
-								get =function(info)
-									return ns.db.profile.others.horizontal_overlay
-								end,
-							},
+			-- 				horizontal_overlay = {
+			-- 					name = L["Горизонтально"], disabled = false,
+			-- 					type = "toggle",
+			-- 					order	= 2,
+			-- 					set = function(info,val) 
+			-- 						ns.db.profile.others.horizontal_overlay = not ns.db.profile.others.horizontal_overlay
+			-- 						ns:UpdateBuffCheckOverlay()
+			-- 					end,
+			-- 					get =function(info)
+			-- 						return ns.db.profile.others.horizontal_overlay
+			-- 					end,
+			-- 				},
 
-							unlock = {
-								name = L["Передвинь меня!"], disabled = false,
-								type = "execute",
-								order	= 3,
-								set = function(info,val) 
-									ns:UnlockMover('BuffCheckFrames')
-								end,
-								get =function(info)
-									return ns.db.profile.others.overlay
-								end,
-							},
+			-- 				unlock = {
+			-- 					name = L["Передвинь меня!"], disabled = false,
+			-- 					type = "execute",
+			-- 					order	= 3,
+			-- 					set = function(info,val) 
+			-- 						ns:UnlockMover('BuffCheckFrames')
+			-- 					end,
+			-- 					get =function(info)
+			-- 						return ns.db.profile.others.overlay
+			-- 					end,
+			-- 				},
 							
-							mainiconSize = {
-								name = L['Размер настоя, руны и еды'], order = 4,
-								min = 10, max = 60, step = 1, type = 'slider',
-								set = function(info, value)
-									ns.db.profile.others.overlay_mainIconSize = value
-									ns:UpdateBuffCheckOverlay()
-								end,
-								get = function(info)
+			-- 				mainiconSize = {
+			-- 					name = L['Размер настоя, руны и еды'], order = 4,
+			-- 					min = 10, max = 60, step = 1, type = 'slider',
+			-- 					set = function(info, value)
+			-- 						ns.db.profile.others.overlay_mainIconSize = value
+			-- 						ns:UpdateBuffCheckOverlay()
+			-- 					end,
+			-- 					get = function(info)
 								
-									return ns.db.profile.others.overlay_mainIconSize
-								end,						
-							},
+			-- 						return ns.db.profile.others.overlay_mainIconSize
+			-- 					end,						
+			-- 				},
 							
-							minoriconSize = {
-								name = L['Размер рейдовых баффов'], order = 5,
-								min = 10, max = 60, step = 1, type = 'slider',
-								set = function(info, value)
-									ns.db.profile.others.overlay_minorIconSize = value
-									ns:UpdateBuffCheckOverlay()
-								end,
-								get = function(info)
+			-- 				minoriconSize = {
+			-- 					name = L['Размер рейдовых баффов'], order = 5,
+			-- 					min = 10, max = 60, step = 1, type = 'slider',
+			-- 					set = function(info, value)
+			-- 						ns.db.profile.others.overlay_minorIconSize = value
+			-- 						ns:UpdateBuffCheckOverlay()
+			-- 					end,
+			-- 					get = function(info)
 								
-									return ns.db.profile.others.overlay_minorIconSize
-								end,						
-							},
-						},
-					},
-				},
-			},
+			-- 						return ns.db.profile.others.overlay_minorIconSize
+			-- 					end,						
+			-- 				},
+			-- 			},
+			-- 		},
+			-- 	},
+			-- },
 		},
 	}
 	
