@@ -116,6 +116,7 @@ local pererogdenie_name = ns.pererogdenie_name
 
 ns.glybokayrana_spid = 155722
 ns.glybokayrana_name = GetSpellInfo(ns.glybokayrana_spid)
+
 local glybokayrana_spid = ns.glybokayrana_spid
 local glybokayrana_name = ns.glybokayrana_name
 
@@ -187,18 +188,27 @@ local dot_store = {}
 local hideauraTime = 0
 local hideauraTime2 = 0
 local hideauraTime3 = 0
+local momentOfClarity_endTime = 0
 local detectrakeBonus = false
 
 ns.dot_store = dot_store
 
 -- TODO Rework duration
 
+-- [1], tick period, default duration, pandemia duration
+-- [2], default duration
+-- [3], with pandemia duration
+-- [4], spell name
+-- [5], only pandemia duration
+-- [6], rip specifig cp duration
+-- [7], rip primal wratch cp duration
+
 local dots_info = {
 	[glybokayrana_spid] 	= { 3, 15, 19.5 , 	glybokayrana_name,	4.5}, -- tick period, default duration, pandemia duration
-	[razorvat_spid] 		= { 2, 24, 24*1.3 , razorvat_name,		24*0.3, { 8, 12, 16, 20, 24 }, { 4, 6, 7, 10, 12 }},
+	[razorvat_spid] 		= { 2, 24, 24*1.3 , razorvat_name,		24*0.3},
 	[vzbuchka_spid] 		= { 3, 15, 15*1.3 , vzbuchka_name,		15*0.3},
 	[dikiyrev_spid] 		= { 0, 0, 0 ,	 	dikiyrev_name,		12.6},
-	[moonfire_spid] 		= { 2, 14, 18.2 , 	moonfire_name, 		4.2},
+	[moonfire_spid] 		= { 2, 14, 14*1.3 , moonfire_name, 		14*0.3},
 	[339]					= { 0, 30, 30,		( GetSpellInfo(339) ), 0 },
 	[102359]				= { 0, 20, 20, 		( GetSpellInfo(102359) ), 0 },
 }
@@ -213,17 +223,32 @@ local function GetAuras()
 							 ( detectrakeBonus and hideauraTime3 > GetTime() ) or 
 							 ( hideauraTime > GetTime() )-- 100%
 
-	return tigrinie_neistvo, krovavie_kogti, imprake
+	local momentOfClarity  = false 
+	if ( ns.momentOfClarity ) then
+		momentOfClarity = AuraUtil.FindAuraByName(ns.clearcast_name, 'player', 'HELPFUL|PLAYER') or ( momentOfClarity_endTime > GetTime())
+	end
+
+	return tigrinie_neistvo, krovavie_kogti, imprake, momentOfClarity
 end
 
 
 function ns:UpdateDamageMods(guid, spellid, dstName)
-	local tigrinie_neistvo, krovavie_kogti, imp_rake = GetAuras()
+	local tigrinie_neistvo, krovavie_kogti, imp_rake, cur_momentOfClarity = GetAuras()
 	
+	print('tigrinie_neistvo', tigrinie_neistvo)
+	print('krovavie_kogti', krovavie_kogti)
+	print('imp_rake', imp_rake)
+	print('cur_momentOfClarity', cur_momentOfClarity)
+
 	self:RegisterDot(guid, spellid)
 
 	dot_store[guid..spellid][9]  = tigrinie_neistvo and true or false
-	dot_store[guid..spellid][10] = false
+
+	if ( spellid == vzbuchka_spid ) then
+		dot_store[guid..spellid][10] = cur_momentOfClarity and true or false
+	else 
+		dot_store[guid..spellid][10] = false
+	end 
 
 	if spellid == razorvat_spid then
 		dot_store[guid..spellid][11] = krovavie_kogti and true or false
@@ -253,11 +278,11 @@ end
 function ns:GetDebugColor(guid, spellid)
 
 	local tigrinie_neistvo = dot_store[guid..spellid] and dot_store[guid..spellid][9] or false
-	local dikiy_rev = dot_store[guid..spellid] and dot_store[guid..spellid][10] or false
+	local momentOfClarity = dot_store[guid..spellid] and dot_store[guid..spellid][10] or false
 	local krovavie_kogti = dot_store[guid..spellid] and dot_store[guid..spellid][11] or false
 	local impr_rake = dot_store[guid..spellid] and dot_store[guid..spellid][12] or false
 	
-	return tigrinie_neistvo, dikiy_rev, krovavie_kogti, impr_rake
+	return tigrinie_neistvo, krovavie_kogti, impr_rake, momentOfClarity
 end
 
 --local form_real = 0
@@ -271,29 +296,42 @@ local function GetForm(update) -- 0 - human ; 1 - bear; 2 - cat
 end
 
 function ns:GetDotBuffValue(guid, spellid)
-	local cur_tigrinie_neistvo, cur_krovavie_kogti, cur_imp_rake = GetAuras()
+	local cur_tigrinie_neistvo, cur_krovavie_kogti, cur_imp_rake, cur_momentOfClarity = GetAuras()
 
 	local tigrinie_neistvo = dot_store[guid..spellid] and dot_store[guid..spellid][9] or false
+	local momentOfClarity = dot_store[guid..spellid] and dot_store[guid..spellid][10] or false
 	local krovavie_kogti = dot_store[guid..spellid] and dot_store[guid..spellid][11] or false
 	local impr_rake = dot_store[guid..spellid] and dot_store[guid..spellid][12] or false
 	
 	local total_cur = 1
 	local total = 1
 	
+	-- Total current
+
 	if cur_tigrinie_neistvo then total_cur = total_cur * 1.15 end
 
 	if spellid == razorvat_spid then
 		if cur_krovavie_kogti then total_cur = total_cur * 1.3 end
 	end
+
+	if ( spellid == vzbuchka_spid ) then
+		if cur_momentOfClarity then total_cur = total_cur * 1.15 end
+	end 
 	
 	if imprived_rake_gained and cur_imp_rake and spellid == glybokayrana_spid then total_cur = total_cur * 2 end
 	
+
+	-- Total applied
+
 	if tigrinie_neistvo then total = total * 1.15 end
 
 	if spellid == razorvat_spid then
 		if krovavie_kogti then total = total * 1.3 end
 	end
-	
+	if spellid == vzbuchka_spid then
+		if momentOfClarity then total = total * 1.15 end
+	end
+
 	if imprived_rake_gained and impr_rake and spellid == glybokayrana_spid then total = total * 2 end
 	
 	if ns.db.profile.count_cp_to_power and spellid == razorvat_spid and dot_store[guid..spellid] and dot_store[guid..spellid][17] then		
@@ -338,35 +376,58 @@ end
 local onupdate = CreateFrame("Frame")
 onupdate:SetScript("OnUpdate", OnUpdate)
 
-function ns:RegisterDot(guid, spellid, starttime, endtime, cp, destName, primalWratch)
+
+-- dot_store
+-- [1] - startTime
+-- [2] - endTime
+-- [3] - ticks amount 
+-- [4] - ticks time
+-- [5] - time to next tick 
+-- [6] - displayer duiration
+-- [7] - show
+-- [8] - default duration
+-- [9] - tyger damage mod
+-- [10] - moment of clarity
+-- [11] - blood talons damage mod
+-- [12] - stealth damage mod
+-- [13] - guid
+-- [14] - spellID
+-- [15] - tick duration
+-- [16] - tick partial coeff
+-- [17] - combo points
+-- [18] - destName
+-- [19] - none
+ 
+function ns:RegisterDot(guid, spellid, starttime, endtime, cp, destName)
 	
 	if not dot_store[guid..spellid] then
 		
 		dot_store[guid..spellid] = { nil, nil, nil, nil, nil, nil, nil, nil, nil, nil }
-		dot_store[guid..spellid][1] = starttime or GetTime()												-- starttime
-		
-		if ( cp and spellid == razorvat_spid ) then
-			dot_store[guid..spellid][2]	= endtime or dot_store[guid..spellid][1] + ( primalWratch and dots_info[spellid][7][cp] or dots_info[spellid][6][cp] )		-- endtime
-		else
-			dot_store[guid..spellid][2]	= endtime or dot_store[guid..spellid][1] + dots_info[spellid][2]		-- endtime
+		dot_store[guid..spellid][1] = starttime or GetTime()
+
+		local durationMultiply = 1
+
+		if ( spellid == razorvat_spid and GetTime()-prevPrimalWrathSpell < 1 ) then
+			durationMultiply = 0.5
 		end
 
-		dot_store[guid..spellid][3] = dots_info[spellid][2]/dots_info[spellid][1]							-- ticks amount
-		dot_store[guid..spellid][4] = dots_info[spellid][1]													-- ticks time
-		dot_store[guid..spellid][5] = dot_store[guid..spellid][1] + dots_info[spellid][1]					-- time to next tick
-		dot_store[guid..spellid][6] = dots_info[spellid][1]													-- displayed duration
-		dot_store[guid..spellid][7] = true																	-- show
-		dot_store[guid..spellid][8] = dots_info[spellid][2]													-- default amount
+		dot_store[guid..spellid][2]	= endtime or dot_store[guid..spellid][1] + ( dots_info[spellid][2] * durationMultiply )
+		dot_store[guid..spellid][3] = ( dots_info[spellid][2] * durationMultiply )/dots_info[spellid][1]
+		dot_store[guid..spellid][4] = dots_info[spellid][1]
+		dot_store[guid..spellid][5] = dot_store[guid..spellid][1] + dots_info[spellid][1]
+		dot_store[guid..spellid][6] = dots_info[spellid][1]
+		dot_store[guid..spellid][7] = true
+		dot_store[guid..spellid][8] = ( dots_info[spellid][2] * durationMultiply )
 		
-		dot_store[guid..spellid][13] = guid																	-- guid
-		dot_store[guid..spellid][14] = spellid																-- spellid
-		dot_store[guid..spellid][15] = dots_info[spellid][1]												-- tick duration
-		dot_store[guid..spellid][16] = 1																	-- tick partiall coeff
-		dot_store[guid..spellid][17] = cp																	-- tick partiall coeff
+		dot_store[guid..spellid][13] = guid
+		dot_store[guid..spellid][14] = spellid
+		dot_store[guid..spellid][15] = dots_info[spellid][1]
+		dot_store[guid..spellid][16] = 1
+		dot_store[guid..spellid][17] = cp
 		dot_store[guid..spellid][18] = destName
-		
+
 		self:UpdateDamageMods(guid, spellid, destName)
-		
+
 		self:UpdateMultiDot()
 	end
 end
@@ -378,18 +439,24 @@ function ns:RefreshRegisterDot(guid, spellid, cp, dstName, primalWratch)
 		local endtime = starttime + dots_info[spellid][3]		
 		local pandemia = 0
 		
+		local durationMultiply = 1
+
+		if ( spellid == razorvat_spid and GetTime()-prevPrimalWrathSpell < 1 ) then 
+			durationMultiply = 0.5
+		end
+
 		if dots_info[spellid][5] > 0 then
 			if dot_store[guid..spellid][2] > starttime then
 				pandemia = dot_store[guid..spellid][2] - starttime
 			end
 			
-			if pandemia > dots_info[spellid][2]*0.3 then
-				pandemia = dots_info[spellid][2]*0.3
+			if pandemia > ( dots_info[spellid][2] * durationMultiply )*0.3 then
+				pandemia = ( dots_info[spellid][2] * durationMultiply )*0.3
 			end
 		end
 	
 		dot_store[guid..spellid][1]	= starttime
-		dot_store[guid..spellid][2]	= dot_store[guid..spellid][1] + dots_info[spellid][2] + pandemia
+		dot_store[guid..spellid][2]	= dot_store[guid..spellid][1] + ( dots_info[spellid][2] * durationMultiply ) + pandemia
 		
 		local duration = ( dot_store[guid..spellid][2] - dot_store[guid..spellid][1] )
 		
@@ -592,7 +659,7 @@ function ns:COMBAT_LOG_EVENT_UNFILTERED(event, ...)
 				detectrakeBonus = false
 			end
 		elseif spellID == razorvat_spid then
-			ns:RegisterDot(dstGUID, spellID, nil, nil, cp_bycast, dstName, GetTime()-prevPrimalWrathSpell < 1 )
+			ns:RegisterDot(dstGUID, spellID, nil, nil, cp_bycast, dstName )
 		elseif moonfire_spid == spellID then
 			ns:RegisterDot(dstGUID, spellID, nil, nil, nil, dstName)
 		elseif spellID == 339 or spellID == 102359 then -- roots
@@ -614,7 +681,6 @@ function ns:COMBAT_LOG_EVENT_UNFILTERED(event, ...)
 		SetCastKicked(extraSpellID)		
 	elseif eventType == "SPELL_RESURRECT" and spellID == 20484 then	
 		ns:DoAnonce(eventType, spellID, dstName, srcName)
-		
 	elseif eventType == "SPELL_AURA_REFRESH" then		
 		if spellID == glybokayrana_spid or spellID == vzbuchka_spid then
 			ns:RefreshRegisterDot(dstGUID, spellID, nil, dstName)
@@ -623,7 +689,7 @@ function ns:COMBAT_LOG_EVENT_UNFILTERED(event, ...)
 				detectrakeBonus = false
 			end
 		elseif spellID == razorvat_spid then
-			ns:RefreshRegisterDot(dstGUID, spellID, cp_bycast, dstName, GetTime()-prevPrimalWrathSpell < 1 )
+			ns:RefreshRegisterDot(dstGUID, spellID, cp_bycast, dstName )
 		elseif moonfire_spid == spellID then
 			ns:RefreshRegisterDot(dstGUID, spellID,nil, dstName)
 		elseif spellID == 339 or spellID == 102359 then		
@@ -638,6 +704,8 @@ function ns:COMBAT_LOG_EVENT_UNFILTERED(event, ...)
 			ns:UnregisterDot(dstGUID, spellID)
 		elseif spellID == stealth_spid or spellID == 102547 then		
 			hideauraTime = GetTime()+trottle1
+		elseif spellID == ns.clearcast_id then
+			momentOfClarity_endTime = GetTime()+trottle1
 		elseif spellID == krovaviekogti_spid then
 			hideauraTime2 = GetTime()+trottle1
 		elseif spellID == 58984 then
@@ -1108,7 +1176,7 @@ local function UpdateIconPowerColor(self)
 	end
 	
 	local tigrinie_neistvo = dot_store[guid..spellid][9] or false
-	local dikiy_rev = dot_store[guid..spellid][10] or false
+	local momentOfClarity = dot_store[guid..spellid][10] or false
 	local krovavie_kogti = dot_store[guid..spellid][11] or false
 	local impr_rake = dot_store[guid..spellid][12] or false
 	
@@ -1139,7 +1207,7 @@ local function UpdateIconPowerColor(self)
 		parent.tringleBottomLeftBg:Hide()
 	end
 	
-	if false then
+	if momentOfClarity then
 		parent.tringleTopLeft:Show()
 		parent.tringleTopLeft:SetVertexColor(1, 1, 0)
 		parent.tringleTopLeftBg:Show()	
@@ -3132,6 +3200,7 @@ do
 		ns.brutalSlash		 = IsTalentKnown(202028)
 		ns.moonkinForm		 = IsTalentKnown(197488)
 		ns.impFerBite		 = IsTalentKnown(202031)
+		ns.momentOfClarity	 = IsTalentKnown(236068)
 
 		ns:UpdateOrders()
 		ns:UpdateCooldownOrders()
