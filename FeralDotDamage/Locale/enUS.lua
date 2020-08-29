@@ -1,6 +1,7 @@
 local L = AleaUI_GUI.GetTranslate("FeralDotDamage", "enUS", true)
 if not L then return end
 
+L['Подземелье'] = 'Dungeon'
 L["Подсвечивать иконку при проке"] = 'Glow icon on '
 
 L["Тип отображения силы дот"] = 'DoT power indicators type'
