@@ -1,7 +1,7 @@
 local L = AleaUI_GUI.GetTranslate("FeralDotDamage", "ruRU")
 if not L then return end
 
-
+L['Приоритет'] = true
 L['Подземелье'] = true
 L["Подсвечивать иконку при проке"] = true
 

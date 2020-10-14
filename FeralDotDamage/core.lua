@@ -235,10 +235,10 @@ end
 function ns:UpdateDamageMods(guid, spellid, dstName)
 	local tigrinie_neistvo, krovavie_kogti, imp_rake, cur_momentOfClarity = GetAuras()
 	
-	print('tigrinie_neistvo', tigrinie_neistvo)
-	print('krovavie_kogti', krovavie_kogti)
-	print('imp_rake', imp_rake)
-	print('cur_momentOfClarity', cur_momentOfClarity)
+	-- print('tigrinie_neistvo', tigrinie_neistvo)
+	-- print('krovavie_kogti', krovavie_kogti)
+	-- print('imp_rake', imp_rake)
+	-- print('cur_momentOfClarity', cur_momentOfClarity)
 
 	self:RegisterDot(guid, spellid)
 
@@ -671,7 +671,6 @@ function ns:COMBAT_LOG_EVENT_UNFILTERED(event, ...)
 		if spellID == 106839 then
 			DelayCastKick(93985, dstName, srcName)
 		elseif spellID == 285381 then 
-			print('Primal Wrath casted', GetTime())
 			prevPrimalWrathSpell = GetTime()
 		elseif spellID ~= 20484 then
 			ns:DoAnonce(eventType, spellID, dstName, srcName)

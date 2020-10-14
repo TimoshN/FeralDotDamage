@@ -252,6 +252,11 @@ local placeholder = {
 	[108291] = 319454,
 }
 
+local spellPriorityList = {}
+for i=1, 99 do 
+	spellPriorityList[i] = '#'..i
+end
+
 local spells_to_show = {
 	{ id = ns.berserk_spid, 		cd = 180 ,	default = true,  tip = COOLDOWN_AURA_TAG, onShowGlow = 'AzeritBerserkTrait' },
 	{ id = ns.tigrinoe_spid, 		cd = 30 ,	default = true,  tip = COOLDOWN_AURA_TAG, onTimeIcon = 'Art_Regen' },
@@ -809,21 +814,21 @@ local function CheckForCorruptedSettigns()
 		return
 	end
 	
-	for index, data in pairs(spells_to_show) do	
-		if not ns.db.profile.cooldowns.ordering_spells.spellList[data.id] then
-			print('FDD: Update cooldown settings cuz of invalid spell to show', data.id, (GetSpellInfo(data.id)) )
-			ResetCorruptedSettings()
-			return
-		end
-	end
+	-- for index, data in pairs(spells_to_show) do	
+	-- 	if not ns.db.profile.cooldowns.ordering_spells.spellList[data.id] then
+	-- 		print('FDD: Update cooldown settings cuz of invalid spell to show', data.id, (GetSpellInfo(data.id)) )
+	-- 		ResetCorruptedSettings()
+	-- 		return
+	-- 	end
+	-- end
 	
-	for spellID in pairs(ns.db.profile.cooldowns.ordering_spells.spellList) do
-		if not id_to_spell[ spellID ] then
-			print('FDD: Update cooldown settings cuz of invalid spellid to id', spellID, (GetSpellInfo(spellID)) )
-			ResetCorruptedSettings()
-			return
-		end
-	end	
+	-- for spellID in pairs(ns.db.profile.cooldowns.ordering_spells.spellList) do
+	-- 	if not id_to_spell[ spellID ] then
+	-- 		print('FDD: Update cooldown settings cuz of invalid spellid to id', spellID, (GetSpellInfo(spellID)) )
+	-- 		ResetCorruptedSettings()
+	-- 		return
+	-- 	end
+	-- end	
 end
 
 FDD_ResetCorruptedSettings = ResetCorruptedSettings
@@ -838,12 +843,31 @@ function ns:UpdateCooldownSortings()
 	
 	wipe(sortedSpellList)
 
-	
-	for spellID, data in pairs(ns.db.profile.cooldowns.ordering_spells.spellList) do	
-		sortedSpellList[data.sort] = spellID
-	end
-	
-	for i, spellID in ipairs(sortedSpellList) do
+	for i, data in ipairs(spells_to_show) do 
+
+		if(data.id) then
+			sortedSpellList[i] = { 
+				spellID=data.id, 
+				priority=(ns.db.profile.cooldowns.ordering_spells.spellList[data.id] and ns.db.profile.cooldowns.ordering_spells.spellList[data.id].sort or i) 
+			}
+		else 
+			print('NO ID FOR', i, data.id)
+		end
+
+	end 
+
+	table.sort(sortedSpellList, function(a,b)
+
+		if(a.priority == b.priority) then 
+			return a.spellID < b.spellID
+		end 
+		
+		return a.priority < b.priority
+	end)
+
+	for i, __data in ipairs(sortedSpellList) do
+		local spellID = __data.spellID
+
 		local data = ns.db.profile.cooldowns.ordering_spells.spellList[spellID]
 	
 		if spellID == ns.trollberserk_spid then		
@@ -1805,31 +1829,13 @@ function ns:AddCooldownsGUI()
 			}		
 		end
 		o.args.spells.args["ordergroup"..i].args.order = {
-			name = L["Позиция"], disabled = false,
+			name = L["Приоритет"], disabled = false,
 			type = "dropdown",
 			order	= 2,
 			values = function()
-				local t = {}
-			
-				for spellID, data in pairs(options.cooldowns.ordering_spells.spellList) do
-					if spellID == spells_to_show[i].id then
-						t[data.sort] = '#'..data.sort
-					else
-						t[data.sort] = '#'..data.sort..' '..GetSpellNameGUI(spellID)..'|r'
-					end
-				end
-				
-				return t
+				return spellPriorityList
 			end,
 			set = function(info,val)
-				local oldSort = options.cooldowns.ordering_spells.spellList[spells_to_show[i].id].sort
-					
-				for spellID, data in pairs( options.cooldowns.ordering_spells.spellList ) do
-					if data.sort == val then
-						options.cooldowns.ordering_spells.spellList[spellID].sort = oldSort
-					end
-				end
-				
 				options.cooldowns.ordering_spells.spellList[spells_to_show[i].id].sort = val
 					
 				ns:UpdateCooldownOrders()
