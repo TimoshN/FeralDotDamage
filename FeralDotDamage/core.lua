@@ -3775,6 +3775,18 @@ do
 		frame.__FDDoverlay = nil
 	end
 
+	local function OverlayGlow_OnUpdate(self, elapsed)
+		AnimateTexCoords(self.ants, 256, 256, 48, 48, 22, elapsed, 0.01)
+		local cooldown = self:GetParent().cooldown
+		-- we need some threshold to avoid dimming the glow during the gdc
+		-- (using 1500 exactly seems risky, what if casting speed is slowed or something?)
+		if cooldown and cooldown:IsShown() and cooldown:GetCooldownDuration() > 3000 then
+			self:SetAlpha(0.5)
+		else
+			self:SetAlpha(1.0)
+		end
+	end
+	
 	local function OverlayGlow_OnHide(self)
 		if self.animOut:IsPlaying() then
 			self.animOut:Stop()
@@ -3911,7 +3923,7 @@ do
 		overlay.animOut:SetScript("OnFinished", OverlayGlowAnimOutFinished)
 
 		-- scripts
-		overlay:SetScript("OnUpdate", ActionButton_OverlayGlowOnUpdate)
+		overlay:SetScript("OnUpdate", OverlayGlow_OnUpdate)
 		overlay:SetScript("OnHide", OverlayGlow_OnHide)
 		
 		return overlay
@@ -3941,8 +3953,8 @@ do
 			overlay:ClearAllPoints()
 		
 			overlay:SetSize(frameWidth * 1.4, frameHeight * 1.4)
-			overlay:SetPoint("TOPLEFT", frame, "TOPLEFT", -frameWidth * glow_spacing, frameHeight * glow_spacing)
-			overlay:SetPoint("BOTTOMRIGHT", frame, "BOTTOMRIGHT", frameWidth * glow_spacing, -frameHeight * glow_spacing)
+			overlay:SetPoint("TOPLEFT", frame, "TOPLEFT", -frameWidth * 0.2, frameHeight * 0.2)
+			overlay:SetPoint("BOTTOMRIGHT", frame, "BOTTOMRIGHT", frameWidth * 0.2, -frameHeight * 0.2)
 	
 	
 			overlay.animIn:Play()

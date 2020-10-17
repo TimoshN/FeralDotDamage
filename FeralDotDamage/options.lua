@@ -507,6 +507,7 @@ function ns:DefaultOptions()
 						[ns.feralFrenzy_spid]	= { sort = 13, on = true },
 						[ns.ydarkogtiami_spid]  = { sort = 14, on = true },
 						[ns.maim_spid]   		= { sort = 15, on = true },
+						[319454] 				= { sort = 16, on = true },
 					}
 				},
 			},
