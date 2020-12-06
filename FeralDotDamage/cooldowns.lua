@@ -265,7 +265,7 @@ local spells_to_show = {
 	{ id = ns.survival_spid,		cd = 120,	default = false, tip = COOLDOWN_AURA_TAG	},
 	{ id = ns.predator_spid,		cd = 12,	default = true,  tip = AURA_TAG			 , onTimeIcon = "Predator" },
 	{ id = ns.trollberserk_spid,	cd = 12,	default = true,  tip = COOLDOWN_AURA_TAG	},
-	{ id = ns.krovaviekogti_spid,	cd = 30,	default = true,  tip = AURA_TAG			 , talent = 155672 },
+	{ id = ns.krovaviekogti_spid,	cd = 30,	default = true,  tip = AURA_TAG			 , talent = 319439 },
 	{ id = ns.sremit_rivok_spid,	cd = 15,	default = false, tip = COOLDOWN_TAG 	 , talent = 102401 },
 	{ id = ns.trevogniyrev_spid,	cd = 120,	default = false, tip = COOLDOWN_AURA_TAG},
 	{ id = ns.clearcast_id,			cd = 15,	default = false, tip = AURA_TAG, },
