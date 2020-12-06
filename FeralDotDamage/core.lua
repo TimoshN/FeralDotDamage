@@ -3825,12 +3825,12 @@ do
 		frame.spark:SetSize(frameWidth, frameHeight)
 		frame.spark:SetAlpha(0.3)
 		frame.innerGlow:SetSize(frameWidth / 2, frameHeight / 2)
-		frame.innerGlow:SetAlpha(1.0)
-		frame.innerGlowOver:SetAlpha(1.0)
+		frame.innerGlow:SetAlpha(0.7) --1.0)
+		frame.innerGlowOver:SetAlpha(0.7) --1.0)
 		frame.outerGlow:SetSize(frameWidth * 2, frameHeight * 2)
-		frame.outerGlow:SetAlpha(1.0)
-		frame.outerGlowOver:SetAlpha(1.0)
-		frame.ants:SetSize(frameWidth * 0.85, frameHeight * 0.85)
+		frame.outerGlow:SetAlpha(0.7) --1.0)
+		frame.outerGlowOver:SetAlpha(0.7) --1.0)
+		frame.ants:SetSize(frameWidth * 0.75, frameHeight * 0.75)
 		frame.ants:SetAlpha(0)
 		frame:Show()
 	end
@@ -3952,9 +3952,9 @@ do
 			overlay:SetFrameLevel(frame:GetFrameLevel() + 5)
 			overlay:ClearAllPoints()
 		
-			overlay:SetSize(frameWidth * 1.4, frameHeight * 1.4)
-			overlay:SetPoint("TOPLEFT", frame, "TOPLEFT", -frameWidth * 0.2, frameHeight * 0.2)
-			overlay:SetPoint("BOTTOMRIGHT", frame, "BOTTOMRIGHT", frameWidth * 0.2, -frameHeight * 0.2)
+			overlay:SetSize(frameWidth * 1.7, frameHeight * 1.7)
+			overlay:SetPoint("TOPLEFT", frame, "TOPLEFT", -frameWidth * 0.35, frameHeight * 0.35)
+			overlay:SetPoint("BOTTOMRIGHT", frame, "BOTTOMRIGHT", frameWidth * 0.35, -frameHeight * 0.35)
 	
 	
 			overlay.animIn:Play()

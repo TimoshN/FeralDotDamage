@@ -1,6 +1,6 @@
-## Interface: 90001
+## Interface: 90002
 ## Author: Alea
-## Version: 301
+## Version: 303
 ## Title: FeralDotDamage
 ## Notes: 
 ## DefaultState: Enabled
