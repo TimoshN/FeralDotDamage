@@ -2,6 +2,7 @@
 ## Author: Alea
 ## Version: 303
 ## Title: FeralDotDamage
+## License: All rights reserved. Do not redistribute, in whole or in part, without explicit prior permission from the author.
 ## Notes: 
 ## DefaultState: Enabled
 ## SavedVariables: FeralDotDamageDB
